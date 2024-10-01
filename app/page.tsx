@@ -2,13 +2,15 @@ import HomeBannerV1 from "@/components/BannersComp/HomeBannerV1";
 import EmblaCarousel from "@/components/ProductCarousel/EmblaCarousel";
 import React from "react";
 import { EmblaOptionsType } from "embla-carousel";
-import Product from "@/components/Product/Product";
-import ProductMobile from "@/components/Product/ProductMobile";
+import Product from "@/components/ProductHome/Product";
+import ProductMobile from "@/components/ProductHome/ProductMobile";
 import Slider from "@/components/Sliders/SlidersV1/Slider";
 import ShopByCategory from "@/components/Category/ShopByCategory";
 import HomeBannerV2 from "@/components/BannersComp/HomeBannerV2";
 import TextWithIcons from "@/components/ProcessType/TextWithIcons";
-
+import ColorPallete from "@/components/Pallete/ColorPallete";
+import HeaderV1 from "@/components/Headers/HeaderV1/HeaderV1";
+import FooterV1 from "@/components/Footers/FooterV1/FooterV1";
 // import Slider from "@/components/Sliders/SlidersV2/Slider";
 
 const OPTIONS: EmblaOptionsType = { align: "start" };
@@ -17,7 +19,9 @@ const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
 
 const Homepage = () => {
   return (
-    <div>
+    <>
+      <ColorPallete />
+      <HeaderV1 />
       <Slider />
       <ShopByCategory />
       <HomeBannerV2 />
@@ -30,7 +34,8 @@ const Homepage = () => {
       {/* <ProductMobile /> */}
       <HomeBannerV1 />
       <TextWithIcons />
-    </div>
+      <FooterV1 />
+    </>
   );
 };
 

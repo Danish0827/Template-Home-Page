@@ -299,8 +299,7 @@ const products = [
     id: 1,
     title: "Pista Green Slub Rayon Straight Embroidered Kurta",
     price: "Rs. 1,199.00",
-    productUrl:
-      "/collections/kurtas/products/pista-green-slub-rayon-straight-embroidered-kurta-1",
+    productUrl: "/single",
     images: [
       {
         primary:
@@ -315,7 +314,7 @@ const products = [
     id: 2,
     title: "Maroon Floral Print A-Line Dress",
     price: "Rs. 1,299.00",
-    productUrl: "/collections/dresses/products/maroon-floral-print-dress",
+    productUrl: "/single",
     images: [
       {
         primary:
@@ -330,7 +329,7 @@ const products = [
     id: 3,
     title: "Navy Blue Cotton Printed Kurta",
     price: "Rs. 999.00",
-    productUrl: "/collections/kurtas/products/navy-blue-cotton-printed-kurta",
+    productUrl: "/single",
     images: [
       {
         primary:
@@ -345,7 +344,7 @@ const products = [
     id: 4,
     title: "Yellow Striped Sleeveless Top",
     price: "Rs. 799.00",
-    productUrl: "/collections/tops/products/yellow-striped-sleeveless-top",
+    productUrl: "/single",
     images: [
       {
         primary:
@@ -360,7 +359,7 @@ const products = [
     id: 5,
     title: "Black Solid Ankle Length Pants",
     price: "Rs. 1,099.00",
-    productUrl: "/collections/pants/products/black-solid-ankle-length-pants",
+    productUrl: "/single",
     images: [
       {
         primary:
@@ -375,7 +374,7 @@ const products = [
     id: 6,
     title: "Olive Green Shirt Dress",
     price: "Rs. 1,499.00",
-    productUrl: "/collections/dresses/products/olive-green-shirt-dress",
+    productUrl: "/single",
     images: [
       {
         primary:
@@ -390,7 +389,7 @@ const products = [
     id: 7,
     title: "Beige Printed Palazzo Pants",
     price: "Rs. 899.00",
-    productUrl: "/collections/pants/products/beige-printed-palazzo-pants",
+    productUrl: "/single",
     images: [
       {
         primary:
@@ -405,7 +404,7 @@ const products = [
     id: 8,
     title: "Red Checkered Shirt",
     price: "Rs. 1,099.00",
-    productUrl: "/collections/shirts/products/red-checkered-shirt",
+    productUrl: "/single",
     images: [
       {
         primary:
@@ -420,7 +419,7 @@ const products = [
     id: 9,
     title: "White Embroidered Tunic",
     price: "Rs. 1,399.00",
-    productUrl: "/collections/tunics/products/white-embroidered-tunic",
+    productUrl: "/single",
     images: [
       {
         primary:
@@ -435,7 +434,7 @@ const products = [
     id: 10,
     title: "Peach Solid Casual Kurta",
     price: "Rs. 1,299.00",
-    productUrl: "/collections/kurtas/products/peach-solid-casual-kurta",
+    productUrl: "/single",
     images: [
       {
         primary:
@@ -572,6 +571,78 @@ const iconData = [
   },
 ];
 
+const filters = [
+  {
+    label: "Availability",
+    key: "availability",
+    options: [
+      { label: "In stock (58)", type: "checkbox" },
+      { label: "Out of stock (44)", type: "checkbox" },
+    ],
+  },
+  {
+    label: "Price",
+    key: "price",
+    options: [
+      {
+        type: "range",
+        min: 0,
+        max: 1449,
+        labels: { min: "Rs. 0.00", max: "Rs. 1,449.00" },
+      },
+    ],
+  },
+  {
+    label: "Size",
+    key: "size",
+    options: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"].map((size) => ({
+      label: size,
+      type: "checkbox",
+    })),
+  },
+  {
+    label: "Color",
+    key: "color",
+    options: [
+      { label: "Beige", color: "rgb(241, 194, 125)", type: "checkbox" },
+      { label: "Yellow", color: "rgb(242, 229, 2)", type: "checkbox" },
+    ],
+  },
+];
+
+
+
+  const ProductPage = [
+    {
+      src: "//www.cottonculture.co.in/cdn/shop/files/ashira-cc112-311023-light-purple-1.jpg?v=1721303387&width=1080",
+      alt: "Light Purple Georgette Flared Embroidered Kurta Pant Suit Set - 1",
+    },
+    {
+      src: "//www.cottonculture.co.in/cdn/shop/files/1j8a9778.jpg?v=1721303387&width=1080",
+      alt: "Light Purple Georgette Flared Embroidered Kurta Pant Suit Set - 2",
+    },
+    {
+      src: "//www.cottonculture.co.in/cdn/shop/files/ashira-cc112-311023-light-purple-2.jpg?v=1721303387&width=1080",
+      alt: "Light Purple Georgette Flared Embroidered Kurta Pant Suit Set - 3",
+    },
+    {
+      src: "//www.cottonculture.co.in/cdn/shop/files/ashira-cc112-311023-light-purple-3.jpg?v=1721303387&width=1080",
+      alt: "Light Purple Georgette Flared Embroidered Kurta Pant Suit Set - 4",
+    },
+  ]
+
+  const cartData = {
+    key: "50195998212414:43dc2e987ef349a7fe32fdbfa1dc1473",
+    product: {
+      name: "Light Purple Georgette Flared Embroidered kurta Pant Suit Set",
+      size: "XS",
+      image: "//www.cottonculture.co.in/cdn/shop/files/ashira-cc112-311023-light-purple-1.jpg?v=1721303387",
+      price: 1899.50,
+      link: "/products/ashira-light-purple-georgette-embroidered-suit-set?variant=50195998212414"
+    },
+    quantity: 1,
+  };
+  
 export {
   topAnnouncement,
   headerMedia,
@@ -585,4 +656,7 @@ export {
   shopCategories,
   backgroundData,
   iconData,
+  filters,
+  ProductPage,
+  cartData
 };

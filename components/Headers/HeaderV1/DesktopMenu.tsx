@@ -81,18 +81,20 @@ const DesktopMenu = () => {
             {/* Check if the item has a megamenu */}
             {item.megamenu && (
               <div
-                className={`fixed left-0 top-[100px]  w-full ${
+                className={`fixed left-0 w-full ${
                   hoveredDropdown === index ? "block" : "hidden"
                 }`}
                 onMouseEnter={() => setHoveredMegaMenu(index)}
                 onMouseLeave={() => setHoveredMegaMenu(null)}
               >
                 <div className="bg-white mt-5 templateContainer mx-auto shadow-lg py-6 w-full left-0">
-                  <div className={`grid grid-cols-${item.megamenu.length}`}>
+                  <div className={`grid grid-cols-5`}>
+                  {/* ${item.megamenu.length} */}
                     {item.megamenu.map((submenu, submenuIndex) => (
                       <div key={submenuIndex} className=" space-y-4">
                         <h4 className="text-templatePrimary font-medium">
                           {submenu.title}
+                          {item.megamenu.length}
                         </h4>
                         <ul className="space-y-2">
                           {submenu.items.map((subItem, subIndex) => (

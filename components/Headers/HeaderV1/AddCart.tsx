@@ -2,6 +2,8 @@
 import { Drawer } from "antd";
 import React, { useState } from "react";
 import Image from "next/image";
+import Cart from "@/components/Cart/Cart";
+import CartFooter from "@/components/Cart/CartFooter";
 
 const AddCart = () => {
   const [open, setOpen] = useState(false);
@@ -26,10 +28,9 @@ const AddCart = () => {
         placement="right"
         onClose={onClose}
         open={open}
+        footer={<CartFooter />}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <Cart />
       </Drawer>
     </>
   );

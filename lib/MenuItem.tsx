@@ -5,11 +5,11 @@ export const menuItem = [
   },
   {
     name: "About",
-    url: "/new-arrivals",
+    url: "/about",
   },
   {
     name: "Men",
-    url: "/men",
+    url: "/product",
     dropdown: [
       {
         name: "T-Shirts",
@@ -43,7 +43,7 @@ export const menuItem = [
   },
   {
     name: "Women",
-    url: "/women",
+    url: "/product",
     dropdown: [
       { name: "Tops", url: "/women/tops" },
       { name: "Dresses", url: "/women/dresses" },
@@ -64,7 +64,7 @@ export const menuItem = [
   },
   {
     name: "Kids",
-    url: "/kids",
+    url: "/product",
     dropdown: [
       { name: "T-Shirts", url: "/kids/t-shirts" },
       { name: "Shorts", url: "/kids/shorts" },
@@ -75,7 +75,7 @@ export const menuItem = [
   },
   {
     name: "Shop",
-    url: "/shop",
+    url: "/product",
     megamenu: [
       {
         title: "Clothing",
@@ -139,11 +139,11 @@ export const menuItem = [
   },
   {
     name: "FAQs",
-    url: "/faqs",
+    url: "#",
   },
   {
     name: "Blog",
-    url: "/blog",
+    url: "#",
   },
 ];
 

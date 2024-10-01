@@ -12,7 +12,7 @@ const Product = () => {
             </h3>
           </div>
           <div className="px-4 md:px-8 lg:px-12 xl:px-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {products.map((product) => (
+            {products.slice(0, 10).map((product) => (
               <div key={product.id} className="rounded-lg ">
                 <div className="relative">
                   <img
