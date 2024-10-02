@@ -176,28 +176,28 @@ const quickLinks = [
       {
         id: 1,
         heading: "Terms of Service",
-        url: "terms-of-service",
+        url: "policies/terms-of-service",
       },
       {
         id: 2,
         heading: "Shipping Policy",
-        url: "shipping-policy",
+        url: "policies/shipping-policy",
       },
       {
         id: 3,
         heading: "Refund Policy",
-        url: "refund-policy",
+        url: "policies/refund-policy",
       },
       {
         id: 4,
         heading: "Privacy Policy",
-        url: "privacy-policy",
+        url: "policies/privacy-policy",
       },
-      {
-        id: 5,
-        heading: "Track Your Order",
-        url: "track-your-order",
-      },
+      // {
+      //   id: 5,
+      //   heading: "Track Your Order",
+      //   url: "track-your-order",
+      // },
       {
         id: 6,
         heading: "Blogs",
@@ -206,18 +206,18 @@ const quickLinks = [
       {
         id: 7,
         heading: "About Us",
-        url: "about-us",
+        url: "about",
       },
       {
         id: 8,
         heading: "Contact Us",
-        url: "contact-us",
+        url: "contact",
       },
-      {
-        id: 9,
-        heading: "Place Return/Exchange Request",
-        url: "return-exchange-request",
-      },
+      // {
+      //   id: 9,
+      //   heading: "Place Return/Exchange Request",
+      //   url: "return-exchange-request",
+      // },
     ],
   },
   {

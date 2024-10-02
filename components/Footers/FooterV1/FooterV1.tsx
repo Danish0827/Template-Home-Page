@@ -12,7 +12,7 @@ import {
 import { Input } from "antd";
 import { TfiEmail } from "react-icons/tfi";
 
-const Footer = () => {
+const FooterV1 = () => {
   const currentYear = new Date().getFullYear();
   const [searchValue, setSearchValue] = useState("");
 
@@ -54,7 +54,7 @@ const Footer = () => {
                     <li key={item.id}>
                       <Link
                         className="flex items-center hover:text-primary gap-1 hover:ml-1 duration-200"
-                        href={`/speciality/${item.url}`}
+                        href={`/${item.url}`}
                       >
                         <ArrowRight size={16} />
                         <span>{item.heading}</span>
@@ -86,7 +86,9 @@ const Footer = () => {
             {/* Contact Info Section */}
             {contactInfo.IscontactInfo && (
               <div className="space-y-2">
-                <p className="font-bold text-xl">{contactInfo.contactInfoName}</p>
+                <p className="font-bold text-xl">
+                  {contactInfo.contactInfoName}
+                </p>
                 <div className="w-20 h-0.5 bg-primary rounded-full"></div>
                 <div className="space-y-3 mt-4 text-sm">
                   {contactInfo.IsSubscribe && (
@@ -142,4 +144,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default FooterV1;

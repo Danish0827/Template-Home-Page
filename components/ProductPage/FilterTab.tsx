@@ -1,9 +1,10 @@
 "use client";
 import { Drawer } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { SlEqualizer } from "react-icons/sl";
 import { IoIosArrowDown, IoIosArrowUp, IoIosClose } from "react-icons/io";
 import { filters } from "@/lib/headerData";
+import { gsap } from "gsap";
 
 const FilterTab = () => {
   const [open, setOpen] = useState(false);
@@ -15,6 +16,8 @@ const FilterTab = () => {
     size: [],
     color: [],
   });
+
+  const animationRef = useRef(null);
 
   const showDrawer = () => setOpen(true);
   const onClose = () => setOpen(false);
@@ -41,6 +44,26 @@ const FilterTab = () => {
     }));
   };
 
+  // GSAP Animation when the Drawer opens
+  useEffect(() => {
+    if (open) {
+      gsap.to(".appear-animation", {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power4.out",
+        delay: 0.2,
+      });
+    } else {
+      gsap.to(".appear-animation", {
+        opacity: 0,
+        y: 60,
+        duration: 1,
+        ease: "power4.out",
+      });
+    }
+  }, [open]);
+
   return (
     <>
       <div
@@ -52,7 +75,7 @@ const FilterTab = () => {
       </div>
 
       <Drawer
-        title={<p className="text-5xl">FILTER</p>}
+        title={<p className="text-5xl appear-animation">FILTER</p>}
         placement="left"
         onClose={onClose}
         open={open}
@@ -66,7 +89,9 @@ const FilterTab = () => {
                   key={`${key}-${value}`}
                   className="flex items-center justify-between bg-black p-2 rounded-md mb-2"
                 >
-                  <span className="text-gray-100 font-bold text-sm">{value}</span>
+                  <span className="text-gray-100 font-bold text-sm">
+                    {value}
+                  </span>
                   <IoIosClose
                     className="text-gray-100 text-lg cursor-pointer"
                     onClick={() => removeSelectedOption(key, value)}
@@ -76,7 +101,7 @@ const FilterTab = () => {
             )}
           </div>
 
-          <form className="space-y-6">
+          <form className="space-y-6 appear-animation">
             {filters.map((filter) => (
               <div key={filter.key} className="border-b pb-4">
                 <button
