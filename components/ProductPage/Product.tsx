@@ -1,16 +1,45 @@
 "use client";
-import React, { useState } from "react";
-import { products } from "@/lib/headerData";
+import React, { useEffect, useState } from "react";
+// import { products } from "@/lib/headerData";
 import { SlEqualizer } from "react-icons/sl";
 import { IoIosArrowDown } from "react-icons/io";
 import Filter from "./Filter";
 
+interface Product {
+  id: number;
+  name: string;
+  slug: string;
+  permalink: string;
+  price: string;
+  images: { src: string; name: string }[];
+  attributes: { name: string; options: string[] }[];
+}
 const ProductPart = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleReadMore = () => {
     setIsExpanded(!isExpanded);
   };
+
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products`
+      );
+      const data = await response.json();
+      console.log(data); // Log the data to check its structure
+      if (Array.isArray(data.products)) {
+        setProducts(data.products); // Set the state only if data is an array
+      } else {
+        console.error("Fetched data is not an array:", data);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   return (
     <>
       {products && (
@@ -49,47 +78,58 @@ const ProductPart = () => {
 
           <Filter />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {products.map((product) => (
-              <div key={product.id} className="rounded-lg ">
-                <div className="relative">
-                  <img
-                    className="w-full h-auto"
-                    src={product.images[0].primary}
-                    alt={product.title}
-                  />
-                  <img
-                    className="absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-100 transition-opacity"
-                    src={product.images[0].secondary}
-                    alt={product.title}
-                  />
-                </div>
-
-                <a
-                  href={product.productUrl}
-                  className="block mt-2 text-lg font-semibold text-center line-clamp-1"
+          {Array.isArray(products) && products.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {products.map((product: Product) => (
+                <div
+                  key={product.id}
+                  className="rounded-lg border p-4 shadow-md"
                 >
-                  {product.title}
-                </a>
+                  <div className="relative">
+                    <img
+                      className="w-full h-auto rounded-lg"
+                      src={product.images[0]?.src} // Optional chaining for safety
+                      alt={product.name}
+                    />
+                    {product.images[1] && (
+                      <img
+                        className="absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-100 transition-opacity"
+                        src={product.images[1]?.src}
+                        alt={product.name}
+                      />
+                    )}
+                  </div>
 
-                <div className="text-center mt-2 font-semibold text-gray-700">
-                  {product.price}
-                </div>
+                  <a
+                    href={`/product/${product.slug}`}
+                    className="block mt-2 text-lg font-semibold text-center line-clamp-1"
+                  >
+                    {product.name}
+                  </a>
 
-                {/* Size Variants */}
-                <div className="flex justify-center flex-wrap mt-3 space-x-2">
-                  {product.sizes.map((size, index) => (
-                    <span
-                      key={index}
-                      className="border border-gray-400 mt-2 rounded-full w-8 h-8 flex flex-wrap items-center justify-center text-sm font-medium text-gray-700"
-                    >
-                      {size}
-                    </span>
-                  ))}
+                  <div className="text-center mt-2 font-semibold text-gray-700">
+                    {product.price
+                      ? `₹${parseFloat(product.price).toLocaleString()}`
+                      : "Price Not Available"}
+                  </div>
+
+                  {/* Size Variants */}
+                  <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                    {product.attributes
+                      .find((attr) => attr.name === "Size")
+                      ?.options.map((size, index) => (
+                        <span
+                          key={index}
+                          className="border border-gray-400 mt-2 rounded-full w-20 h-8 flex items-center justify-center text-sm font-medium text-gray-700"
+                        >
+                          {size}
+                        </span>
+                      ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* View All Button */}
         </div>

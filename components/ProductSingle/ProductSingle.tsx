@@ -1,10 +1,10 @@
 import React from "react";
 import ProductDetails from "./ProductDeatails";
 
-const ProductSingle = () => {
+const ProductSingle = ({params}:any) => {
   return (
     <>
-      <ProductDetails />
+      <ProductDetails  params={params} />
     </>
   );
 };
