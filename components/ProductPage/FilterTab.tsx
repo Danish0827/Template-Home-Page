@@ -6,7 +6,7 @@ import { IoIosArrowDown, IoIosArrowUp, IoIosClose } from "react-icons/io";
 import { filters } from "@/lib/headerData";
 import { gsap } from "gsap";
 
-const FilterTab = () => {
+const FilterTab = ({count}:any) => {
   const [open, setOpen] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<
@@ -71,7 +71,7 @@ const FilterTab = () => {
         className="flex gap-2 items-center border border-solid py-3 px-6 cursor-pointer bg-white rounded-md transition-shadow"
       >
         <SlEqualizer className="rotate-90" />
-        <p>Filter</p>
+        <p>Filter ({count})</p>
       </div>
 
       <Drawer

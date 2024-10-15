@@ -8,28 +8,60 @@ interface Product {
   name: string;
   description: string;
   price: string;
+  regular_price: string;
   images: Array<{ src: string }>;
   attributes: Array<{ name: string; options: string[] }>;
+  variations: Array<{
+    id: number;
+    price: string;
+    regular_price: string; // Add regular_price for the variant
+    stock_status: string;
+    images: Array<{ src: string }>; // Add images field for each variation
+    attributes: Array<{ name: string; option: string }>;
+  }>;
 }
 
 const ProductDetails = ({ params }: any) => {
   const [product, setProduct] = useState<Product | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<any>(null); // Store the selected variant details
 
   // Fetch product data based on slug
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?slug=${params}`
+          `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?slug=${params}&includeVariations=true`
         );
         const data = await res.json();
-        setProduct(data.products[0]); // Access the first product in the array
+        const fetchedProduct = data.products[0];
+        setProduct(fetchedProduct);
+
+        // Set the first available size and variant as the default
+        const defaultSize = fetchedProduct.attributes.find(
+          (attr: any) => attr.name === "Size"
+        )?.options[0];
+        setSelectedSize(defaultSize);
+
+        const defaultVariant = fetchedProduct.variations.find((v: any) =>
+          v.attributes.some((attr: any) => attr.option === defaultSize)
+        );
+        setSelectedVariant(defaultVariant);
       } catch (error) {
         console.error("Error fetching product:", error);
       }
     };
     fetchProduct();
   }, [params.slug]);
+
+  // Handle size selection
+  const handleSizeChange = (size: string) => {
+    setSelectedSize(size);
+    const variant = product?.variations.find((v) =>
+      v.attributes.some((attr) => attr.option === size)
+    );
+    setSelectedVariant(variant);
+  };
 
   if (!product) {
     return <div>Loading...</div>; // Display loader while product is fetching
@@ -41,7 +73,15 @@ const ProductDetails = ({ params }: any) => {
         <div className="flex flex-col lg:flex-row md:px-10 gap-[50px] lg:gap-[50px]">
           {/* Left column: Carousel */}
           <div className="w-full md:w-auto flex-[1.5] max-w-[500px] lg:max-w-[600px] mx-auto lg:mx-0">
-            <ProductDetailsCarousel images={product.images} />
+            {/* Show variant images if available, else show product images */}
+            <ProductDetailsCarousel
+              images={
+                Array.isArray(selectedVariant?.images) &&
+                selectedVariant?.images.length > 0
+                  ? selectedVariant.images
+                  : product.images
+              }
+            />
           </div>
 
           {/* Right column: Product details */}
@@ -53,9 +93,40 @@ const ProductDetails = ({ params }: any) => {
 
             {/* Price */}
             <div className="py-4">
-              <div className="text-lg font-semibold">
-                MRP: ₹{product.price} {/* Fixed currency symbol */}
+              <div className="text-xl font-semibold">
+                {selectedVariant ? (
+                  <>
+                    {selectedVariant.price ? (
+                      <>
+                        <del className="text-xl font-semibold">
+                          {selectedVariant.regular_price
+                            ? `₹${selectedVariant.regular_price}`
+                            : ""}
+                        </del>{" "}
+                        ₹{selectedVariant.price}
+                      </>
+                    ) : (
+                      <>₹{selectedVariant.regular_price}</>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {product.price ? (
+                      <>
+                        <del className="text-xl font-semibold">
+                          {product.regular_price
+                            ? `₹${product.regular_price}`
+                            : ""}
+                        </del>{" "}
+                        ₹{product.price}
+                      </>
+                    ) : (
+                      <>₹{product.regular_price}</>
+                    )}
+                  </>
+                )}
               </div>
+
               <div className="text-md font-medium text-black/[0.5]">
                 incl. of taxes
               </div>
@@ -76,7 +147,10 @@ const ProductDetails = ({ params }: any) => {
                   ?.options.map((size, index) => (
                     <div
                       key={index}
-                      className="border rounded-md text-center py-3 font-medium hover:border-black cursor-pointer"
+                      onClick={() => handleSizeChange(size)}
+                      className={`border rounded-md text-center py-3 font-medium hover:border-black cursor-pointer ${
+                        selectedSize === size ? "border-black" : ""
+                      }`}
                     >
                       {size}
                     </div>

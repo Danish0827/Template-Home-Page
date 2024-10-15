@@ -5,11 +5,12 @@ import ProductSingle from "@/components/ProductSingle/ProductSingle";
 import FooterV1 from "@/components/Footers/FooterV1/FooterV1";
 
 const single = ({params}:any) => {
+  console.log(params.view,'ASAsaSAsaSAsasaS')
   return (
     <>
       <ColorPallete />
       <HeaderV1 />
-      <ProductSingle params={params.slug} />
+      <ProductSingle params={params?.view} />
       <FooterV1 />
     </>
   );

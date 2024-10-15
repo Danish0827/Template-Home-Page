@@ -14,7 +14,7 @@ interface Product {
   images: { src: string; name: string }[];
   attributes: { name: string; options: string[] }[];
 }
-const ProductPart = () => {
+const ProductPart = ({ params }: any) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleReadMore = () => {
@@ -26,7 +26,7 @@ const ProductPart = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products`
+        `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?categorySlug=${params}`
       );
       const data = await response.json();
       console.log(data); // Log the data to check its structure
@@ -76,7 +76,7 @@ const ProductPart = () => {
             )}
           </div>
 
-          <Filter />
+          <Filter count={products.length} />
 
           {Array.isArray(products) && products.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -101,7 +101,7 @@ const ProductPart = () => {
                   </div>
 
                   <a
-                    href={`/product/${product.slug}`}
+                    href={`/shop/${params}/product/${product.slug}`}
                     className="block mt-2 text-lg font-semibold text-center line-clamp-1"
                   >
                     {product.name}

@@ -17,8 +17,10 @@ export async function GET(req) {
 
 	const { searchParams } = new URL(req.url);
 	const page = searchParams.get('page') || 1; // Default to page 1
-	const perPage = searchParams.get('perPage') || 100; // Default to 10 products per page
+	const perPage = searchParams.get('perPage') || 100; // Default to 100 products per page
 	const slug = searchParams.get('slug'); // Slug for individual product
+	const categorySlug = searchParams.get('categorySlug'); // Category slug for filtering by category
+	const includeVariations = searchParams.get('includeVariations') === 'true'; // Fetch variations or not
 
 	try {
 		let data;
@@ -33,9 +35,39 @@ export async function GET(req) {
 				throw new Error(`No product found with slug: ${slug}`);
 			}
 		} else {
-			// Otherwise, fetch products with pagination
-			const productsResponse = await api.get('products', { page, per_page: perPage });
+			// If categorySlug is provided, fetch products filtered by category slug
+			const params = {
+				page,
+				per_page: perPage,
+			};
+
+			if (categorySlug) {
+				// Fetch the category first to get its ID
+				const categoryResponse = await api.get('products/categories', { slug: categorySlug });
+				const category = categoryResponse.data[0];
+
+				// Ensure a category with the slug is found
+				if (!category) {
+					throw new Error(`No category found with slug: ${categorySlug}`);
+				}
+
+				// Add the category ID to the params
+				params.category = category.id;
+			}
+
+			// Fetch products with pagination and category filter (if provided)
+			const productsResponse = await api.get('products', params);
 			data = productsResponse.data;
+		}
+
+		// If variations are to be included, fetch them for each product
+		if (includeVariations) {
+			for (const product of data) {
+				if (product.variations.length > 0) {
+					const variationsResponse = await api.get(`products/${product.id}/variations`);
+					product.variations = variationsResponse.data;
+				}
+			}
 		}
 
 		responseData.success = true;
