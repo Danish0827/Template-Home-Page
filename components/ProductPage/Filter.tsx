@@ -3,7 +3,11 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { SlEqualizer } from "react-icons/sl";
 import FilterTab from "./FilterTab";
 
-const Filter: React.FC = ({count}:any) => {
+interface FilterProps {
+  count: number;
+}
+
+const Filter: React.FC<FilterProps> = ({ count }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false); // Ensure boolean typing for dropdown state
   const [selectedOption, setSelectedOption] = useState<string>("Sort"); // Ensure string typing for selected option
   const dropdownRef = useRef<HTMLDivElement | null>(null); // Use correct typing for the ref (HTMLDivElement)
@@ -39,7 +43,7 @@ const Filter: React.FC = ({count}:any) => {
     <>
       <div className="flex flex-wrap items-center py-5">
         <div className="w-1/2 flex gap-2 items-center">
-          <FilterTab  count={count} />
+          <FilterTab count={count} />
         </div>
 
         <div className="w-1/2 flex gap-2 items-center justify-end">

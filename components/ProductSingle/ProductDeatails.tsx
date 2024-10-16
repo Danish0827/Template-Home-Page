@@ -37,14 +37,20 @@ const ProductDetails = ({ params }: any) => {
         const fetchedProduct = data.products[0];
         setProduct(fetchedProduct);
 
-        // Set the first available size and variant as the default
-        const defaultSize = fetchedProduct.attributes.find(
-          (attr: any) => attr.name === "Size"
-        )?.options[0];
-        setSelectedSize(defaultSize);
+        // Find the first available size that is in stock
+        const availableSize = fetchedProduct.attributes
+          .find((attr: any) => attr.name === "Size")
+          ?.options.find((size: string) => {
+            const variant = fetchedProduct.variations.find((v: any) =>
+              v.attributes.some((attr: any) => attr.option === size)
+            );
+            return variant && variant.stock_status !== "outofstock";
+          });
+
+        setSelectedSize(availableSize || null); // Set first available size as default if found
 
         const defaultVariant = fetchedProduct.variations.find((v: any) =>
-          v.attributes.some((attr: any) => attr.option === defaultSize)
+          v.attributes.some((attr: any) => attr.option === availableSize)
         );
         setSelectedVariant(defaultVariant);
       } catch (error) {
@@ -94,37 +100,21 @@ const ProductDetails = ({ params }: any) => {
             {/* Price */}
             <div className="py-4">
               <div className="text-xl font-semibold">
-                {selectedVariant ? (
-                  <>
-                    {selectedVariant.price ? (
-                      <>
-                        <del className="text-xl font-semibold">
-                          {selectedVariant.regular_price
-                            ? `₹${selectedVariant.regular_price}`
-                            : ""}
-                        </del>{" "}
-                        ₹{selectedVariant.price}
-                      </>
-                    ) : (
-                      <>₹{selectedVariant.regular_price}</>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    {product.price ? (
-                      <>
-                        <del className="text-xl font-semibold">
-                          {product.regular_price
-                            ? `₹${product.regular_price}`
-                            : ""}
-                        </del>{" "}
-                        ₹{product.price}
-                      </>
-                    ) : (
-                      <>₹{product.regular_price}</>
-                    )}
-                  </>
-                )}
+                <div>
+                  {selectedVariant.price !== selectedVariant.regular_price ? (
+                    <div className="text-xl font-semibold">
+                      <del className="text-xl font-semibold">
+                        {selectedVariant.regular_price
+                          ? `₹${selectedVariant.regular_price}`
+                          : ""}
+                      </del>{" "}
+                      ₹{selectedVariant.price}
+                    </div>
+                  ) : (
+                    <div className="text-xl font-semibold">₹{selectedVariant.regular_price}</div>
+                  )}
+              
+              </div>
               </div>
 
               <div className="text-md font-medium text-black/[0.5]">
@@ -144,17 +134,31 @@ const ProductDetails = ({ params }: any) => {
               <div id="sizesGrid" className="grid grid-cols-12 gap-2">
                 {product.attributes
                   .find((attr) => attr.name === "Size")
-                  ?.options.map((size, index) => (
-                    <div
-                      key={index}
-                      onClick={() => handleSizeChange(size)}
-                      className={`border rounded-md text-center py-3 font-medium hover:border-black cursor-pointer ${
-                        selectedSize === size ? "border-black" : ""
-                      }`}
-                    >
-                      {size}
-                    </div>
-                  ))}
+                  ?.options.map((size, index) => {
+                    // Find the corresponding variant for the current size option
+                    const variant = product.variations.find((v) =>
+                      v.attributes.some((attr) => attr.option === size)
+                    );
+
+                    // Check if the variant is out of stock
+                    const isOutOfStock = variant?.stock_status === "outofstock";
+
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => !isOutOfStock && handleSizeChange(size)} // Only allow clicking if in stock
+                        className={`border rounded-md text-center py-3 font-medium cursor-pointer ${
+                          selectedSize === size ? "border-black" : ""
+                        } ${
+                          isOutOfStock
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:border-black"
+                        }`}
+                      >
+                        {size}
+                      </div>
+                    );
+                  })}
               </div>
             </div>
 
