@@ -7,7 +7,7 @@ import CartFooter from "@/components/Cart/CartFooter";
 
 const AddCart = () => {
   const [open, setOpen] = useState(false);
-
+ const [totalFinalPrice, setTotalFinalPrice] = useState(0);
   const showDrawer = () => setOpen(true);
   const onClose = () => setOpen(false);
   return (
@@ -28,9 +28,9 @@ const AddCart = () => {
         placement="right"
         onClose={onClose}
         open={open}
-        footer={<CartFooter />}
+        footer={<CartFooter totalFinalPrice={totalFinalPrice}/>}
       >
-        <Cart />
+        <Cart TotalFinalPrice={setTotalFinalPrice} />
       </Drawer>
     </>
   );

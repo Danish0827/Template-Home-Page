@@ -4,8 +4,7 @@ import ColorPallete from "@/components/Pallete/ColorPallete";
 import ProductSingle from "@/components/ProductSingle/ProductSingle";
 import FooterV1 from "@/components/Footers/FooterV1/FooterV1";
 
-const single = ({params}:any) => {
-  console.log(params.view,'ASAsaSAsaSAsasaS')
+const single = ({ params }: any) => {
   return (
     <>
       <ColorPallete />

@@ -1,6 +1,12 @@
-import React from "react";
+"use client";
+import React, { useContext } from "react";
+import { AppContext } from "./../context"; // Import the context
 
 const CartItem = ({ item, isLast }: any) => {
+  item?.variantName.split(',')
+  const size = item?.variantName.split(',')[0].trim();
+  const color = item?.variantName.split(',')[1].trim();
+
   return (
     <div
       className={`flex justify-between items-center ${
@@ -23,12 +29,13 @@ const CartItem = ({ item, isLast }: any) => {
             {item.name}
           </a>
           <div className="text-sm text-black py-3">
+            
             <p className="text-lg">
-              <b>Size:</b> {item.size}
+              <b>Size:</b> {size}
             </p>
             <p className="text-lg">
               <b className="font-bold">Color: </b>
-              {item.color}
+              {color}
             </p>
             <div className="flex items-center space-x-2 py-2">
               <button
@@ -58,7 +65,7 @@ const CartItem = ({ item, isLast }: any) => {
       </div>
       <div className="flex items-center">
         <div className="ml-4 text-right">
-          <p className="text-lg font-medium text-black">Rs. {item.price}</p>
+          <p className="text-lg font-medium text-black">Rs.{item.finalPrice.toFixed(2)}</p>
         </div>
       </div>
     </div>
@@ -66,6 +73,7 @@ const CartItem = ({ item, isLast }: any) => {
 };
 
 const CartPage = () => {
+  const [cart] = useContext<any>(AppContext);
   const cartItems = [
     {
       id: 1,
@@ -112,6 +120,7 @@ const CartPage = () => {
       price: 999,
     },
   ];
+  console.log(cart?.items, "dsadsadsadsads");
 
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -135,7 +144,7 @@ const CartPage = () => {
         <form className="flex flex-wrap gap-">
           {/* Cart Items */}
           <div className="w-8/12 px-8">
-            {cartItems.map((item, index) => (
+            {cart?.items?.map((item: any, index: any) => (
               <CartItem
                 key={item.id}
                 item={item}

@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import ProductDetailsCarousel from "@/components/ProductSingle/ProductDetailsCarousel";
 import Wrapper from "@/components/ProductSingle/Wrapper";
+import AddToCart from "@/components/Cart/add-to-cart";
+import { useSelectedLayoutSegment } from "next/navigation";
 
 interface Product {
   id: number;
@@ -16,7 +18,7 @@ interface Product {
     price: string;
     regular_price: string; // Add regular_price for the variant
     stock_status: string;
-    images: Array<{ src: string }>; // Add images field for each variation
+    image: { src: string }; // Add images field for each variation
     attributes: Array<{ name: string; option: string }>;
   }>;
 }
@@ -25,6 +27,8 @@ const ProductDetails = ({ params }: any) => {
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null); // Store the selected variant details
+  const [regular, setRegular] = useState();
+  const [price, setPrice] = useState();
 
   // Fetch product data based on slug
   useEffect(() => {
@@ -82,9 +86,8 @@ const ProductDetails = ({ params }: any) => {
             {/* Show variant images if available, else show product images */}
             <ProductDetailsCarousel
               images={
-                Array.isArray(selectedVariant?.images) &&
-                selectedVariant?.images.length > 0
-                  ? selectedVariant.images
+                selectedVariant
+                  ? [selectedVariant.image, ...product.images.slice(1)] // Replace first image with selectedVariant image
                   : product.images
               }
             />
@@ -101,20 +104,17 @@ const ProductDetails = ({ params }: any) => {
             <div className="py-4">
               <div className="text-xl font-semibold">
                 <div>
-                  {selectedVariant.price !== selectedVariant.regular_price ? (
+                  {selectedVariant?.price !== selectedVariant.regular_price ? (
                     <div className="text-xl font-semibold">
                       <del className="text-xl font-semibold">
-                        {selectedVariant.regular_price
-                          ? `₹${selectedVariant.regular_price}`
-                          : ""}
+                        {selectedVariant.regular_price ? `₹${regular}` : ""}
                       </del>{" "}
-                      ₹{selectedVariant.price}
+                      ₹{price}
                     </div>
                   ) : (
-                    <div className="text-xl font-semibold">₹{selectedVariant.regular_price}</div>
+                    <div className="text-xl font-semibold">₹{regular}</div>
                   )}
-              
-              </div>
+                </div>
               </div>
 
               <div className="text-md font-medium text-black/[0.5]">
@@ -163,9 +163,13 @@ const ProductDetails = ({ params }: any) => {
             </div>
 
             {/* Add to Cart and Buy Now buttons */}
-            <button className="w-full py-2 border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 uppercase mb-3">
-              Add to Cart
-            </button>
+            <AddToCart
+              product={product}
+              selectedVariant={selectedVariant}
+              regular={setRegular}
+              price={setPrice}
+            />
+
             <button className="w-full py-2 bg-black text-white text-lg font-medium transition-transform active:scale-95 hover:opacity-75 mb-10 uppercase">
               Buy it Now
             </button>

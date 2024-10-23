@@ -1,6 +1,9 @@
-import React from "react";
+"use client";
+import React, { useContext } from "react";
+import { AppContext } from "./../context";
+const CartFooter = ({ totalFinalPrice }: any) => {
+  const [cart] = useContext<any>(AppContext);
 
-const CartFooter = () => {
   const onCheckoutClick = () => {
     // Add checkout logic here
     console.log("Proceeding to checkout...");
@@ -12,16 +15,18 @@ const CartFooter = () => {
       <div data-discounts="">
         <div className="cart__discounts cart__item-sub cart__item-row hidden">
           <div className="text-lg font-semibold text-gray-700">Discounts</div>
-          <div>
-            {/* Add discount logic here */}
-          </div>
+          <div>{/* Add discount logic here */}</div>
         </div>
       </div>
 
       {/* Subtotal Section */}
       <div className="cart__item-sub cart__item-row flex justify-between items-center mb-4">
-        <div className="ajaxcart__subtotal text-lg font-bold text-gray-800">Subtotal</div>
-        <div className="text-lg font-bold text-gray-900">Rs. 5000</div>
+        <div className="ajaxcart__subtotal text-lg font-bold text-gray-800">
+          Subtotal
+        </div>
+        <div className="text-lg font-bold text-gray-900">
+          Rs. {totalFinalPrice}
+        </div>
       </div>
 
       {/* Shipping and Taxes Info */}
@@ -45,8 +50,16 @@ const CartFooter = () => {
             </span>
             <span className="pay-opt-icon flex items-center space-x-2">
               {/* Optional UPI/Payment Icons */}
-              <img src="https://cdn.gokwik.co/v4/images/upi-icons.svg" alt="UPI" className="w-6 h-6" />
-              <img src="https://cdn.gokwik.co/v4/images/right-arrow.svg" alt="arrow" className="w-4 h-4" />
+              <img
+                src="https://cdn.gokwik.co/v4/images/upi-icons.svg"
+                alt="UPI"
+                className="w-6 h-6"
+              />
+              <img
+                src="https://cdn.gokwik.co/v4/images/right-arrow.svg"
+                alt="arrow"
+                className="w-4 h-4"
+              />
             </span>
           </button>
           <div style={{ display: "none" }} className="addloadr" id="btn-loader">

@@ -83,17 +83,17 @@ const ProductPart = ({ params }: any) => {
               {products.map((product: Product) => (
                 <div
                   key={product.id}
-                  className="rounded-lg border p-4 shadow-md"
+                  className="rounded-lg border shadow-md"
                 >
                   <div className="relative">
                     <img
-                      className="w-full h-auto rounded-lg"
+                      className="w-full h-auto rounded-t-lg"
                       src={product.images[0]?.src} // Optional chaining for safety
                       alt={product.name}
                     />
                     {product.images[1] && (
                       <img
-                        className="absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-100 transition-opacity"
+                        className="absolute top-0 rounded-t-lg left-0 w-full h-full opacity-0 hover:opacity-100 transition-opacity"
                         src={product.images[1]?.src}
                         alt={product.name}
                       />
@@ -120,7 +120,7 @@ const ProductPart = ({ params }: any) => {
                       ?.options.map((size, index) => (
                         <span
                           key={index}
-                          className="border border-gray-400 mt-2 rounded-full w-20 h-8 flex items-center justify-center text-sm font-medium text-gray-700"
+                          className="border border-gray-400 px-2 mb-4 rounded-full w-12 h-12 flex items-center justify-center text-sm font-medium text-gray-700"
                         >
                           {size}
                         </span>
