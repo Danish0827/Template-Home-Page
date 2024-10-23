@@ -5,7 +5,7 @@ import AccoutLogin from "@/components/CheckOut/AccoutLogin";
 import ColorPallete from "@/components/Pallete/ColorPallete";
 import HeaderV1 from "@/components/Headers/HeaderV1/HeaderV1";
 import FooterV1 from "@/components/Footers/FooterV1/FooterV1";
-import ShippingMethodComponent from "@/components/CheckOut/ShippingMethodComponent";
+// import ShippingMethodComponent from "@/components/CheckOut/ShippingMethodComponent";
 
 const checkouts = () => {
   return (
