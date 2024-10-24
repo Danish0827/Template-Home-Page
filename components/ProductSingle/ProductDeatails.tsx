@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import ProductDetailsCarousel from "@/components/ProductSingle/ProductDetailsCarousel";
 import Wrapper from "@/components/ProductSingle/Wrapper";
 import AddToCart from "@/components/Cart/add-to-cart";
-import { useSelectedLayoutSegment } from "next/navigation";
 
 interface Product {
   id: number;
@@ -16,9 +15,9 @@ interface Product {
   variations: Array<{
     id: number;
     price: string;
-    regular_price: string; // Add regular_price for the variant
+    regular_price: string;
     stock_status: string;
-    image: { src: string }; // Add images field for each variation
+    image: { src: string };
     attributes: Array<{ name: string; option: string }>;
   }>;
 }
@@ -26,9 +25,9 @@ interface Product {
 const ProductDetails = ({ params }: any) => {
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [selectedVariant, setSelectedVariant] = useState<any>(null); // Store the selected variant details
-  const [regular, setRegular] = useState();
-  const [price, setPrice] = useState();
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
+  const [price, setPrice] = useState<string | undefined>(undefined);
+  const [regularPrice, setRegularPrice] = useState<string | undefined>(undefined);
 
   // Fetch product data based on slug
   useEffect(() => {
@@ -41,7 +40,6 @@ const ProductDetails = ({ params }: any) => {
         const fetchedProduct = data.products[0];
         setProduct(fetchedProduct);
 
-        // Find the first available size that is in stock
         const availableSize = fetchedProduct.attributes
           .find((attr: any) => attr.name === "Size")
           ?.options.find((size: string) => {
@@ -51,7 +49,7 @@ const ProductDetails = ({ params }: any) => {
             return variant && variant.stock_status !== "outofstock";
           });
 
-        setSelectedSize(availableSize || null); // Set first available size as default if found
+        setSelectedSize(availableSize || null);
 
         const defaultVariant = fetchedProduct.variations.find((v: any) =>
           v.attributes.some((attr: any) => attr.option === availableSize)
@@ -62,7 +60,7 @@ const ProductDetails = ({ params }: any) => {
       }
     };
     fetchProduct();
-  }, [params.slug]);
+  }, [params]);
 
   // Handle size selection
   const handleSizeChange = (size: string) => {
@@ -73,21 +71,22 @@ const ProductDetails = ({ params }: any) => {
     setSelectedVariant(variant);
   };
 
-  if (!product) {
-    return <div>Loading...</div>; // Display loader while product is fetching
-  }
+  // Render loading state if product is not yet available
+  if (!product) return <div>Loading...</div>;
 
+
+  console.log(selectedVariant,"asdsa");
+  
   return (
     <div className="w-full md:py-20">
       <Wrapper>
         <div className="flex flex-col lg:flex-row md:px-10 gap-[50px] lg:gap-[50px]">
           {/* Left column: Carousel */}
           <div className="w-full md:w-auto flex-[1.5] max-w-[500px] lg:max-w-[600px] mx-auto lg:mx-0">
-            {/* Show variant images if available, else show product images */}
             <ProductDetailsCarousel
               images={
                 selectedVariant
-                  ? [selectedVariant.image, ...product.images.slice(1)] // Replace first image with selectedVariant image
+                  ? [selectedVariant.image, ...product.images.slice(1)]
                   : product.images
               }
             />
@@ -96,64 +95,45 @@ const ProductDetails = ({ params }: any) => {
           {/* Right column: Product details */}
           <div className="flex-[1] py-3">
             {/* Product Title */}
-            <div className="text-[34px] font-semibold mb-2 leading-tight uppercase border-b pb-3">
+            <h1 className="text-[34px] font-semibold mb-2 leading-tight uppercase border-b pb-3">
               {product.name}
-            </div>
+            </h1>
 
             {/* Price */}
             <div className="py-4">
-              <div className="text-xl font-semibold">
-                <div>
-                  {selectedVariant?.price !== selectedVariant.regular_price ? (
-                    <div className="text-xl font-semibold">
-                      <del className="text-xl font-semibold">
-                        {selectedVariant.regular_price ? `₹${regular}` : ""}
-                      </del>{" "}
-                      ₹{price}
-                    </div>
-                  ) : (
-                    <div className="text-xl font-semibold">₹{regular}</div>
-                  )}
+              {selectedVariant && selectedVariant.price !== selectedVariant.regular_price ? (
+                <div className="text-xl font-semibold">
+                  <del className="text-xl font-semibold">₹{regularPrice}</del> ₹{price}
                 </div>
-              </div>
-
-              <div className="text-md font-medium text-black/[0.5]">
-                incl. of taxes
-              </div>
+              ) : (
+                <div className="text-xl font-semibold">₹{regularPrice}</div>
+              )}
+              <div className="text-md font-medium text-black/[0.5]">incl. of taxes</div>
             </div>
 
             {/* Size selection */}
             <div className="mb-10">
               <div className="flex justify-between mb-2">
-                <div className="text-md font-semibold">Select Size</div>
-                <div className="text-md font-medium text-black/[0.5] cursor-pointer">
-                  Size Guide
-                </div>
+                <span className="text-md font-semibold">Select Size</span>
+                <span className="text-md font-medium text-black/[0.5] cursor-pointer">Size Guide</span>
               </div>
 
               <div id="sizesGrid" className="grid grid-cols-12 gap-2">
                 {product.attributes
                   .find((attr) => attr.name === "Size")
                   ?.options.map((size, index) => {
-                    // Find the corresponding variant for the current size option
                     const variant = product.variations.find((v) =>
                       v.attributes.some((attr) => attr.option === size)
                     );
-
-                    // Check if the variant is out of stock
                     const isOutOfStock = variant?.stock_status === "outofstock";
 
                     return (
                       <div
                         key={index}
-                        onClick={() => !isOutOfStock && handleSizeChange(size)} // Only allow clicking if in stock
+                        onClick={() => !isOutOfStock && handleSizeChange(size)}
                         className={`border rounded-md text-center py-3 font-medium cursor-pointer ${
                           selectedSize === size ? "border-black" : ""
-                        } ${
-                          isOutOfStock
-                            ? "opacity-50 cursor-not-allowed"
-                            : "hover:border-black"
-                        }`}
+                        } ${isOutOfStock ? "opacity-50 cursor-not-allowed" : "hover:border-black"}`}
                       >
                         {size}
                       </div>
@@ -166,7 +146,7 @@ const ProductDetails = ({ params }: any) => {
             <AddToCart
               product={product}
               selectedVariant={selectedVariant}
-              regular={setRegular}
+              regular={setRegularPrice}
               price={setPrice}
             />
 
@@ -176,10 +156,10 @@ const ProductDetails = ({ params }: any) => {
 
             {/* Product Description */}
             <div>
-              <div className="text-xl font-bold mb-5">Product Details</div>
+              <h2 className="text-xl font-bold mb-5">Product Details</h2>
               <div
                 className="text-md mb-5"
-                dangerouslySetInnerHTML={{ __html: product.description }} // Handle HTML content safely
+                dangerouslySetInnerHTML={{ __html: product.description }}
               />
             </div>
           </div>

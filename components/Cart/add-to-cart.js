@@ -1,6 +1,6 @@
 import { isEmpty } from "lodash";
 import { addToCart } from "../../utils/cart";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context";
 import Link from "next/link";
 import cx from "classnames";
@@ -13,94 +13,75 @@ const AddToCart = ({ product, selectedVariant, regular, price }) => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
-  const maxStock = selectedVariant
-    ? selectedVariant?.stock_quantity
-    : product?.stock_quantity;
+  // Get maximum stock from selected variant or product
+  const maxStock = selectedVariant?.stock_quantity ?? product?.stock_quantity ?? 1;
 
-  // Reset quantity to 1 whenever selectedVariant changes
+  // Reset quantity whenever selectedVariant changes
   useEffect(() => {
     setQuantity(1);
   }, [selectedVariant]);
 
-  // Increment quantity
+  // Increment quantity up to max stock
   const handleIncrement = () => {
-    if (quantity < maxStock) {
-      setQuantity((prevQuantity) => prevQuantity + 1);
-    }
+    setQuantity((prevQuantity) => Math.min(prevQuantity + 1, maxStock));
   };
 
-  // Decrement quantity
+  // Decrement quantity down to 1
   const handleDecrement = () => {
-    if (quantity > 1) {
-      setQuantity((prevQuantity) => prevQuantity - 1);
-    }
+    setQuantity((prevQuantity) => Math.max(prevQuantity - 1, 1));
   };
 
-  // Handle Add to Cart logic
+  // Update the regular and price based on quantity and selected variant
+  useEffect(() => {
+    if (selectedVariant) {
+      regular(quantity * selectedVariant.regular_price);
+      price(quantity * selectedVariant.price);
+    }
+  }, [quantity, selectedVariant, regular, price]);
+
+  // Button classes for Add to Cart
+  const addToCartBtnClasses = cx(
+    "w-full py-2 border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 uppercase mb-3",
+    {
+      "bg-white hover:bg-gray-100": !loading,
+      "bg-gray-200": loading,
+    }
+  );
+
+  // If product data is missing, return null
+  if (isEmpty(product)) {
+    return null;
+  }
+
+  // Handle adding to cart
   const handleAddToCart = () => {
-    setLoading(true);
+    const productDetails = {
+      id: product.id,
+      name: product.name,
+      image: product.images?.[0]?.src,
+      price: selectedVariant?.price ?? product.price,
+      quantity,
+      variantId: selectedVariant?.id,
+      variantImage: selectedVariant?.image?.src,
+      variantName: selectedVariant?.attributes
+        ?.map((attr) => attr.option)
+        .join(", "),
+      variantPrice: selectedVariant?.price,
+    };
 
-    // Check if product with the same variant is already in the cart
-    const existingItemIndex =
-      cart?.items?.findIndex(
-        (item) =>
-          item.id === product.id && item.variantId === selectedVariant.id
-      ) ?? -1;
-
-    if (existingItemIndex !== -1) {
-      // Update the quantity of the existing item
-      const updatedCart = { ...cart };
-      const existingItem = updatedCart.items[existingItemIndex];
-      const newQuantity = existingItem.quantity + quantity;
-
-      // Ensure the new quantity doesn't exceed stock
-      if (newQuantity <= maxStock) {
-        existingItem.quantity = newQuantity;
-        setCart(updatedCart);
-        setIsAddedToCart(true);
-      } else {
-        alert("Stock limit exceeded.");
-      }
-    } else {
-      // Add new item to cart
-      const imageSrc =
-        selectedVariant?.images?.[0]?.src ||
-        product?.images?.[0]?.src ||
-        "default-image-url";
-
-      const  variantPrice = selectedVariant?.regular_price === selectedVariant?.price ? selectedVariant.regular_price : selectedVariant.price
-
-      const newCartItem = {
-        id: product.id,
-        name: product.name,
-        image: imageSrc,
-        price: product.regular_price === product.price ? product.regular_price : product.price,
-        quantity: quantity,
-        image: imageSrc,
-        variantId: selectedVariant.id,
-        variantName: selectedVariant.name,
-        variantImage:selectedVariant.image.src,
-        variantPrice: selectedVariant.regular_price === selectedVariant.price ? selectedVariant.regular_price : selectedVariant.price,
-        variantQuantity : selectedVariant.stock_quantity,
-        finalPrice : selectedVariant ? variantPrice*selectedVariant.stock_quantity : price*quantity
-      };
-      setCart({
-        ...cart,
-        items: [...(cart?.items || []), newCartItem],
-      });
-      setIsAddedToCart(true);
-    }
-
-    setLoading(false);
+    addToCart(
+      product.id ?? 0,
+      quantity,
+      setCart,
+      setIsAddedToCart,
+      setLoading,
+      productDetails
+    );
   };
-
-  if (isEmpty(product)) return null;
-
-  regular(quantity * selectedVariant.regular_price);
-  price(quantity * selectedVariant.price);
 
   return (
     <div className="select-none">
+      {/* Quantity Selector */}
       <div className="w-36 mb-5">
         <Space.Compact size="large">
           <Input
@@ -112,7 +93,7 @@ const AddToCart = ({ product, selectedVariant, regular, price }) => {
                   "text-gray-300": quantity === 1,
                   "text-black": quantity > 1,
                 })}
-                onClick={quantity > 1 ? handleDecrement : undefined}
+                onClick={handleDecrement}
               />
             }
             addonAfter={
@@ -121,7 +102,7 @@ const AddToCart = ({ product, selectedVariant, regular, price }) => {
                   "text-gray-300": quantity === maxStock,
                   "text-black": quantity < maxStock,
                 })}
-                onClick={quantity < maxStock ? handleIncrement : undefined}
+                onClick={handleIncrement}
               />
             }
             readOnly
@@ -129,25 +110,22 @@ const AddToCart = ({ product, selectedVariant, regular, price }) => {
         </Space.Compact>
       </div>
 
+      {/* Add to Cart Button */}
       <button
-        className={cx(
-          "w-full py-2 border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 uppercase mb-3",
-          {
-            "bg-white hover:bg-gray-100": !loading,
-            "bg-gray-200": loading,
-          }
-        )}
+        className={addToCartBtnClasses}
         onClick={handleAddToCart}
         disabled={loading}
       >
         {loading ? "Adding..." : "Add to cart"}
       </button>
 
+      {/* View Cart Link if item is added */}
       {isAddedToCart && !loading && (
-        <Link href="/cart">
-          <p className="hover:bg-gray-100 w-full py-2 border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 uppercase mb-3">
-            View cart
-          </p>
+        <Link
+          href="/cart"
+          className="w-full py-2 border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 uppercase mb-3"
+        >
+          View cart
         </Link>
       )}
     </div>
