@@ -1,12 +1,29 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AppContext } from "./../context"; // Import the context
+import { FaMinus, FaPlus } from "react-icons/fa";
 
 const CartItem = ({ item, isLast }: any) => {
-  item?.variantName.split(',')
-  const size = item?.variantName.split(',')[0].trim();
-  const color = item?.variantName.split(',')[1].trim();
+  const [quantity, setQuantity] = useState(item.quantity);
+  setQuantity(item.quantity);
+  const handleDecrement = (e: any) => {
+    e.preventDefault();
+    if (quantity > 1) {
+      const newQuantity = quantity - 1;
+      setQuantity(newQuantity);
 
+      // updateItemQuantity(item.variation_id, item.product_id, newQuantity);
+    }
+  };
+
+  const handleIncrement = (e: any) => {
+    e.preventDefault();
+    if (quantity < item?.data?.stock_quantity) {
+      const newQuantity = quantity + 1;
+      setQuantity(newQuantity);
+      // updateItemQuantity(item.variantId, item.productId, newQuantity);
+    }
+  };
   return (
     <div
       className={`flex justify-between items-center ${
@@ -14,47 +31,47 @@ const CartItem = ({ item, isLast }: any) => {
       } py-4`}
     >
       <div className="flex items-start">
-        <a href={item.link} className="flex-shrink-0">
+        <a href={item?.link} className="flex-shrink-0">
           <img
-            src={item.image}
-            alt={item.name}
-            className="w-24 h-24 object-cover object-top rounded-md"
+            src={item?.data?.images?.[0]?.src || "fallback-image-url.jpg"}
+            alt={item?.name || "Product Image"}
+            className="w-24 h-auto object-cover object-top rounded-md"
           />
         </a>
         <div className="ml-4">
           <a
-            href={item.link}
+            href={item?.link}
             className="text-xl font-semibold hover:text-gray-800 text-black"
           >
-            {item.name}
+            {item?.data?.name}
           </a>
           <div className="text-sm text-black py-3">
-            
             <p className="text-lg">
-              <b>Size:</b> {size}
+              <b>Size:</b> {item?.variation?.attribute_pa_size}
             </p>
             <p className="text-lg">
               <b className="font-bold">Color: </b>
-              {color}
+              {item?.variation?.attribute_pa_colour}
             </p>
-            <div className="flex items-center space-x-2 py-2">
+
+            <div className="js-qty__wrapper flex items-center gap-2">
               <button
-                className="bg-gray-200 p-2 rounded-full focus:outline-none w-8 h-8 flex items-center justify-center "
-                aria-label="Reduce item quantity"
+                onClick={(e) => handleDecrement(e)}
+                className="p-2 bg-gray-100 rounded-md hover:bg-gray-200"
               >
-                <span className="-mt-1">-</span>
+                <FaMinus />
               </button>
               <input
                 type="text"
-                className="w-10 text-center outline-none border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm sm:text-sm rounded-md"
-                value={item.quantity}
+                className="js-qty__num w-12 text-center border border-gray-300 rounded-md"
+                value={quantity}
                 readOnly
               />
               <button
-                className="bg-gray-200 p-2 rounded-full focus:outline-none w-8 h-8 flex items-center justify-center"
-                aria-label="Increase item quantity"
+                onClick={(e) => handleIncrement(e)}
+                className="p-2 bg-gray-100 rounded-md hover:bg-gray-200"
               >
-                <span className="-mt-0">+</span>
+                <FaPlus />
               </button>
             </div>
             <button className="text-black text-base hover:underline">
@@ -65,7 +82,13 @@ const CartItem = ({ item, isLast }: any) => {
       </div>
       <div className="flex items-center">
         <div className="ml-4 text-right">
-          <p className="text-lg font-medium text-black">Rs.{item.finalPrice.toFixed(2)}</p>
+          <p className="text-lg text-black font-bold">
+            Rs.{item?.data?.price * quantity.toFixed(2)}
+          </p>
+          <p className="text-lg">
+            <b className="font-bold">In Stock: </b>
+            {item?.data?.stock_quantity}
+          </p>
         </div>
       </div>
     </div>
@@ -74,58 +97,14 @@ const CartItem = ({ item, isLast }: any) => {
 
 const CartPage = () => {
   const [cart] = useContext<any>(AppContext);
-  const cartItems = [
-    {
-      id: 1,
-      name: "Off White Cotton Flax Straight Printed Kurta",
-      link: "/products/off-white-cotton-flax-straight-printed-kurta?variant=50436508680510",
-      image:
-        "//www.cottonculture.co.in/cdn/shop/files/KARTIKIOFFWHITE1.jpg?v=1727157760&width=540",
-      size: "XS",
-      color: "Off White",
-      quantity: 2,
-      price: 899,
-    },
-    {
-      id: 2,
-      name: "Off black Cotton Flax Straight Printed Kurta",
-      link: "/products/off-white-cotton-flax-straight-printed-kurta?variant=50436508680510",
-      image:
-        "//www.cottonculture.co.in/cdn/shop/files/KARTIKIOFFWHITE1.jpg?v=1727157760&width=540",
-      size: "XS",
-      color: "Off White",
-      quantity: 5,
-      price: 999,
-    },
-    {
-      id: 1,
-      name: "Off White Cotton Flax Straight Printed Kurta",
-      link: "/products/off-white-cotton-flax-straight-printed-kurta?variant=50436508680510",
-      image:
-        "//www.cottonculture.co.in/cdn/shop/files/KARTIKIOFFWHITE1.jpg?v=1727157760&width=540",
-      size: "XS",
-      color: "Off White",
-      quantity: 2,
-      price: 899,
-    },
-    {
-      id: 2,
-      name: "Off black Cotton Flax Straight Printed Kurta",
-      link: "/products/off-white-cotton-flax-straight-printed-kurta?variant=50436508680510",
-      image:
-        "//www.cottonculture.co.in/cdn/shop/files/KARTIKIOFFWHITE1.jpg?v=1727157760&width=540",
-      size: "XS",
-      color: "Off White",
-      quantity: 5,
-      price: 999,
-    },
-  ];
-  console.log(cart?.items, "dsadsadsadsads");
+  const [quantityfinal, setQuantityfinal] = useState(1);
 
-  const subtotal = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+  const subtotal =
+    cart?.cartItems?.reduce(
+      (total: number, item: any) =>
+        total + (item?.data?.price || 0) * (quantityfinal || 0),
+      0
+    ) || 0; // Default to 0 if undefined
 
   return (
     <main className=" bg-white py-8">
@@ -135,39 +114,41 @@ const CartPage = () => {
             Cart
           </h1>
           <p className="text-gray-600 mt-2">
-            <a href="/collections/all" className="text-black  hover:underline">
+            <a href="/collections/all" className="text-black hover:underline">
               Continue shopping
             </a>
           </p>
         </header>
 
-        <form className="flex flex-wrap gap-">
+        <form className="flex flex-wrap">
           {/* Cart Items */}
           <div className="w-8/12 px-8">
-            {cart?.items?.map((item: any, index: any) => (
+            {cart?.cartItems?.map((item: any, index: any) => (
               <CartItem
-                key={item.id}
+                key={item?.id}
                 item={item}
-                isLast={index === cartItems.length - 1}
+                isLast={index === cart?.cartItems.length - 1}
+                quantity={setQuantityfinal}
               />
             ))}
           </div>
 
           {/* Summary */}
-          <div className=" w-4/12">
+          <div className="w-4/12">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-lg font-bold text-gray-900 border-b pb-4 mb-4">
                 Order Summary
               </h2>
               <div className="flex justify-between items-center mb-4">
                 <span className="font-bold">Subtotal</span>
-                <span className="font-bold text-gray-900">Rs. {subtotal}</span>
+                <span className="font-bold text-gray-900">
+                  Rs. {subtotal.toFixed(2)}
+                </span>
               </div>
 
               <div className="gokwik-checkout">
                 <button
                   type="button"
-                  // onClick={() => console.log("Checkout")}
                   className="w-full bg-black text-white py-3 px-4 rounded-md font-medium hover:bg-zinc-900 transition duration-150"
                 >
                   CHECK OUT

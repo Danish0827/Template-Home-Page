@@ -13,47 +13,47 @@ import { isEmpty, isArray } from "lodash";
  * @param {Function} setIsAddedToCart Sets A Boolean Value If Product Is Added To Cart.
  * @param {Function} setLoading Sets A Boolean Value For Loading State.
  */
+
 export const addToCart = (
-	productId,
-	qty = 1,
-	setCart,
-	setIsAddedToCart,
-	setLoading,
-	productDetails
-  ) => {
-	const storedSession = getSession(); // Get the session (if exists)
-	const addOrViewCartConfig = getApiCartConfig(); // API configuration
-  
-	setLoading(true); // Start the loading state
-  
-	// Construct the payload according to WooCommerce's format
-	const payload = {
-	  product_id: productId,
-	  quantity: qty,
-	  variation_id: productDetails.variantId, // Pass the specific variant ID
-	  variations: {
-		"attribute_pa_size": productDetails.variantName, // For example, size attribute
-		// Add other attributes if necessary, like color, material, etc.
-	  }
-	};
-  
-	console.log("Sending to cart:", payload); // Debugging the payload
-  
-	axios
-	  .post(CART_ENDPOINT, payload, addOrViewCartConfig) // Send the payload to the WooCommerce endpoint
-	  .then((res) => {
-		if (isEmpty(storedSession)) {
-		  storeSession(res?.headers?.["x-wc-session"]); // Store session if not already stored
-		}
-		setIsAddedToCart(true); // Mark as added
-		setLoading(false); // Stop loading
-		viewCart(setCart); // Fetch and update the cart
-	  })
-	  .catch((err) => {
-		console.log("Error adding to cart:", err); // Handle any errors
-	  });
+  productId,
+  qty = 1,
+  setCart,
+  setIsAddedToCart,
+  setLoading,
+  productDetails
+) => {
+  const storedSession = getSession(); // Get the session (if exists)
+  const addOrViewCartConfig = getApiCartConfig(); // API configuration
+
+  setLoading(true); // Start the loading state
+
+  // Construct the payload according to WooCommerce's format
+  const payload = {
+    product_id: productId,
+    quantity: qty,
+    variation_id: productDetails.variantId, // Pass the specific variant ID
+    variations: {
+      attribute_pa_size: productDetails.variantName, // For example, size attribute
+      // Add other attributes if necessary, like color, material, etc.
+    },
   };
-  
+
+  console.log("Sending to cart:", payload); // Debugging the payload
+
+  axios
+    .post(CART_ENDPOINT, payload, addOrViewCartConfig) // Send the payload to the WooCommerce endpoint
+    .then((res) => {
+      if (isEmpty(storedSession)) {
+        storeSession(res?.headers?.["x-wc-session"]); // Store session if not already stored
+      }
+      setIsAddedToCart(true); // Mark as added
+      setLoading(false); // Stop loading
+      viewCart(setCart); // Fetch and update the cart
+    })
+    .catch((err) => {
+      console.log("Error adding to cart:", err); // Handle any errors
+    });
+};
 /**
  * View Cart Request Handler
  *
