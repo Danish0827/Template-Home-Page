@@ -3,7 +3,7 @@ import { getApiCartConfig } from "./api";
 import axios from "axios";
 import { CART_ENDPOINT } from "../constants/endpoints";
 import { isEmpty, isArray } from "lodash";
-
+import Swal from "sweetalert2"; // Import SweetAlert for alerts
 /**
  * Add To Cart Request Handler.
  *
@@ -51,7 +51,13 @@ export const addToCart = (
       viewCart(setCart); // Fetch and update the cart
     })
     .catch((err) => {
+      Swal.fire({
+        icon: "warning",
+        title: "Stock Limit Exceeded",
+        text: `In stock, we have only  items.`,
+      });
       console.log("Error adding to cart:", err); // Handle any errors
+      setLoading(false);
     });
 };
 /**
@@ -114,6 +120,8 @@ export const updateCart = (cartKey, qty = 1, setCart, setUpdatingProduct) => {
  * @param {Function} setRemovingProduct Set Removing Product Function.
  */
 export const deleteCartItem = (cartKey, setCart, setRemovingProduct) => {
+  console.log(cartKey, setCart, setRemovingProduct, "sadas");
+
   const addOrViewCartConfig = getApiCartConfig();
 
   setRemovingProduct(true);

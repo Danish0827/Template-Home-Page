@@ -1,29 +1,71 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "./../context"; // Import the context
 import { FaMinus, FaPlus } from "react-icons/fa";
+import { updateCart, deleteCartItem } from "../../utils/cart";
 
-const CartItem = ({ item, isLast }: any) => {
+interface CartItemType {
+  variation_id: number;
+  product_id: number;
+  quantity: number;
+  line_total: number;
+  data: { name: string; image?: { src: string }; stock_quantity?: number };
+  variation?: { attribute_pa_colour?: string; attribute_pa_size?: string };
+}
+
+interface CartItemProps {
+  item: any;
+  isLast: any;
+  setCart: (newCart: any) => void; // SetCart function to update cart state
+  setRemovingProduct: (isRemoving: boolean) => void;
+  setUpdatingProduct: (isUpdating: boolean) => void;
+}
+
+const CartItem: React.FC<CartItemProps> = ({
+  item,
+  isLast,
+  setCart,
+  setRemovingProduct,
+  setUpdatingProduct,
+}) => {
   const [quantity, setQuantity] = useState(item.quantity);
-  setQuantity(item.quantity);
+
+  // Update quantity state when item changes
+  useEffect(() => {
+    setQuantity(item.quantity);
+  }, [item.quantity]);
+
   const handleDecrement = (e: any) => {
     e.preventDefault();
     if (quantity > 1) {
       const newQuantity = quantity - 1;
       setQuantity(newQuantity);
-
-      // updateItemQuantity(item.variation_id, item.product_id, newQuantity);
+      updateCart(item.key, newQuantity, setCart, setUpdatingProduct);
     }
   };
 
   const handleIncrement = (e: any) => {
     e.preventDefault();
-    if (quantity < item?.data?.stock_quantity) {
+    if (
+      quantity <
+      // item.quantity
+      //   ? item.quantity - item?.data?.stock_quantity
+      //   :
+      item?.data?.stock_quantity
+    ) {
       const newQuantity = quantity + 1;
       setQuantity(newQuantity);
-      // updateItemQuantity(item.variantId, item.productId, newQuantity);
+      updateCart(item.key, newQuantity, setCart, setUpdatingProduct);
     }
   };
+
+  const handleRemove = (e: any) => {
+    e.preventDefault();
+    deleteCartItem(item.key, setCart, setRemovingProduct);
+  };
+
+  const finalPrice = (item.data?.price * quantity).toFixed(2);
+
   return (
     <div
       className={`flex justify-between items-center ${
@@ -74,7 +116,10 @@ const CartItem = ({ item, isLast }: any) => {
                 <FaPlus />
               </button>
             </div>
-            <button className="text-black text-base hover:underline">
+            <button
+              onClick={(e) => handleRemove(e)}
+              className="text-black text-base hover:underline"
+            >
               Remove
             </button>
           </div>
@@ -83,7 +128,7 @@ const CartItem = ({ item, isLast }: any) => {
       <div className="flex items-center">
         <div className="ml-4 text-right">
           <p className="text-lg text-black font-bold">
-            Rs.{item?.data?.price * quantity.toFixed(2)}
+            Rs. {(item?.data?.price * quantity).toFixed(2)}
           </p>
           <p className="text-lg">
             <b className="font-bold">In Stock: </b>
@@ -96,18 +141,78 @@ const CartItem = ({ item, isLast }: any) => {
 };
 
 const CartPage = () => {
-  const [cart] = useContext<any>(AppContext);
-  const [quantityfinal, setQuantityfinal] = useState(1);
+  const [cart, setCart] = useContext<any>(AppContext);
+  // const [quantityFinal, setQuantityFinal] = useState(1);
 
+  const fetchCart = async (method: string, body: any) => {
+    const response = await fetch("/api/cart", {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    return response.json();
+  };
+
+  const removeItem = async (variationId: number, productId: number) => {
+    try {
+      const result = await fetchCart("DELETE", { variationId, productId });
+      if (result.success) {
+        setCart((prevCart: any) => ({
+          ...prevCart,
+          cartItems: prevCart.cartItems.filter(
+            (item: CartItemType) =>
+              !(
+                item.variation_id === variationId &&
+                item.product_id === productId
+              )
+          ),
+        }));
+      } else {
+        console.error("Failed to remove item:", result.message);
+      }
+    } catch (error) {
+      console.error("Error removing item:", error);
+    }
+  };
+
+  const updateItemQuantity = async (
+    variationId: number,
+    productId: number,
+    newQuantity: number
+  ) => {
+    try {
+      const result = await fetchCart("PATCH", {
+        variationId,
+        productId,
+        quantity: newQuantity,
+      });
+      if (result.success) {
+        setCart((prevCart: any) => ({
+          ...prevCart,
+          cartItems: prevCart.cartItems.map((item: CartItemType) =>
+            item.variation_id === variationId && item.product_id === productId
+              ? { ...item, quantity: newQuantity }
+              : item
+          ),
+        }));
+      } else {
+        console.error("Failed to update quantity:", result.message);
+      }
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
+  };
+
+  if (!cart?.cartItems?.length) return <p>Your cart is empty.</p>;
   const subtotal =
     cart?.cartItems?.reduce(
       (total: number, item: any) =>
-        total + (item?.data?.price || 0) * (quantityfinal || 0),
+        total + (item?.data?.price || 0) * (item.quantity || 0),
       0
     ) || 0; // Default to 0 if undefined
 
   return (
-    <main className=" bg-white py-8">
+    <main className="bg-white py-8">
       <div className="px-4 lg:px-16">
         <header className="text-center">
           <h1 className="text-3xl md:text-4xl lg:text-5xl text-black tracking-tight uppercase">
@@ -128,7 +233,18 @@ const CartPage = () => {
                 key={item?.id}
                 item={item}
                 isLast={index === cart?.cartItems.length - 1}
-                quantity={setQuantityfinal}
+                // quantity={setQuantityFinal}
+                setCart={setCart}
+                setRemovingProduct={() =>
+                  removeItem(item.variation_id, item.product_id)
+                }
+                setUpdatingProduct={(newQuantity: any) =>
+                  updateItemQuantity(
+                    item.variation_id,
+                    item.product_id,
+                    newQuantity
+                  )
+                }
               />
             ))}
           </div>

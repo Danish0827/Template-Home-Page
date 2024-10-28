@@ -1,43 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import { updateCart, deleteCartItem } from "../../utils/cart";
 
 interface CartItemProps {
   item: any;
-  removeItem: () => void;
-  updateItemQuantity: (
-    variantId: number,
-    productId: number,
-    newQuantity: number
-  ) => void;
+  isLast: any;
+  setCart: (newCart: any) => void; // SetCart function to update cart state
+  setRemovingProduct: (isRemoving: boolean) => void;
+  setUpdatingProduct: (isUpdating: boolean) => void;
 }
 
 const CartItem: React.FC<CartItemProps> = ({
   item,
-  removeItem,
-  updateItemQuantity,
+  isLast,
+  setCart,
+  setRemovingProduct,
+  setUpdatingProduct,
 }) => {
   const [quantity, setQuantity] = useState(item.quantity);
+
+  // Update quantity state when item changes
+  useEffect(() => {
+    setQuantity(item.quantity);
+  }, [item.quantity]);
 
   const handleDecrement = () => {
     if (quantity > 1) {
       const newQuantity = quantity - 1;
       setQuantity(newQuantity);
-      updateItemQuantity(item.variation_id, item.product_id, newQuantity);
+      updateCart(item.key, newQuantity, setCart, setUpdatingProduct);
     }
   };
 
   const handleIncrement = () => {
-    if (quantity < item?.data?.stock_quantity) {
+    if (
+      quantity < item.quantity
+        ? item.quantity - item?.data?.stock_quantity
+        : item?.data?.stock_quantity
+    ) {
       const newQuantity = quantity + 1;
       setQuantity(newQuantity);
-      updateItemQuantity(item.variantId, item.productId, newQuantity);
+      updateCart(item.key, newQuantity, setCart, setUpdatingProduct);
     }
+  };
+
+  const handleRemove = () => {
+    deleteCartItem(item.key, setCart, setRemovingProduct);
   };
 
   const finalPrice = (item.data?.price * quantity).toFixed(2);
 
   return (
-    <div className="cart__item flex items-center gap-6 p-4 bg-white border-b">
+    <div className={`cart__item flex items-center gap-6 p-4 bg-white ${!isLast ? "border-b" : ''}`}>
       <div className="cart__image w-1/4">
         <img
           src={
@@ -56,7 +70,6 @@ const CartItem: React.FC<CartItemProps> = ({
           </h3>
           <p className="text-sm text-gray-500">
             <span>Size:</span> {item.variantName} {item.variantQuantity}
-            <p>che</p>
           </p>
         </div>
 
@@ -81,23 +94,18 @@ const CartItem: React.FC<CartItemProps> = ({
               <FaPlus />
             </button>
           </div>
-          <div className="text-right">
-            <span className="text-base font-bold text-gray-900">
-              IN STOCK: {item?.data?.stock_quantity}
-            </span>
-          </div>
+
+          <span className="text-lg font-semibold text-gray-900">
+            Rs. {finalPrice}
+          </span>
         </div>
 
-        <div className="mt-2 flex justify-between items-center">
-          <button onClick={removeItem} className="text-red-600 hover:underline">
-            Remove
-          </button>
-          <div className="text-right">
-            <span className="text-lg font-bold text-gray-900">
-              ₹ {finalPrice}
-            </span>
-          </div>
-        </div>
+        <button
+          className="mt-2 text-red-600 hover:underline font-bold"
+          onClick={handleRemove}
+        >
+          Remove
+        </button>
       </div>
     </div>
   );

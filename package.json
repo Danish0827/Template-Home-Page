@@ -25,6 +25,7 @@
     "react-multi-carousel": "^2.8.5",
     "react-responsive-carousel": "^3.2.23",
     "sharp": "^0.33.5",
+    "sweetalert2": "^11.14.4",
     "swiper": "^11.1.14"
   },
   "devDependencies": {
