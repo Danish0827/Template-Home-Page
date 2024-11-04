@@ -1,47 +1,36 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-export const AppContext = React.createContext([
-	{},
-	() => {}
-]);
 
-export const AppProvider = ( props ) => {
-	
-	const [ cart, setCart ] = useState( null );
-	
-	/**
-	 * This will be called once on initial load ( component mount ).
-	 *
-	 * Sets the cart data from localStorage to `cart` in the context.
-	 */
-	useEffect( () => {
-		
-		if ( process.browser ) {
-			let cartData = localStorage.getItem( 'next-cart' );
-			cartData = null !== cartData ? JSON.parse( cartData ) : '';
-			setCart( cartData );
+export const AppContext = React.createContext([{}, () => {}]);
+
+export const AppProvider = (props) => {
+	const [cart, setCart] = useState(null); // Start with null for loading state
+	const [isLoaded, setIsLoaded] = useState(false); // Track loading state
+
+	// Load cart data from localStorage on client-side
+	useEffect(() => {
+		if (typeof window !== 'undefined') {
+			const cartData = localStorage.getItem('next-cart');
+			setCart(cartData ? JSON.parse(cartData) : {}); // Set cart or empty object
+			setIsLoaded(true); // Mark as loaded
 		}
-		
-	}, [] );
-	
-	/**
-	 * 1.When setCart() is called that changes the value of 'cart',
-	 * this will set the new data in the localStorage.
-	 *
-	 * 2.The 'cart' will anyways have the new data, as setCart()
-	 * would have set that.
-	 */
-	useEffect( () => {
+	}, []);
 
-		if ( process.browser ) {
+	// Save cart to localStorage whenever it changes
+	useEffect(() => {
+		if (typeof window !== 'undefined' && cart !== null) {
 			localStorage.setItem('next-cart', JSON.stringify(cart));
 		}
+	}, [cart]);
 
-	}, [ cart ] );
-	
+	// Show a loading message until cart data is ready
+	if (!isLoaded) {
+		return <div>Loading...</div>;
+	}
+
 	return (
-		<AppContext.Provider value={ [ cart, setCart ] }>
-			{ props.children }
+		<AppContext.Provider value={[cart, setCart]}>
+			{props.children}
 		</AppContext.Provider>
 	);
 };

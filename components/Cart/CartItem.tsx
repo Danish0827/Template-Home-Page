@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { updateCart, deleteCartItem } from "../../utils/cart";
@@ -34,9 +35,7 @@ const CartItem: React.FC<CartItemProps> = ({
 
   const handleIncrement = () => {
     if (
-      quantity < item.quantity
-        ? item.quantity - item?.data?.stock_quantity
-        : item?.data?.stock_quantity
+      quantity < item?.data?.stock_quantity
     ) {
       const newQuantity = quantity + 1;
       setQuantity(newQuantity);
