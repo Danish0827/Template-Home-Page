@@ -24,7 +24,7 @@ const ShopByCategory: React.FC = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/get-categories");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/get-categories`);
         if (!response.ok) {
           throw new Error("Failed to fetch categories");
         }
