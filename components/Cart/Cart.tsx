@@ -13,7 +13,7 @@ interface CartItemType {
 }
 
 interface CartProps {
-  TotalFinalPrice: (price: string) => void;
+  TotalFinalPrice: (price: any) => void;
 }
 
 const Cart: React.FC<CartProps> = ({ TotalFinalPrice }) => {
