@@ -1,12 +1,15 @@
 "use client";
 import React, { useContext } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter from Next.js
 import { AppContext } from "./../context";
+
 const CartFooter = ({ totalFinalPrice }: any) => {
   const [cart] = useContext<any>(AppContext);
+  const router = useRouter(); // Initialize the router
 
   const onCheckoutClick = () => {
-    // Add checkout logic here
     console.log("Proceeding to checkout...");
+    router.push("/checkouts"); // Redirect to the checkout page
   };
 
   return (
@@ -28,13 +31,6 @@ const CartFooter = ({ totalFinalPrice }: any) => {
           Rs. {totalFinalPrice}
         </div>
       </div>
-
-      {/* Shipping and Taxes Info */}
-      {/* <div className="cart__item-row text-center my-2">
-        <small className="text-gray-600 text-sm">
-          Shipping, taxes, and discount codes calculated at checkout.<br />
-        </small>
-      </div> */}
 
       {/* Checkout Button */}
       <div className="cart__checkout-wrapper mt-4">

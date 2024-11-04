@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "./../context"; // Import the context
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { updateCart, deleteCartItem } from "../../utils/cart";
+import { useRouter } from "next/router";
 
 interface CartItemType {
   variation_id: number;
@@ -210,6 +211,12 @@ const CartPage = () => {
         total + (item?.data?.price || 0) * (item.quantity || 0),
       0
     ) || 0; // Default to 0 if undefined
+  const router = useRouter(); // Initialize the router
+
+  const onCheckoutClick = () => {
+    console.log("Proceeding to checkout...");
+    router.push("/checkouts"); // Redirect to the checkout page
+  };
 
   return (
     <main className="bg-white py-8">
@@ -264,6 +271,7 @@ const CartPage = () => {
 
               <div className="gokwik-checkout">
                 <button
+                  onClick={onCheckoutClick}
                   type="button"
                   className="w-full bg-black text-white py-3 px-4 rounded-md font-medium hover:bg-zinc-900 transition duration-150"
                 >
