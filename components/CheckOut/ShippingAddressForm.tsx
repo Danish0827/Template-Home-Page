@@ -1,10 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ShippingMethodComponent from "./ShippingMethodComponent";
+import { AppContext } from "../context";
 
-const ShippingAddressForm = () => {
+const ShippingAddressForm = ({ Method }: any) => {
+  // const ShippingAddressForm = () => {
+  const [cart] = useContext(AppContext) as any;
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [shippingMethod, setShippingMethod] = useState("freeDelivery"); // Default method
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -15,26 +19,56 @@ const ShippingAddressForm = () => {
     postalCode: "",
     phone: "",
   });
-
-  // Fetch countries from the API
   useEffect(() => {
-    fetch("https://restcountries.com/v3.1/all") // Use appropriate API URL
+    fetch("https://restcountries.com/v3.1/all")
       .then((response) => response.json())
       .then((data) => {
-        const countryList:any = data.map((country:any) => country.name.common).sort();
+        const countryList = data
+          .map((country: any) => country.name.common)
+          .sort();
         setCountries(countryList);
       })
       .catch((error) => console.error("Error fetching countries:", error));
   }, []);
 
-  const handleChange = (e:any) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e:any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log("Form Data:", formData, "Selected Country:", selectedCountry);
+
+    // Create the order data, including cart items
+    const orderData = {
+      formData,
+      selectedCountry,
+      shippingMethod,
+      products: cart.cartItems, // Include the cart items in the order data
+    };
+
+    try {
+      const response = await fetch("/api/createOrder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData), // Send the complete order data
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      console.log("Order placed successfully:", data);
+
+      // Redirect to "Thank You" page with order details after successful order placement
+      window.location.href = `/thank-you?orderId=${data.orderId}&customerName=${formData.firstName}&country=${selectedCountry}`;
+    } catch (error) {
+      console.error("Error placing order:", error);
+    }
   };
 
   return (
@@ -148,8 +182,8 @@ const ShippingAddressForm = () => {
         </div>
         <div className="relative z-0 w-full mb-5 group">
           <input
-            type="tel"
-            pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+            type="number"
+            // pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
@@ -182,7 +216,7 @@ const ShippingAddressForm = () => {
           Country
         </label>
       </div>
-      <ShippingMethodComponent />
+      <ShippingMethodComponent Method={setShippingMethod} />
       <button
         style={{ width: "100%", display: "block" }}
         className="text-white block w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-lg  sm:w-auto px-5 py-2.5 text-center"
