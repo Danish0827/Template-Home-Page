@@ -1,7 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, MapPin, PhoneCall, MailIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { Input } from "antd";
+import { TfiEmail } from "react-icons/tfi";
 import {
   headers,
   quickLinks,
@@ -9,8 +11,6 @@ import {
   downloadStore,
   contactInfo,
 } from "@/lib/headerData";
-import { Input } from "antd";
-import { TfiEmail } from "react-icons/tfi";
 
 const FooterV1 = () => {
   const currentYear = new Date().getFullYear();
@@ -19,6 +19,7 @@ const FooterV1 = () => {
   const handleInputChange = (e: any) => {
     setSearchValue(e.target.value);
   };
+
   return (
     <footer className="bg-white text-gray-800 border-t pt-5">
       <div className="px-4 pt-10 pb-5 mx-auto sm:px-6 lg:px-12 space-y-8">
@@ -30,12 +31,10 @@ const FooterV1 = () => {
               src={headers.logo}
               alt=""
             />
-            {headers.content ? (
+            {headers.content && (
               <p className="mt-5 text-base font-medium text-justify">
                 {headers.content}
               </p>
-            ) : (
-              ""
             )}
           </div>
 
@@ -45,43 +44,25 @@ const FooterV1 = () => {
               headers.content ? "xl:ml-0" : "xl:-ml-40"
             }`}
           >
-            {quickLinks.map((item: any) => (
-              <div className="space-y-2">
+            {quickLinks.map((item) => (
+              <div key={item.linksHeading} className="space-y-2">
                 <p className="font-bold text-xl">{item.linksHeading}</p>
                 <div className="w-20 h-0.5 bg-primary rounded-full"></div>
                 <ul className="flex flex-col mt-4 space-y-2 text-base">
-                  {item.links.map((item: any) => (
-                    <li key={item.id}>
+                  {item.links.map((linkItem) => (
+                    <li key={linkItem.id}>
                       <Link
                         className="flex items-center hover:text-primary gap-1 hover:ml-1 duration-200"
-                        href={`/${item.url}`}
+                        href={`/${linkItem.url}`}
                       >
                         <ArrowRight size={16} />
-                        <span>{item.heading}</span>
+                        <span>{linkItem.heading}</span>
                       </Link>
                     </li>
                   ))}
                 </ul>
               </div>
             ))}
-            {/* Quick Links Section */}
-            {/* <div className="space-y-2">
-              <p className="font-bold text-xl">Quick Links</p>
-              <div className="w-20 h-0.5 bg-primary rounded-full"></div>
-              <ul className="flex flex-col mt-4 space-y-2 text-base">
-                {ourCategories.categories.map((item: any) => (
-                  <li key={item.id}>
-                    <Link
-                      className="flex items-center hover:text-primary gap-1 hover:ml-1 duration-200"
-                      href={`/speciality/${item.url}`}
-                    >
-                      <ArrowRight size={16} />
-                      <span>{item.heading}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div> */}
 
             {/* Contact Info Section */}
             {contactInfo.IscontactInfo && (
@@ -96,7 +77,7 @@ const FooterV1 = () => {
                       <p className="text-xs">{contactInfo.subscribe}</p>
                       <Input
                         suffix={<TfiEmail className="text-xl" />}
-                        className="bg-white hover:bg-white focus-within:border-black focus-within:shadow-none focus-within:bg-white border-black border-solid border-b-2 border-x-0 border-t-0 my-3 rounded-none  outline-none focus:border-none focus:outline-none"
+                        className="bg-white hover:bg-white focus-within:border-black focus-within:shadow-none focus-within:bg-white border-black border-solid border-b-2 border-x-0 border-t-0 my-3 rounded-none outline-none"
                         placeholder="Search"
                         type="text"
                         value={searchValue}
@@ -107,24 +88,22 @@ const FooterV1 = () => {
 
                   {headerIcons.Isicon && (
                     <div className="w-full flex">
-                      <ul className="flex gap-2 items-center  w-full md:w-1/2">
-                        {headerIcons.icon.map(
-                          (media) =>
-                            media.url && (
-                              <li key={media.id}>
-                                <Link href={media.url}>
-                                  <media.icon className="text-2xl" />
-                                </Link>
-                              </li>
-                            )
-                        )}
+                      <ul className="flex gap-2 items-center w-full md:w-1/2">
+                        {headerIcons.icon.map((media) => (
+                          <li key={media.id}>
+                            <Link href={media.url}>
+                              <media.icon className="text-2xl" />
+                            </Link>
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   )}
+
                   {downloadStore.storeImage && (
                     <div className="grid grid-cols-2 gap-2 py-3">
-                      {downloadStore.storeImage.map((item) => (
-                        <Link href={item.image}>
+                      {downloadStore.storeImage.map((item, index) => (
+                        <Link key={`${item.image}-${index}`} href={item.image}>
                           <img src={item.image} alt="Download Store" />
                         </Link>
                       ))}

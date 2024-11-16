@@ -29,7 +29,7 @@ const ProductPart = ({ params }: any) => {
         `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?categorySlug=${params}`
       );
       const data = await response.json();
-      console.log(data); // Log the data to check its structure
+      // console.log(data); // Log the data to check its structure
       if (Array.isArray(data.products)) {
         setProducts(data.products); // Set the state only if data is an array
       } else {

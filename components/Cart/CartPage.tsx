@@ -235,7 +235,7 @@ const CartPage = () => {
           <div className="w-8/12 px-8">
             {cart?.cartItems?.map((item: any, index: any) => (
               <CartItem
-                key={item?.id}
+                key={`${item?.product_id}-${item?.variation_id}`}
                 item={item}
                 isLast={index === cart?.cartItems.length - 1}
                 // quantity={setQuantityFinal}
@@ -269,13 +269,13 @@ const CartPage = () => {
 
               <div className="gokwik-checkout">
                 <Link href="/checkouts">
-                <button
-                  onClick={onCheckoutClick}
-                  type="button"
-                  className="w-full bg-black text-white py-3 px-4 rounded-md font-medium hover:bg-zinc-900 transition duration-150"
-                >
-                  CHECK OUT
-                </button>
+                  <button
+                    onClick={onCheckoutClick}
+                    type="button"
+                    className="w-full bg-black text-white py-3 px-4 rounded-md font-medium hover:bg-zinc-900 transition duration-150"
+                  >
+                    CHECK OUT
+                  </button>
                 </Link>
               </div>
               <p className="text-sm text-black mt-3">

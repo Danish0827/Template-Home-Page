@@ -151,6 +151,8 @@ export const clearCart = async (setCart, setClearCartProcessing) => {
   try {
     const response = await axios.delete(CART_ENDPOINT, addOrViewCartConfig);
     viewCart(setCart, setClearCartProcessing);
+    console.log(response,"clearcart");
+    
   } catch (err) {
     console.log("err", err);
     setClearCartProcessing(false);

@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React from "react";
 import { topAnnouncement } from "@/lib/headerData";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -19,9 +19,12 @@ export default function App() {
         loop={true}
         className="mySwiper cursor-grab"
       >
-        {announcement.map((media) => (
-          <SwiperSlide className="bg-templateDark from-templatePrimary to-templateSecondary">
-            <p className=" text-[13px] lg:py-[6px] cursor-grab font-semibold line-clamp-1">
+        {announcement.map((media, index) => (
+          <SwiperSlide
+            key={`${media.id}-${index}`} // Combines id and index as a fallback
+            className="bg-templateDark from-templatePrimary to-templateSecondary"
+          >
+            <p className="text-[13px] lg:py-[6px] cursor-grab font-semibold line-clamp-1">
               {media.heading}
             </p>
           </SwiperSlide>

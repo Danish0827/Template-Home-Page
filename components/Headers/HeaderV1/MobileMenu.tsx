@@ -1,3 +1,4 @@
+'use client'
 import { menuItem } from "@/lib/MenuItem";
 import Link from "next/link";
 import React, { useState } from "react";

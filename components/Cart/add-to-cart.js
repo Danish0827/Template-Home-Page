@@ -1,3 +1,4 @@
+"use client";
 import { isEmpty } from "lodash";
 import { addToCart } from "../../utils/cart";
 import { useContext, useEffect, useState } from "react";
@@ -13,7 +14,8 @@ const AddToCart = ({ product, selectedVariant, regular, price }) => {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
-  const maxStock = selectedVariant?.stock_quantity ?? product?.stock_quantity ?? 1;
+  const maxStock =
+    selectedVariant?.stock_quantity ?? product?.stock_quantity ?? 1;
 
   useEffect(() => setQuantity(1), [selectedVariant]);
 
@@ -27,7 +29,9 @@ const AddToCart = ({ product, selectedVariant, regular, price }) => {
   useEffect(updatePrice, [quantity, selectedVariant]);
 
   const adjustQuantity = (amount) => {
-    setQuantity((prevQuantity) => Math.min(Math.max(prevQuantity + amount, 1), maxStock));
+    setQuantity((prevQuantity) =>
+      Math.min(Math.max(prevQuantity + amount, 1), maxStock)
+    );
   };
 
   const handleAddToCart = () => {
@@ -39,11 +43,20 @@ const AddToCart = ({ product, selectedVariant, regular, price }) => {
       quantity,
       variantId: selectedVariant?.id,
       variantImage: selectedVariant?.image?.src,
-      variantName: selectedVariant?.attributes?.map((attr) => attr.option).join(", "),
+      variantName: selectedVariant?.attributes
+        ?.map((attr) => attr.option)
+        .join(", "),
       variantPrice: selectedVariant?.price,
     };
 
-    addToCart(product.id, quantity, setCart, setIsAddedToCart, setLoading, productDetails);
+    addToCart(
+      product.id,
+      quantity,
+      setCart,
+      setIsAddedToCart,
+      setLoading,
+      productDetails
+    );
   };
 
   if (isEmpty(product)) return null;
@@ -60,19 +73,42 @@ const AddToCart = ({ product, selectedVariant, regular, price }) => {
           <Input
             className="text-center"
             value={quantity}
-            addonBefore={<FaMinus className={cx("cursor-pointer", { "text-gray-300": quantity === 1, "text-black": quantity > 1 })} onClick={() => adjustQuantity(-1)} />}
-            addonAfter={<FaPlus className={cx("cursor-pointer", { "text-gray-300": quantity === maxStock, "text-black": quantity < maxStock })} onClick={() => adjustQuantity(1)} />}
+            addonBefore={
+              <FaMinus
+                className={cx("cursor-pointer", {
+                  "text-gray-300": quantity === 1,
+                  "text-black": quantity > 1,
+                })}
+                onClick={() => adjustQuantity(-1)}
+              />
+            }
+            addonAfter={
+              <FaPlus
+                className={cx("cursor-pointer", {
+                  "text-gray-300": quantity === maxStock,
+                  "text-black": quantity < maxStock,
+                })}
+                onClick={() => adjustQuantity(1)}
+              />
+            }
             readOnly
           />
         </Space.Compact>
       </div>
 
-      <button className={addToCartButton} onClick={handleAddToCart} disabled={loading}>
+      <button
+        className={addToCartButton}
+        onClick={handleAddToCart}
+        disabled={loading}
+      >
         {loading ? "Adding..." : "Add to cart"}
       </button>
 
       {isAddedToCart && !loading && (
-        <Link href="/cart" className="w-full py-2 border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 uppercase mb-3">
+        <Link
+          href="/cart"
+          className="w-full py-2 border border-black text-lg font-medium transition-transform active:scale-95 flex items-center justify-center gap-2 hover:opacity-75 uppercase mb-3"
+        >
           View cart
         </Link>
       )}

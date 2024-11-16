@@ -75,7 +75,7 @@ const ProductDetails = ({ params }: any) => {
   if (!product) return <div>Loading...</div>;
 
 
-  console.log(selectedVariant,"asdsa");
+  // console.log(selectedVariant,"asdsa");
   
   return (
     <div className="w-full md:py-20">

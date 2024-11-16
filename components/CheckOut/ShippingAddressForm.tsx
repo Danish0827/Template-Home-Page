@@ -3,21 +3,25 @@ import React, { useContext, useEffect, useState } from "react";
 import ShippingMethodComponent from "./ShippingMethodComponent";
 import { AppContext } from "../context";
 
-const ShippingAddressForm = ({ Method }: any) => {
-  // const ShippingAddressForm = () => {
+const ShippingAddressForm = ({ method }: any) => {
+  const [shippingMethod, setShippingMethod] = useState("freeDelivery");
+
+  const handleShippingMethod = (selectedMethod:string) => {
+    setShippingMethod(selectedMethod);
+    method(selectedMethod); // Call the method from the parent component
+  };
   const [cart] = useContext(AppContext) as any;
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
-  const [shippingMethod, setShippingMethod] = useState("freeDelivery"); // Default method
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    address: "",
-    apartment: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    phone: "",
+    firstName: "danish",
+    lastName: "shaikh",
+    address: "adb namd xyz ashdj dshj",
+    apartment: "31",
+    city: "mumbai",
+    state: "maharashtra",
+    postalCode: "400008",
+    phone: "1234567890",
   });
   useEffect(() => {
     fetch("https://restcountries.com/v3.1/all")
@@ -216,7 +220,7 @@ const ShippingAddressForm = ({ Method }: any) => {
           Country
         </label>
       </div>
-      <ShippingMethodComponent Method={setShippingMethod} />
+      <ShippingMethodComponent setMethod={handleShippingMethod} />
       <button
         style={{ width: "100%", display: "block" }}
         className="text-white block w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-lg  sm:w-auto px-5 py-2.5 text-center"

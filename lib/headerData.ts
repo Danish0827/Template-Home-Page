@@ -69,26 +69,26 @@ const headerIcons = {
   Isicon: true,
   icon: [
     { id: 1, icon: FaFacebook, url: "https://www.facebook.com" },
-    { id: 2, icon: FaTwitter, url: "https://www.twitter.com" },
-    { id: 3, icon: FaInstagram, url: "https://www.instagram.com" },
-    { id: 4, icon: FaLinkedin, url: "https://www.linkedin.com" },
-    { id: 5, icon: FaYoutube, url: "https://www.youtube.com" },
-    { id: 6, icon: FaPinterest, url: "https://www.pinterest.com" }, //https://www.pinterest.com
-    { id: 7, icon: FaSnapchat, url: "" }, //https://www.snapchat.com
-    { id: 8, icon: FaTiktok, url: "https://www.tiktok.com" },
-    { id: 9, icon: FaReddit, url: "" }, //https://www.reddit.com
-    { id: 10, icon: FaWhatsapp, url: "" }, //https://www.whatsapp.com
-    { id: 11, icon: FaTelegram, url: "" }, //https://www.telegram.org
-    { id: 12, icon: FaVimeo, url: "" }, //https://www.vimeo.com
-    { id: 13, icon: FaFlickr, url: "" }, //https://www.flickr.com
-    { id: 14, icon: FaTumblr, url: "" }, //https://www.tumblr.com
-    { id: 15, icon: FaGithub, url: "" }, //https://www.github.com
-    { id: 16, icon: FaDribbble, url: "" }, //https://www.dribbble.com
-    { id: 17, icon: FaBehance, url: "" }, // https://www.behance.net
-    { id: 18, icon: FaMedium, url: "" }, //https://www.medium.com
-    { id: 19, icon: FaSlack, url: "" }, //https://www.slack.com
-    { id: 20, icon: FaDiscord, url: "" }, // https://www.discord.com
-    { id: 21, icon: FaSkype, url: "" }, // https://www.skype.com
+    // { id: 2, icon: FaTwitter, url: "https://www.twitter.com" },
+    // { id: 3, icon: FaInstagram, url: "https://www.instagram.com" },
+    // { id: 4, icon: FaLinkedin, url: "https://www.linkedin.com" },
+    // { id: 5, icon: FaYoutube, url: "https://www.youtube.com" },
+    // { id: 6, icon: FaPinterest, url: "https://www.pinterest.com" }, //https://www.pinterest.com
+    // { id: 7, icon: FaSnapchat, url: "" }, //https://www.snapchat.com
+    // { id: 8, icon: FaTiktok, url: "https://www.tiktok.com" },
+    // { id: 9, icon: FaReddit, url: "" }, //https://www.reddit.com
+    // { id: 10, icon: FaWhatsapp, url: "" }, //https://www.whatsapp.com
+    // { id: 11, icon: FaTelegram, url: "" }, //https://www.telegram.org
+    // { id: 12, icon: FaVimeo, url: "" }, //https://www.vimeo.com
+    // { id: 13, icon: FaFlickr, url: "" }, //https://www.flickr.com
+    // { id: 14, icon: FaTumblr, url: "" }, //https://www.tumblr.com
+    // { id: 15, icon: FaGithub, url: "" }, //https://www.github.com
+    // { id: 16, icon: FaDribbble, url: "" }, //https://www.dribbble.com
+    // { id: 17, icon: FaBehance, url: "" }, // https://www.behance.net
+    // { id: 18, icon: FaMedium, url: "" }, //https://www.medium.com
+    // { id: 19, icon: FaSlack, url: "" }, //https://www.slack.com
+    // { id: 20, icon: FaDiscord, url: "" }, // https://www.discord.com
+    // { id: 21, icon: FaSkype, url: "" }, // https://www.skype.com
   ],
 };
 

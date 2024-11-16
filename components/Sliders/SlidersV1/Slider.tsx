@@ -8,7 +8,7 @@ import "swiper/css";
 import "./styles.css";
 
 export default function App() {
-  const { IsSlider,Slider } = siyafySlider;
+  const { IsSlider, Slider } = siyafySlider;
   return (
     <>
       <Swiper
@@ -19,8 +19,12 @@ export default function App() {
         loop={true}
         className="mySwiper cursor-grab p-0"
       >
-        {Slider.map((media) => (
-          <SwiperSlide style={{ padding: "0" }} className="p-0">
+        {Slider.map((media, index) => (
+          <SwiperSlide
+            key={`${media.id}-${index}`} // Combines id and index as a fallback
+            style={{ padding: "0" }}
+            className="p-0"
+          >
             <div className="banner_embla__slide p-0">
               <img
                 className="banner_embla__slide__img"

@@ -1,7 +1,15 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import "./thanks.css";
 
 const Thank = () => {
+  const [orderId, setOrderId] = useState<any>();
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const id = searchParams.get("orderId");
+    setOrderId(id);
+  });
   return (
     <>
       <section className="login-main-wrapper">
@@ -23,7 +31,9 @@ const Thank = () => {
                     alt="thanks"
                   />
                 </h1>
-                <span className="text-3xl font-bold mb-5">Your Order Id : #48779</span>
+                <span className="text-3xl font-bold mb-5">
+                  Your Order Id : #{orderId}
+                </span>
                 <p className="text-xl mb-10">
                   Your Order has been placed and is being processed. you will
                   receive an email with the order detail.

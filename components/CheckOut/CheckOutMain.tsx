@@ -1,39 +1,49 @@
 "use client";
 import React, { useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import OrderSummary from "@/components/CheckOut/OrderSummary";
-import ShippingAddressForm from "@/components/CheckOut/ShippingAddressForm";
-import AccoutLogin from "@/components/CheckOut/AccoutLogin";
-import ColorPallete from "@/components/Pallete/ColorPallete";
-import HeaderV1 from "@/components/Headers/HeaderV1/HeaderV1";
-import FooterV1 from "@/components/Footers/FooterV1/FooterV1";
+import { WOOCOMMERCE_COUNTRIES_ENDPOINT } from "@/utils/constants/endpoints";
 import { AppContext } from "../context";
+import CheckoutForm from "@/components/CheckOut/CheckoutForm";
+import ColorPallete from "../Pallete/ColorPallete";
+import HeaderV1 from "../Headers/HeaderV1/HeaderV1";
+import FooterV1 from "../Footers/FooterV1/FooterV1";
+import axios from "axios";
 
 const CheckOutMain = () => {
   const [cart] = useContext<any>(AppContext);
-  const [method, setMethod] = useState<any>();
+  const [countries, setCountries] = useState(null); // State for countries data
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to homepage if cartItems is empty
     if (!cart || !cart?.cartItems || cart?.cartItems?.length === 0) {
       router.push("/");
     }
+
+    // Fetch countries data on mount
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get(WOOCOMMERCE_COUNTRIES_ENDPOINT);
+        setCountries(response.data); // Set the countries data in state
+      } catch (error) {
+        console.error("Error fetching countries data:", error);
+      }
+    };
+
+    fetchCountries();
+
+    // Uncomment to redirect to homepage if cart is empty
   }, [cart, router]);
 
   return (
     <>
       <ColorPallete />
       <HeaderV1 />
-      <div className="flex flex-wrap">
-        <div className="lg:w-1/2 py-6">
-          <AccoutLogin />
-          <ShippingAddressForm setMethod={setMethod} />
-        </div>
-        <div className="lg:w-1/2">
-          <OrderSummary Method={method} />
-        </div>
-      </div>
+      {countries ? (
+        <CheckoutForm countriesData={countries} /> // Pass countries data to CheckoutForm
+      ) : (
+        <p>Loading countries data...</p> // Optional loading message
+      )}
+
       <FooterV1 />
     </>
   );
