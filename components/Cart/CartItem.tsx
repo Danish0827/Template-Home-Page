@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState, useEffect } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { updateCart, deleteCartItem } from "../../utils/cart";
@@ -34,9 +34,7 @@ const CartItem: React.FC<CartItemProps> = ({
   };
 
   const handleIncrement = () => {
-    if (
-      quantity < item?.data?.stock_quantity
-    ) {
+    if (quantity < item?.data?.stock_quantity) {
       const newQuantity = quantity + 1;
       setQuantity(newQuantity);
       updateCart(item.key, newQuantity, setCart, setUpdatingProduct);
@@ -50,7 +48,11 @@ const CartItem: React.FC<CartItemProps> = ({
   const finalPrice = (item.data?.price * quantity).toFixed(2);
 
   return (
-    <div className={`cart__item flex items-center gap-6 p-4 bg-white ${!isLast ? "border-b" : ''}`}>
+    <div
+      className={`cart__item flex gap-6 p-2 bg-white ${
+        !isLast ? "border-b" : ""
+      }`}
+    >
       <div className="cart__image w-1/4">
         <img
           src={
@@ -93,10 +95,16 @@ const CartItem: React.FC<CartItemProps> = ({
               <FaPlus />
             </button>
           </div>
-
-          <span className="text-lg font-semibold text-gray-900">
-            Rs. {finalPrice}
-          </span>
+          <div>
+            <p className="md:text-lg">
+              <b className="font-bold">
+                In Stock: {item?.data?.stock_quantity}
+              </b>
+            </p>
+            <span className="md:text-lg font-semibold text-gray-900">
+              Rs. {finalPrice}
+            </span>
+          </div>
         </div>
 
         <button

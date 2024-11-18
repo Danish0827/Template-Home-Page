@@ -13,7 +13,7 @@ const CartFooter = ({ totalFinalPrice }: any) => {
   };
 
   return (
-    <div className="drawer__footer bg-white p-6 rounded-lg shadow-md appear-animation appear-delay-4 ">
+    <div className="drawer__footer bg-white p-2 rounded-lg shadow-md appear-animation appear-delay-4 ">
       {/* Discounts Section */}
       <div data-discounts="">
         <div className="cart__discounts cart__item-sub cart__item-row hidden">

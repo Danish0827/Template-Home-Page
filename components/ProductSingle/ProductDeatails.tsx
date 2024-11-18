@@ -27,7 +27,9 @@ const ProductDetails = ({ params }: any) => {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [price, setPrice] = useState<string | undefined>(undefined);
-  const [regularPrice, setRegularPrice] = useState<string | undefined>(undefined);
+  const [regularPrice, setRegularPrice] = useState<string | undefined>(
+    undefined
+  );
 
   // Fetch product data based on slug
   useEffect(() => {
@@ -74,9 +76,8 @@ const ProductDetails = ({ params }: any) => {
   // Render loading state if product is not yet available
   if (!product) return <div>Loading...</div>;
 
-
   // console.log(selectedVariant,"asdsa");
-  
+
   return (
     <div className="w-full md:py-20">
       <Wrapper>
@@ -95,30 +96,39 @@ const ProductDetails = ({ params }: any) => {
           {/* Right column: Product details */}
           <div className="flex-[1] py-3">
             {/* Product Title */}
-            <h1 className="text-[34px] font-semibold mb-2 leading-tight uppercase border-b pb-3">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-2 leading-tight uppercase border-b pb-3">
               {product.name}
             </h1>
 
             {/* Price */}
             <div className="py-4">
-              {selectedVariant && selectedVariant.price !== selectedVariant.regular_price ? (
+              {selectedVariant &&
+              selectedVariant.price !== selectedVariant.regular_price ? (
                 <div className="text-xl font-semibold">
-                  <del className="text-xl font-semibold">₹{regularPrice}</del> ₹{price}
+                  <del className="text-xl font-semibold">₹{regularPrice}</del> ₹
+                  {price}
                 </div>
               ) : (
                 <div className="text-xl font-semibold">₹{regularPrice}</div>
               )}
-              <div className="text-md font-medium text-black/[0.5]">incl. of taxes</div>
+              <div className="text-md font-medium text-black/[0.5]">
+                incl. of taxes
+              </div>
             </div>
 
             {/* Size selection */}
             <div className="mb-10">
               <div className="flex justify-between mb-2">
                 <span className="text-md font-semibold">Select Size</span>
-                <span className="text-md font-medium text-black/[0.5] cursor-pointer">Size Guide</span>
+                <span className="text-md font-medium text-black/[0.5] cursor-pointer">
+                  Size Guide
+                </span>
               </div>
 
-              <div id="sizesGrid" className="grid grid-cols-12 gap-2">
+              <div
+                id="sizesGrid"
+                className="grid grid-cols-6 sm:grid-cols-10 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-12 gap-2"
+              >
                 {product.attributes
                   .find((attr) => attr.name === "Size")
                   ?.options.map((size, index) => {
@@ -131,9 +141,15 @@ const ProductDetails = ({ params }: any) => {
                       <div
                         key={index}
                         onClick={() => !isOutOfStock && handleSizeChange(size)}
-                        className={`border rounded-md text-center py-3 font-medium cursor-pointer ${
-                          selectedSize === size ? "border-black" : ""
-                        } ${isOutOfStock ? "opacity-50 cursor-not-allowed" : "hover:border-black"}`}
+                        className={`border text-sm xl:text-lg flex items-center justify-center rounded-md text-center w-12 h-12 sm:w-14 sm:h-14 lg:w-12 lg:h-12 xl:w-14 xl:h-14 font-medium cursor-pointer ${
+                          selectedSize === size
+                            ? "border-black"
+                            : "border-gray-400"
+                        } ${
+                          isOutOfStock
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:border-black"
+                        }`}
                       >
                         {size}
                       </div>

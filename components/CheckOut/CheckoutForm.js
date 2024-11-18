@@ -15,36 +15,36 @@ import {
   setStatesForCountry,
 } from "@/utils/checkout";
 
-// Use this for testing purposes, so you dont have to fill the checkout form over an over again.
+// // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
+// const defaultCustomerInfo = {
+//   firstName: "danish",
+//   lastName: "shaikh",
+//   address1: "123 Abc farm",
+//   address2: "Hill Road",
+//   city: "Mumbai",
+//   country: "IN",
+//   state: "Maharastra",
+//   postcode: "221029",
+//   email: "s.danish0827@gmail.com",
+//   phone: "9867356907",
+//   company: "The Company",
+//   errors: null,
+// };
+
 const defaultCustomerInfo = {
-  firstName: "danish",
-  lastName: "shaikh",
-  address1: "123 Abc farm",
-  address2: "Hill Road",
-  city: "Mumbai",
-  country: "IN",
-  state: "Maharastra",
-  postcode: "221029",
-  email: "s.danish0827@gmail.com",
-  phone: "9867356907",
-  company: "The Company",
+  firstName: "",
+  lastName: "",
+  address1: "",
+  address2: "",
+  city: "",
+  country: "",
+  state: "",
+  postcode: "",
+  email: "",
+  phone: "",
+  company: "",
   errors: null,
 };
-
-// const defaultCustomerInfo = {
-// 	firstName: '',
-// 	lastName: '',
-// 	address1: '',
-// 	address2: '',
-// 	city: '',
-// 	country: '',
-// 	state: '',
-// 	postcode: '',
-// 	email: '',
-// 	phone: '',
-// 	company: '',
-// 	errors: null
-// }
 
 const CheckoutForm = ({ countriesData }) => {
   const { billingCountries, shippingCountries } = countriesData || {};
@@ -154,7 +154,7 @@ const CheckoutForm = ({ countriesData }) => {
     // console.log(createdOrderData, "createdOrderData danish main");
     // const thankYouUrl = "http://localhost:3000/thank-you";
     if (createdOrderData?.orderDetails?.orderDetails?.id) {
-      window.location.href = `http://localhost:3000/thank-you?orderId=${createdOrderData.orderDetails.orderDetails.id}`;
+      window.location.href = `${process.env.NEXT_PUBLIC_SITE_URL}/thank-you?orderId=${createdOrderData.orderDetails.orderDetails.id}`;
 
       return;
     } else {
@@ -193,6 +193,8 @@ const CheckoutForm = ({ countriesData }) => {
     } else {
       const newState = { ...input, [target.name]: target.value };
       setInput(newState);
+      console.log(newState,"newState danish");
+      
     }
   };
 
@@ -225,8 +227,8 @@ const CheckoutForm = ({ countriesData }) => {
   return (
     <>
       {cart ? (
-        <form onSubmit={handleFormSubmit} className="woo-next-checkout-form">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
+        <form onSubmit={handleFormSubmit} className="woo-next-checkout-form py-4 px-4 md:px-6 lg:px-12 xl:px-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 md:gap-12 lg:gap-20">
             <div>
               {/*Shipping Details*/}
               <div className="billing-details">
@@ -276,7 +278,7 @@ const CheckoutForm = ({ countriesData }) => {
             {/* Order & Payments*/}
             <div className="your-orders">
               {/*	Order*/}
-              <h2 className="text-xl font-medium mb-4">Your Order</h2>
+              {/* <h2 className="text-xl font-medium mb-4">Your Order</h2> */}
               <YourOrder cart={cart} />
 
               {/*Payment*/}
@@ -286,7 +288,7 @@ const CheckoutForm = ({ countriesData }) => {
                 <button
                   disabled={isOrderProcessing}
                   className={cx(
-                    "bg-purple-600 text-white px-5 py-3 rounded-sm w-auto xl:w-full",
+                    "bg-[#E4322D] text-white px-5 py-3 rounded-sm w-auto xl:w-full",
                     { "opacity-50": isOrderProcessing }
                   )}
                   type="submit"

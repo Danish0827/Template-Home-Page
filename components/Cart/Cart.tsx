@@ -88,8 +88,11 @@ const Cart: React.FC<CartProps> = ({ TotalFinalPrice }) => {
   if (!cart?.cartItems?.length) return <p>Your cart is empty.</p>;
 
   return (
-    <div style={{ scrollbarWidth: "thin" }} className="shadow-lg py-2 rounded-lg">
-      {cart.cartItems.map((item: CartItemType ,index:any) => (
+    <div
+      style={{ scrollbarWidth: "thin" }}
+      className="shadow-lg py-2 rounded-lg"
+    >
+      {cart.cartItems.map((item: CartItemType, index: any) => (
         <CartItem
           key={`${item.variation_id}-${item.product_id}`}
           item={{

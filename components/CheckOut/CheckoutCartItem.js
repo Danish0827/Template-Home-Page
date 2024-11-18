@@ -1,17 +1,21 @@
 "use client";
 const CheckoutCartItem = ({ item }) => {
   return (
-    <tr className="woo-next-cart-item" key={item.productId}>
-      <td className="woo-next-cart-element">
+    <tr className="border-b">
+      <td className="py-2 px-2">
         <img
-          width="64"
+          className="object-cover rounded-md lg:w-20"
           src={item.data.images[0].src}
-          srcSet={item.data.images[0].src}
           alt={item.data.name}
         />
       </td>
-      <td className="woo-next-cart-element">{item.data.name}</td>
-      <td className="woo-next-cart-element">{item.line_subtotal.toFixed(2)}</td>
+      <td className="py-2 px-2 text-[13px] font-medium text-gray-800">
+        {item.data.name}
+      </td>
+      <td className="py-2 px-2 text-sm text-gray-600">x{item.quantity}</td>
+      <td className="py-2 px-2 text-sm text-gray-800">
+        Rs. {item.line_subtotal.toFixed(2)}
+      </td>
     </tr>
   );
 };

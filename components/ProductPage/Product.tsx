@@ -79,7 +79,7 @@ const ProductPart = ({ params }: any) => {
           <Filter count={products.length} />
 
           {Array.isArray(products) && products.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {products.map((product: Product) => (
                 <div
                   key={product.id}
@@ -102,7 +102,7 @@ const ProductPart = ({ params }: any) => {
 
                   <a
                     href={`/shop/${params}/product/${product.slug}`}
-                    className="block mt-2 text-lg font-semibold text-center line-clamp-1"
+                    className="block mt-2 lg:text-lg font-semibold text-center line-clamp-1"
                   >
                     {product.name}
                   </a>
@@ -114,13 +114,13 @@ const ProductPart = ({ params }: any) => {
                   </div>
 
                   {/* Size Variants */}
-                  <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                  <div className="flex justify-center flex-wrap mt-3 space-x-1">
                     {product.attributes
                       .find((attr) => attr.name === "Size")
                       ?.options.map((size, index) => (
                         <span
                           key={index}
-                          className="border border-gray-400 px-2 mb-4 rounded-full w-12 h-12 flex items-center justify-center text-sm font-medium text-gray-700"
+                          className="border border-gray-400 px-2 mb-2 rounded-full w-9 h-9 md:w-12 md:h-12 flex items-center justify-center text-sm font-medium text-gray-700"
                         >
                           {size}
                         </span>
