@@ -79,7 +79,7 @@ const ProductPart = ({ params }: any) => {
           <Filter count={products.length} />
 
           {Array.isArray(products) && products.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
               {products.map((product: Product) => (
                 <div
                   key={product.id}

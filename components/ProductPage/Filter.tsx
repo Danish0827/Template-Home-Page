@@ -52,7 +52,7 @@ const Filter: React.FC<FilterProps> = ({ count }) => {
               onClick={toggleDropdown}
               className="flex gap-2 items-center border border-solid py-3 px-6 cursor-pointer rounded-md"
             >
-              <p className="w-[190px]">{selectedOption}</p>
+              <p className="w-[130px] sm:w-[190px]">{selectedOption}</p>
               {isDropdownOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}
             </div>
 

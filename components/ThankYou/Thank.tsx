@@ -31,10 +31,10 @@ const Thank = () => {
                     alt="thanks"
                   />
                 </h1>
-                <span className="text-3xl font-bold mb-5">
+                <span className="text-3xl font-bold mb-5 px-3">
                   Your Order Id : #{orderId}
                 </span>
-                <p className="text-xl mb-10">
+                <p className="text-xl mb-10 px-3">
                   Your Order has been placed and is being processed. you will
                   receive an email with the order detail.
                 </p>

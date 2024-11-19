@@ -127,7 +127,7 @@ const ProductDetails = ({ params }: any) => {
 
               <div
                 id="sizesGrid"
-                className="grid grid-cols-6 sm:grid-cols-10 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-12 gap-2"
+                className="grid grid-cols-6 sm:grid-cols-10 lg:grid-cols-6 xl:grid-cols-9 2xl:grid-cols-12 gap-2"
               >
                 {product.attributes
                   .find((attr) => attr.name === "Size")
