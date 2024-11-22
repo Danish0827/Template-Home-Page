@@ -12,39 +12,40 @@ import {
   handleCreateAccount,
   handleOtherPaymentMethodCheckout,
   handleStripeCheckout,
+  handleRazorpayCheckout,
   setStatesForCountry,
 } from "@/utils/checkout";
 
 // // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
-// const defaultCustomerInfo = {
-//   firstName: "danish",
-//   lastName: "shaikh",
-//   address1: "123 Abc farm",
-//   address2: "Hill Road",
-//   city: "Mumbai",
-//   country: "IN",
-//   state: "Maharastra",
-//   postcode: "221029",
-//   email: "s.danish0827@gmail.com",
-//   phone: "9867356907",
-//   company: "The Company",
-//   errors: null,
-// };
-
 const defaultCustomerInfo = {
-  firstName: "",
-  lastName: "",
-  address1: "",
-  address2: "",
-  city: "",
-  country: "",
-  state: "",
-  postcode: "",
-  email: "",
-  phone: "",
-  company: "",
+  firstName: "danish",
+  lastName: "shaikh",
+  address1: "123 Abc farm",
+  address2: "Hill Road",
+  city: "Mumbai",
+  country: "IN",
+  state: "Maharastra",
+  postcode: "221029",
+  email: "s.danish0827@gmail.com",
+  phone: "9867356907",
+  company: "The Company",
   errors: null,
 };
+
+// const defaultCustomerInfo = {
+//   firstName: "",
+//   lastName: "",
+//   address1: "",
+//   address2: "",
+//   city: "",
+//   country: "",
+//   state: "",
+//   postcode: "",
+//   email: "",
+//   phone: "",
+//   company: "",
+//   errors: null,
+// };
 
 const CheckoutForm = ({ countriesData }) => {
   const { billingCountries, shippingCountries } = countriesData || {};
@@ -117,19 +118,7 @@ const CheckoutForm = ({ countriesData }) => {
     }
 
     // For stripe payment mode, handle the strip payment and thank you.
-    // if ("stripe" === input.paymentMethod) {
-    //   const createdOrderData = await handleStripeCheckout(
-    //     input,
-    //     cart?.cartItems,
-    //     setRequestError,
-    //     setCart,
-    //     setIsOrderProcessing,
-    //     setCreatedOrderData
-    //   );
-    //   return null;
-    // }
-
-    if ("stripe" === input.paymentMethod) {
+    if ("stripe-mode" === input.paymentMethod) {
       const createdOrderData = await handleStripeCheckout(
         input,
         cart?.cartItems,
@@ -138,6 +127,26 @@ const CheckoutForm = ({ countriesData }) => {
         setIsOrderProcessing,
         setCreatedOrderData
       );
+      return null;
+    }
+
+    console.log(input.paymentMethod, "payment");
+    console.log(input, "input ");
+
+    if ("paywithrazorpay" === input.paymentMethod) {
+      console.log("paywithrazorpay");
+
+      const createdOrderData = await handleRazorpayCheckout(
+        input,
+        cart?.cartItems,
+        setRequestError,
+        setCart,
+        setIsOrderProcessing,
+        setCreatedOrderData
+      );
+
+      console.log(createdOrderData, "createdOrderData danish main");
+
       return null;
     }
 
@@ -193,8 +202,7 @@ const CheckoutForm = ({ countriesData }) => {
     } else {
       const newState = { ...input, [target.name]: target.value };
       setInput(newState);
-      console.log(newState,"newState danish");
-      
+      console.log(newState, "newState danish");
     }
   };
 
@@ -227,12 +235,17 @@ const CheckoutForm = ({ countriesData }) => {
   return (
     <>
       {cart ? (
-        <form onSubmit={handleFormSubmit} className="woo-next-checkout-form py-4 px-4 md:px-6 lg:px-12 xl:px-20">
+        <form
+          onSubmit={handleFormSubmit}
+          className="woo-next-checkout-form py-4 px-4 md:px-6 lg:px-12 xl:px-20"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 md:gap-12 lg:gap-20">
             <div>
               {/*Shipping Details*/}
               <div className="billing-details">
-                <h2 className="text-xl font-medium mb-4">Shipping Details</h2>
+                <h2 className="text-2xl font-bold text-gray-800 pb-2">
+                  Shipping Details
+                </h2>
                 <Address
                   states={theShippingStates}
                   countries={shippingCountries}

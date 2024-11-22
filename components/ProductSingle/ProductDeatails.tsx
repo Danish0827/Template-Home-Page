@@ -79,7 +79,7 @@ const ProductDetails = ({ params }: any) => {
   // console.log(selectedVariant,"asdsa");
 
   return (
-    <div className="w-full md:py-20">
+    <div className="w-full py-5 md:py-10 lg:py-16">
       <Wrapper>
         <div className="flex flex-col lg:flex-row md:px-10 gap-[50px] lg:gap-[50px]">
           {/* Left column: Carousel */}

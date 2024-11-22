@@ -125,7 +125,11 @@ const HeaderV1 = () => {
           )}
         </div>
       ) : (
-        <div className="py-6 lg:py-8 px-5 bg-[#ededed]">
+        <div
+          className={`py-6 lg:py-8 px-5 bg-[#ededed] w-full z-20 ${
+            isFixed ? "fixed top-0 left-0" : "relative"
+          }`}
+        >
           <div className="flex items-center gap-3 w-full lg:w-9/12 m-auto">
             <SearchBar />
             <GrClose

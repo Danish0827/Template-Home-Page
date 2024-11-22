@@ -3,80 +3,81 @@ import Error from "./Error";
 const PaymentModes = ({ input, handleOnChange }) => {
   const { errors, paymentMethod } = input || {};
 
+  const handleDivClick = (value) => {
+    handleOnChange({ target: { name: "paymentMethod", value } });
+  };
+
   return (
-    <div className="mt-3">
+    <div className="mt-6 bg-white shadow-md rounded-lg p-6">
       <Error errors={errors} fieldName={"paymentMethod"} />
-      {/*Direct bank transfers*/}
-      {/* <div className="form-check woo-next-payment-input-container mt-2">
-				<label className="form-check-label">
-					<input onChange={ handleOnChange } value="bacs" className="form-check-input mr-3" name="paymentMethod" type="radio" checked={'bacs' === paymentMethod}/>
-					<span className="woo-next-payment-content">Direct Bank Transfer</span>
-				</label>
-			</div> */}
-      {/*Pay with Paypal*/}
-      {/* <div className="form-check woo-next-payment-input-container mt-2">
-				<label className="form-check-label">
-					<input onChange={ handleOnChange } value="paypal" className="form-check-input mr-3" name="paymentMethod" type="radio" checked={'paypal' === paymentMethod}/>
-					<span className="woo-next-payment-content">Pay with Paypal</span>
-				</label>
-			</div> */}
-      {/*Check Payments*/}
-      {/* <div className="form-check woo-next-payment-input-container mt-2">
-				<label className="form-check-label">
-					<input onChange={ handleOnChange } value="cheque" className="form-check-input mr-3" name="paymentMethod" type="radio" checked={'cheque' === paymentMethod}/>
-					<span className="woo-next-payment-content">Check Payments</span>
-				</label>
-			</div> */}
-      {/*Pay with Stripe*/}
-      <div className="form-check woo-next-payment-input-container mt-2">
-        <label className="form-check-label">
+      <h2 className="text-lg font-semibold text-gray-800 mb-4">
+        Payment Options
+      </h2>
+
+      {/* Payment Options */}
+      <div className="space-y-4">
+        {/* Cash on Delivery */}
+        <div
+          onClick={() => handleDivClick("cod")}
+          className={`flex items-center space-x-3 p-4 border rounded-md hover:shadow-lg transition-shadow cursor-pointer ${
+            paymentMethod === "cod" ? "border-indigo-500 shadow-md" : ""
+          }`}
+        >
           <input
-            onChange={handleOnChange}
             value="cod"
-            className="form-check-input mr-3"
+            className="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300"
             name="paymentMethod"
             type="radio"
             checked={"cod" === paymentMethod}
+            readOnly
           />
-          <span className="woo-next-payment-content">Cash on Delivery</span>
-        </label>
-      </div>
-      <div className="form-check woo-next-payment-input-container mt-2">
-        <label className="form-check-label">
+          <label className="text-sm font-semibold text-gray-700 cursor-pointer">
+            Cash on Delivery
+          </label>
+        </div>
+
+        {/* Pay Online */}
+        <div
+          onClick={() => handleDivClick("paywithrazorpay")}
+          className={`flex items-center space-x-3 p-4 border rounded-md hover:shadow-lg transition-shadow cursor-pointer ${
+            paymentMethod === "paywithrazorpay"
+              ? "border-indigo-500 shadow-md"
+              : ""
+          }`}
+        >
           <input
-            onChange={handleOnChange}
             value="paywithrazorpay"
-            className="form-check-input mr-3"
+            className="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300"
             name="paymentMethod"
             type="radio"
             checked={"paywithrazorpay" === paymentMethod}
+            readOnly
           />
-          <span className="woo-next-payment-content">Pay Online</span>
-        </label>
+          <label className="text-sm font-semibold text-gray-700 cursor-pointer">
+            Pay Online
+          </label>
+        </div>
+
+        {/* Stripe */}
+        {/* <div
+          onClick={() => handleDivClick("stripe-mode")}
+          className={`flex items-center space-x-3 p-4 border rounded-md hover:shadow-lg transition-shadow cursor-pointer ${
+            paymentMethod === "stripe-mode" ? "border-indigo-500 shadow-md" : ""
+          }`}
+        >
+          <input
+            value="stripe-mode"
+            className="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+            name="paymentMethod"
+            type="radio"
+            checked={"stripe-mode" === paymentMethod}
+            readOnly
+          />
+          <label className="text-sm font-semibold text-gray-700 cursor-pointer">
+            Stripe
+          </label>
+        </div> */}
       </div>
-      {/* <div className="form-check woo-next-payment-input-container mt-2">
-				<label className="form-check-label">
-					<input onChange={ handleOnChange } value="jccpaymentgatewayredirect" className="form-check-input mr-3" name="paymentMethod" type="radio" checked={'jccpaymentgatewayredirect' === paymentMethod}/>
-					<span className="woo-next-payment-content">JCC</span>
-				</label>
-			</div>
-			<div className="form-check woo-next-payment-input-container mt-2">
-				<label className="form-check-label">
-					<input onChange={ handleOnChange } value="ccavenue" className="form-check-input mr-3" name="paymentMethod" type="radio" checked={'ccavenue' === paymentMethod}/>
-					<span className="woo-next-payment-content">CC Avenue</span>
-				</label>
-			</div>
-			<div className="form-check woo-next-payment-input-container mt-2">
-				<label className="form-check-label">
-					<input onChange={ handleOnChange } value="stripe-mode" className="form-check-input mr-3" name="paymentMethod" type="radio" checked={'stripe-mode' === paymentMethod}/>
-					<span className="woo-next-payment-content">Stripe</span>
-				</label>
-			</div> */}
-      {/*	Payment Instructions*/}
-      {/* <div className="woo-next-checkout-payment-instructions mt-2">
-        Please send a check to Store Name, Store Street, Store Town, Store State
-        / County, Store Postcode.
-      </div> */}
     </div>
   );
 };
