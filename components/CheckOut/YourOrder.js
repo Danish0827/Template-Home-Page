@@ -7,7 +7,7 @@ const YourOrder = ({ cart }) => {
   return (
     <Fragment>
       <div className="bg-white shadow-md rounded-md">
-        <h2 className="text-2xl font-bold text-gray-800 pb-6">Your Order</h2>
+        <h2 className="text-xl font-bold text-gray-800 pb-6">Your Order</h2>
         <div className="overflow-x-auto">
           <table className="checkout-cart w-full border-collapse">
             <thead>

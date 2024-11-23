@@ -146,7 +146,13 @@ const CheckoutForm = ({ countriesData }) => {
       );
 
       console.log(createdOrderData, "createdOrderData danish main");
+      if (createdOrderData?.orderDetails?.orderDetails?.id) {
+        window.location.href = `${process.env.NEXT_PUBLIC_SITE_URL}/thank-you?orderId=${createdOrderData.orderDetails.orderDetails.id}`;
 
+        return;
+      } else {
+        console.error("Failed to redirect: No valid order details.");
+      }
       return null;
     }
 
@@ -243,7 +249,7 @@ const CheckoutForm = ({ countriesData }) => {
             <div>
               {/*Shipping Details*/}
               <div className="billing-details">
-                <h2 className="text-2xl font-bold text-gray-800 pb-2">
+                <h2 className="text-xl font-bold text-gray-800 pb-2">
                   Shipping Details
                 </h2>
                 <Address
@@ -256,20 +262,24 @@ const CheckoutForm = ({ countriesData }) => {
                   isBillingOrShipping
                 />
               </div>
+              <h2 className="text-xl font-bold text-gray-800 pb-4">
+                Billing Address
+              </h2>
               <div>
                 <CheckboxField
                   name="billingDifferentThanShipping"
                   type="checkbox"
                   checked={input?.billingDifferentThanShipping}
                   handleOnChange={handleOnChange}
-                  label="Billing different than shipping"
-                  containerClassNames="mb-4 pt-4"
+                  containerClassNames="mb-4"
                 />
               </div>
               {/*Billing Details*/}
               {input?.billingDifferentThanShipping ? (
                 <div className="billing-details">
-                  <h2 className="text-xl font-medium mb-4">Billing Details</h2>
+                  <h2 className="text-xl font-bold text-gray-800 pb-4">
+                    Billing Details
+                  </h2>
                   <Address
                     states={theBillingStates}
                     countries={
@@ -319,6 +329,10 @@ const CheckoutForm = ({ countriesData }) => {
           </div>
         </form>
       ) : null}
+      {/* <Script
+        id="razorpay-checkout-js"
+        src="https://checkout.razorpay.com/v1/checkout.js"
+      /> */}
     </>
   );
 };

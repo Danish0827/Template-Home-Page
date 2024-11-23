@@ -10,9 +10,7 @@ const PaymentModes = ({ input, handleOnChange }) => {
   return (
     <div className="mt-6 bg-white shadow-md rounded-lg p-6">
       <Error errors={errors} fieldName={"paymentMethod"} />
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">
-        Payment Options
-      </h2>
+      <h2 className="text-xl font-bold text-gray-800 pb-4">Payment Options</h2>
 
       {/* Payment Options */}
       <div className="space-y-4">
@@ -31,7 +29,7 @@ const PaymentModes = ({ input, handleOnChange }) => {
             checked={"cod" === paymentMethod}
             readOnly
           />
-          <label className="text-sm font-semibold text-gray-700 cursor-pointer">
+          <label className="text-base font-semibold text-gray-700 cursor-pointer">
             Cash on Delivery
           </label>
         </div>
@@ -53,7 +51,7 @@ const PaymentModes = ({ input, handleOnChange }) => {
             checked={"paywithrazorpay" === paymentMethod}
             readOnly
           />
-          <label className="text-sm font-semibold text-gray-700 cursor-pointer">
+          <label className="text-base font-semibold text-gray-700 cursor-pointer">
             Pay Online
           </label>
         </div>

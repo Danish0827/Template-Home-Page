@@ -5,6 +5,7 @@ import { createTheOrder, getCreateOrderData } from "./order";
 import { clearCart } from "../cart";
 import axios from "axios";
 import { WOOCOMMERCE_STATES_ENDPOINT } from "../constants/endpoints";
+import { RazorpayPayment } from "./RazorpayPayment";
 import Razorpay from "razorpay";
 
 export const handleRazorpayCheckout = async (
@@ -42,113 +43,21 @@ export const handleRazorpayCheckout = async (
     // Debug logs (can be removed later)
     console.log("Order Details: ", { orderId, amount, currency, name });
 
-    // Step 2: Load Razorpay script dynamically
-    const loadRazorpayScript = async () => {
-      return new Promise((resolve, reject) => {
-        const scriptId = "razorpay-script";
-        if (document.getElementById(scriptId)) {
-          resolve(); // If the script is already loaded, resolve immediately.
-          return;
-        }
-        const script = document.createElement("script");
-        script.id = scriptId;
-        script.src = "https://checkout.razorpay.com/v1/checkout.js";
-        script.async = true;
-        script.onload = resolve;
-        script.onerror = () =>
-          reject(new Error("Failed to load Razorpay script."));
-        document.body.appendChild(script);
-      });
-    };
+    console.log(customerOrderData, "before");
+    await RazorpayPayment({ orderId, amount, currency, name, email, contact });
+    console.log(customerOrderData, "after");
 
-    await loadRazorpayScript();
+    // const cartCleared = await clearCart(setCart, () => {});
+    // setCart(null);
+    // setIsOrderProcessing(false);
 
-    // Step 3: Create Razorpay order on the backend
-    const { data: razorpayOrder } = await axios.post(
-      "/api/create-razorpay-order",
-      {
-        amount, // Pass amount in paise (e.g., `3308` for ₹33.08)
-        currency,
-        orderId, // Pass the backend-generated order ID
-      }
-    );
+    // if (isEmpty(customerOrderData?.orderDetails) || cartCleared?.error) {
+    //   setRequestError("Clear cart failed");
+    //   return null;
+    // }
+    // localStorage.removeItem("next-cart");
 
-    if (!razorpayOrder) {
-      throw new Error("Failed to create Razorpay order. Please try again.");
-    }
-
-    // Step 4: Initialize Razorpay payment
-    // const razorpayInstance = new window.Razorpay({
-    //   key: "rzp_test_4zQUczgof1KSEJ", // Replace with production key for live mode
-    //   amount: razorpayOrder.amount,
-    //   currency: razorpayOrder.currency,
-    //   order_id: razorpayOrder.orderId, // Backend order ID
-    //   name: "Your Business Name",
-    //   description: "Purchase Description",
-    //   image: "https://your-website.com/logo.png", // Replace with your logo
-    //   handler: async (response) => {
-    //     // Step 5: Verify payment on the backend
-    //     try {
-    //       const verifyPaymentResponse = await axios.post(
-    //         "/api/verify-razorpay-payment",
-    //         { ...response, orderId: razorpayOrder.id }
-    //       );
-
-    //       if (verifyPaymentResponse.data.success) {
-    //         // Payment successful: Handle cart reset and thank you page
-    //         setCart([]); // Clear the cart
-    //         setCreatedOrderData(verifyPaymentResponse.data.orderData); // Update order data state
-    //         Swal.fire({
-    //           icon: "success",
-    //           title: "Payment Successful",
-    //           text: "Your order has been placed successfully.",
-    //         });
-    //       } else {
-    //         throw new Error("Payment verification failed.");
-    //       }
-    //     } catch (verificationError) {
-    //       console.error("Payment verification error:", verificationError);
-    //       setRequestError(
-    //         "Payment verification failed. Please contact support."
-    //       );
-    //     }
-    //   },
-    //   prefill: {
-    //     name,
-    //     email,
-    //     contact,
-    //   },
-    //   notes: {
-    //     orderId: razorpayOrder.id,
-    //   },
-    //   theme: {
-    //     color: "#3399cc", // Customize the theme color
-    //   },
-    // });
-    const razorpayInstance = new window.Razorpay({
-      key: "rzp_test_4zQUczgof1KSEJ", // Replace with live key in production
-      amount: 250,
-      currency: razorpayOrder.currency,
-      order_id: razorpayOrder.id, // Pass the correct order ID
-      name: "Your Business Name",
-      description: "Purchase Description",
-      image: "https://your-website.com/logo.png", // Replace with your logo
-      handler: async (response) => {
-        console.log("Payment Successful:", response);
-        // Handle backend verification here
-      },
-      prefill: {
-        name,
-        email,
-        contact,
-      },
-      theme: {
-        color: "#3399cc",
-      },
-    });
-
-    // Open Razorpay checkout
-    razorpayInstance.open();
+    setCreatedOrderData(customerOrderData.orderDetails);
   } catch (error) {
     console.error("Razorpay Checkout Error:", error);
     setRequestError(error.message || "An unexpected error occurred.");
