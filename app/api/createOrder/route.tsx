@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
     amount: amount,
     currency: currency,
     receipt: "rcp1",
+    payment_capture: 0, // Set to 0 for manual capture
   };
   const order = await razorpay.orders.create(options);
   console.log(order);

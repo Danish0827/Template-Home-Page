@@ -144,15 +144,6 @@ const CheckoutForm = ({ countriesData }) => {
         setIsOrderProcessing,
         setCreatedOrderData
       );
-
-      console.log(createdOrderData, "createdOrderData danish main");
-      if (createdOrderData?.orderDetails?.orderDetails?.id) {
-        window.location.href = `${process.env.NEXT_PUBLIC_SITE_URL}/thank-you?orderId=${createdOrderData.orderDetails.orderDetails.id}`;
-
-        return;
-      } else {
-        console.error("Failed to redirect: No valid order details.");
-      }
       return null;
     }
 

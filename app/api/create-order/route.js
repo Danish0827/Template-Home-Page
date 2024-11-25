@@ -25,7 +25,7 @@ export async function POST(req) {
     return new Response(JSON.stringify(responseData), { status: 400 });
   }
 
-  body.status = "pending";
+  body.status = body.payment_method == "cod" ? "pending" : "failed";
   body.set_paid = false;
 
   try {

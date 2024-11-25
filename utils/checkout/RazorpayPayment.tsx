@@ -59,9 +59,9 @@ export const RazorpayPayment = async ({
     }
 
     const options = {
-      key: "rzp_test_4zQUczgof1KSEJ", // Use your Razorpay API key
-      amount: amount * 100, // Amount in paise
-      currency: "INR",
+      key: "rzp_test_4zQUczgof1KSEJ", // Replace with your actual Razorpay key
+      amount: amount * 100,
+      currency: currency,
       name,
       description: "Payment description",
       order_id: createdOrderId,
@@ -73,32 +73,58 @@ export const RazorpayPayment = async ({
       theme: {
         color: "#3399cc",
       },
-      // handler: async (response: any) => {
-      //   const dataRes = {
-      //     orderCreationId: createdOrderId,
-      //     razorpayPaymentId: response.razorpay_payment_id,
-      //     razorpayOrderId: response.razorpay_order_id,
-      //     razorpaySignature: response.razorpay_signature,
-      //   };
+      handler: async (response: any) => {
+        const dataRes = {
+          orderCreationId: createdOrderId,
+          razorpayPaymentId: response.razorpay_payment_id,
+          razorpayOrderId: response.razorpay_order_id,
+          razorpaySignature: response.razorpay_signature,
+        };
 
-      //   // Send the payment data to your backend for verification
-      //   const result = await fetch("/api/verify", {
-      //     method: "POST",
-      //     body: JSON.stringify(dataRes),
-      //     headers: { "Content-Type": "application/json" },
-      //   });
+        try {
+          // Verify payment signature
+          const verifyRes = await fetch("/api/verify", {
+            method: "POST",
+            body: JSON.stringify(dataRes),
+            headers: { "Content-Type": "application/json" },
+          });
 
-      //   const res = await result.json();
-      //   if (res.isOk) {
-      //     await sendDatatoDb(dataRes);
-      //     alert("Payment Success");
-      //     window.location.href =
-      //       "https://chat.whatsapp.com/HW7sCTqD31ALYKEj6DKPoV";
-      //   } else {
-      //     alert(res.message);
-      //     return { success: false, message: res.message };
-      //   }
-      // },
+          const verifyData = await verifyRes.json();
+
+          if (verifyData.isOk) {
+            // Capture the payment manually
+            const captureRes = await fetch("/api/capturePayment", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                paymentId: response.razorpay_payment_id,
+                amount: amount * 100,
+                currency: currency,
+              }),
+            });
+
+            const captureData = await captureRes.json();
+            if (captureRes.ok && captureData.success) {
+              // Update order status to 'completed'
+              await updateOrderStatuss(orderId);
+
+              // alert("Payment captured successfully and order status updated!");
+              localStorage.removeItem("next-cart");
+              window.location.href = `${process.env.NEXT_PUBLIC_SITE_URL}/thank-you?orderId=${orderId}`;
+            } else {
+              // alert("Failed to update order status.");
+              alert(captureData.message || "Payment capture failed.");
+            }
+          } else {
+            alert(verifyData.message || "Payment verification failed.");
+          }
+        } catch (err) {
+          console.error("Handler error:", err);
+          alert("An error occurred. Please try again.");
+        }
+      },
     };
 
     // Initialize Razorpay
@@ -116,59 +142,36 @@ export const RazorpayPayment = async ({
   }
 };
 
-export const sendDatatoDb = async (createResponse: any) => {
-  const data = localStorage.getItem("formdata");
+const updateOrderStatuss = async (orderId: any) => {
+  const data = {
+    status: "completed",
+    set_paid: true,
+  };
 
-  if (data) {
-    const parsedData = JSON.parse(data); // Parse the data from localStorage
+  const encodedCredentials = btoa(
+    `${process.env.WC_CONSUMER_KEY}:${process.env.WC_CONSUMER_SECRET}`
+  );
 
-    const formdata = {
-      ...parsedData, // Spread the parsed data into the formdata object
-      payment_id: createResponse.razorpayPaymentId,
-      payment_obj: JSON.stringify(createResponse),
-      payment_amount: 500,
-      payment_mode: "Razorpay",
-      payment_status: "Paid",
-      insert: true,
-    };
-
-    try {
-      // TO DO: Implement API call to check availability
-      const res = await fetch(
-        `${process.env.ADMINURL}/api/addNewConsultRecord`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formdata),
-        }
-      );
-
-      const resData = await res.json();
-
-      // Clear localStorage if the request was successful
-      if (res.ok) {
-        return { success: true, data: resData };
-      } else {
-        return {
-          success: false,
-          message: "Failed to send data to the server:",
-        };
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wc/v3/orders/${orderId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Basic ${encodedCredentials}`,
+        },
+        body: JSON.stringify(data),
       }
+    );
 
-      // You can now send `formdata` to your server or perform any other operations with it.
-    } catch (error) {
-      return {
-        success: false,
-        message: "Failed to send data to the server:",
-      };
+    if (!response.ok) {
+      throw new Error(`HTTP status ${response.status}`);
     }
-  } else {
-    console.error('No data found in localStorage with key "formdata"');
-    return {
-      success: false,
-      message: 'No data found in localStorage with key "formdata"',
-    };
+
+    const responseData = await response.json();
+    console.log("Order updated:", responseData);
+  } catch (error) {
+    console.error("Error updating order:", error);
   }
 };
