@@ -1,6 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
-import { siyafySlider } from "@/lib/headerData";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
@@ -8,7 +7,29 @@ import "swiper/css";
 import "./styles.css";
 
 export default function App() {
-  const { IsSlider, Slider } = siyafySlider;
+  const [sliderData, setSliderData] = useState([]);
+
+  // Fetch data from the API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://bovinosbck.demo-web.live/wp-json/wp/v2/main-banner?_fields=meta.image"
+        );
+        const data = await response.json();
+        // Map the images from the API response
+        const images = data.map((item: any) => ({
+          image: item.meta.image,
+        }));
+        setSliderData(images);
+      } catch (error) {
+        console.error("Error fetching slider data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <Swiper
@@ -19,9 +40,9 @@ export default function App() {
         loop={true}
         className="mySwiper cursor-grab p-0"
       >
-        {Slider.map((media, index) => (
+        {sliderData.map((media: any, index) => (
           <SwiperSlide
-            key={`${media.id}-${index}`} // Combines id and index as a fallback
+            key={`${index}`} // Use index as key if id is not available
             style={{ padding: "0" }}
             className="p-0"
           >
@@ -29,7 +50,7 @@ export default function App() {
               <img
                 className="banner_embla__slide__img"
                 src={media.image}
-                alt="Your alt text"
+                alt={`Slide ${index + 1}`}
               />
             </div>
           </SwiperSlide>

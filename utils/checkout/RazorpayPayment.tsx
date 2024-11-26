@@ -111,6 +111,9 @@ export const RazorpayPayment = async ({
               await updateOrderStatuss(orderId);
 
               // alert("Payment captured successfully and order status updated!");
+              localStorage.setItem("x-wc-session", JSON.stringify(null));
+              console.log("x-wc-session");
+
               localStorage.removeItem("next-cart");
               window.location.href = `${process.env.NEXT_PUBLIC_SITE_URL}/thank-you?orderId=${orderId}`;
             } else {
