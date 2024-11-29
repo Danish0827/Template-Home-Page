@@ -69,10 +69,10 @@ const Login = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-lg rounded-lg px-8 py-14 w-1/3">
         <div className="flex items-center justify-center mb-4">
-          <a href="https://www.cottonculture.co.in">
+          <a href="/">
             <img
               alt="logo"
-              src="https://cdn.shopify.com/s/files/1/0883/8204/6526/files/coooo-280x280_200x60@2x.webp?v=1721391526.webp"
+              src="https://bovinosbck.demo-web.live/wp-content/uploads/2024/11/images-e1732688867572.jpeg"
               className="w-32 h-auto"
             />
           </a>
