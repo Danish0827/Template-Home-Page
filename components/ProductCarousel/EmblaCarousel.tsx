@@ -63,6 +63,11 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
           ))}
         </div>
       </div> */}
+      <div>
+        <h3 className="text-templatePrimaryHeading text-2xl md:text-3xl lg:text-4xl text-center py-2">
+          Best Sellers
+        </h3>
+      </div>
 
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container p-2 items-center">
@@ -105,13 +110,13 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
               </div>
             </div>
           ))}
-          <div  className="embla__slide rounded-lg">
+          <div className="embla__slide rounded-lg">
             <div className="text-center flex justify-center items-center mt-16">
               <a
                 href="/collections/kurtas"
                 className="bg-black -mt-20 text-white py-3 px-6 hover:bg-zinc-800"
               >
-                View All <br/> 
+                View All <br />
                 250 Products
               </a>
             </div>

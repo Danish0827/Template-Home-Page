@@ -39,34 +39,57 @@ const ProductPart = ({ params }: any) => {
 
     fetchProducts();
   }, []);
+  const [categories, setCategories] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-categories?slug=${params}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+        const data = await response.json();
+        // console.log(data, "categories danish");
+        // return;
+
+        if (data.success) {
+          setCategories(data.categories[0]); // Assuming categories is an array of your Category objects
+        } else {
+          throw new Error(data.error || "No categories found");
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
   return (
     <>
       {products && (
         <div className="page-width page-width--flush-small py-16 px-3 md:px-6 lg:px-10">
           <div className="pb-5">
-            <h3 className="text-xl md:text-2xl lg:text-3xl pb-4">
-              Best Sellers
+            <h3 className="text-templatePrimaryHeading text-xl md:text-2xl lg:text-3xl pb-3 font-bold">
+              {categories.name}
             </h3>
-            <p className={`text-lg ${isExpanded ? "" : "line-clamp-2"}`}>
-              Short kurtas and kurtis make an excellent fashion choice for women
-              and girls as they are versatile as well as stylish in their
-              appearance. These designs feature cuts that are modern such as
-              A-line styles and most of them are below knee length. The short
-              kurtis and tunics can be worn for any occasion from the office to
-              the festive occasions and can be coordinated with your favorite
-              pair of leggings, palazzos, or jeans in order to achieve looks
-              that will make you look and feel good. Made of different knitting
-              materials such as cotton, silk, rayons and constructed in various
-              colors and patterns, these could suit every woman's taste.
-              <span
-                onClick={toggleReadMore}
-                className="text-blue-700 text-lg font-semibold hover:text-blue-800 underline pl-2 cursor-pointer"
-              >
-                {isExpanded ? "Read less" : ""}
-              </span>
-            </p>
-            {isExpanded === false && (
+            {categories.description && (
+              <p className={`text-templatePrimaryText ext-lg ${isExpanded ? "" : "line-clamp-2"}`}>
+                {categories.description}
+                <span
+                  onClick={toggleReadMore}
+                  className="text-blue-700 text-lg font-semibold hover:text-blue-800 underline pl-2 cursor-pointer"
+                >
+                  {isExpanded ? "Read less" : ""}
+                </span>
+              </p>
+            )}
+            {isExpanded === false && categories.description !== "" && (
               <span
                 onClick={toggleReadMore}
                 className="text-blue-700 text-lg font-semibold hover:text-blue-800 underline pl-2 cursor-pointer"
@@ -81,10 +104,7 @@ const ProductPart = ({ params }: any) => {
           {Array.isArray(products) && products.length > 0 && (
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
               {products.map((product: Product) => (
-                <div
-                  key={product.id}
-                  className="rounded-lg border shadow-md"
-                >
+                <div key={product.id} className="rounded-lg border shadow-md">
                   <div className="relative">
                     <img
                       className="w-full h-auto rounded-t-lg"

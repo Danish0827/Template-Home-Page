@@ -18,10 +18,10 @@ const TextWithIcons = () => {
                 className="w-24  mx-auto"
               />
             </div>
-            <div className="text-center text-3xl pb-2">
+            <div className="text-center text-templatePrimaryHeading text-3xl pb-2">
               <h3>{item.title}</h3>
             </div>
-            <div className="text-center text-xl">
+            <div className="text-center text-templatePrimaryText text-xl">
               <p>{item.text}</p>
             </div>
           </div>

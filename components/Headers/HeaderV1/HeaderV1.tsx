@@ -10,6 +10,7 @@ import SearchBar from "./SearchBar";
 import { GrClose } from "react-icons/gr";
 import TopHeader from "./TopHeader";
 import { useScroll } from "framer-motion";
+import Link from "next/link";
 const HeaderV1 = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -46,11 +47,13 @@ const HeaderV1 = () => {
           <div className="px-4 lg:px-10 flex items-center justify-between">
             {/* Logo */}
             <div className="w-full flex items-center">
-              <img
-                src={headers.logo}
-                alt="logo"
-                className="h-[60px] w-auto object-contain"
-              />
+              <Link href="/">
+                <img
+                  src={headers.logo}
+                  alt="logo"
+                  className="h-[70px] w-auto object-contain"
+                />
+              </Link>
             </div>
             {/* -----------------DESKTOP MENU-------------- */}
             <div className="templateContainer hidden lg:block">
@@ -59,13 +62,15 @@ const HeaderV1 = () => {
             {/* Account and Cart Icons */}
             <div className="w-full flex items-center justify-end gap-2 xl:gap-5">
               <div>
-                <Image
-                  className="cursor-pointer hover:scale-110 transition-all ease-linear hidden lg:block"
-                  height={23}
-                  width={23}
-                  src="/svgs/account.svg"
-                  alt="account"
-                />
+                <Link href="/account/orders">
+                  <Image
+                    className="cursor-pointer hover:scale-110 transition-all ease-linear "
+                    height={23}
+                    width={23}
+                    src="/svgs/account.svg"
+                    alt="account"
+                  />
+                </Link>
               </div>
               <div className="">
                 <Image
@@ -80,7 +85,7 @@ const HeaderV1 = () => {
               <div className="lg:hidden" onClick={toggleMobileMenu}>
                 <Image
                   height={23}
-                  className="cursor-pointer hover:scale-110 transition-all ease-linear"
+                  className="text-templatePrimary cursor-pointer hover:scale-110 transition-all ease-linear"
                   width={23}
                   src="/svgs/menu.svg"
                   alt="menu"
@@ -97,13 +102,15 @@ const HeaderV1 = () => {
             }`}
           >
             <div className="flex items-center justify-between p-4">
-              <img
-                src={headers.logo}
-                alt="logo"
-                height={100}
-                width={200}
-                className="h-[50px] w-auto object-contain"
-              />
+              <Link href="/">
+                <img
+                  src={headers.logo}
+                  alt="logo"
+                  height={100}
+                  width={200}
+                  className="h-[50px] w-auto object-contain"
+                />
+              </Link>
               <Image
                 onClick={toggleMobileMenu}
                 className="cursor-pointer hover:scale-110 transition-all ease-linear"

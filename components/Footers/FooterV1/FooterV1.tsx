@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Input } from "antd";
@@ -20,6 +20,30 @@ const FooterV1 = () => {
     setSearchValue(e.target.value);
   };
 
+  const [footerData, setFooterData] = useState<any[]>([]);
+
+  // Fetch the data inside useEffect
+  useEffect(() => {
+    const fetchFooterData = async () => {
+      try {
+        const response = await fetch(
+          "https://bovinosbck.demo-web.live/wp-json/wp/v2/sitefooter?_fields=id,meta.tick-to-show-on-site,title,meta.pages-name"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        console.log(data, "footer data");
+
+        setFooterData(data); // Set the fetched data to state
+      } catch (error) {
+        console.error("Error fetching footer data:", error);
+      }
+    };
+
+    fetchFooterData();
+  }, []);
+
   return (
     <footer className="bg-white text-gray-800 border-t pt-5">
       <div className="px-4 pt-10 pb-5 mx-auto sm:px-6 lg:px-12 space-y-8">
@@ -32,7 +56,7 @@ const FooterV1 = () => {
               alt=""
             />
             {headers.content && (
-              <p className="mt-5 text-base font-medium text-justify">
+              <p className="text-templatePrimaryText mt-5 text-base font-medium text-justify">
                 {headers.content}
               </p>
             )}
@@ -44,37 +68,53 @@ const FooterV1 = () => {
               headers.content ? "xl:ml-0" : "xl:-ml-40"
             }`}
           >
-            {quickLinks.map((item) => (
-              <div key={item.linksHeading} className="space-y-2">
-                <p className="font-bold text-xl">{item.linksHeading}</p>
-                <div className="w-20 h-0.5 bg-primary rounded-full"></div>
-                <ul className="flex flex-col mt-4 space-y-2 text-base">
-                  {item.links.map((linkItem) => (
-                    <li key={linkItem.id}>
-                      <Link
-                        className="flex items-center hover:text-primary gap-1 hover:ml-1 duration-200"
-                        href={`/${linkItem.url}`}
-                      >
-                        <ArrowRight size={16} />
-                        <span>{linkItem.heading}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            {footerData
+              .slice()
+              .reverse()
+              .map((item) => (
+                <div key={item.id} className="space-y-2">
+                  <p className="text-templatePrimaryHeading font-bold text-xl">
+                    {item.title.rendered}{" "}
+                    {/* Use the appropriate path if applicable */}
+                  </p>
+                  <div className="w-20 h-0.5 bg-primary rounded-full"></div>
+                  <ul className="flex flex-col mt-4 space-y-2 text-base">
+                    {Object.values(item.meta["pages-name"] || {}).map(
+                      (linkItem: any, index) => (
+                        <li key={index}>
+                          <Link
+                            className="flex items-center hover:text-templatePrimary gap-2 hover:ml-1 duration-200"
+                            href={`/${linkItem["page-slug"]}`} // Update to the correct path for URLs
+                          >
+                            <ArrowRight
+                              className="text-templatePrimary"
+                              size={16}
+                            />
+                            <span className="text-templatePrimaryText hover:text-templatePrimary">
+                              {linkItem["page-title"]}{" "}
+                              {/* Update to the correct property for the heading */}
+                            </span>
+                          </Link>
+                        </li>
+                      )
+                    )}
+                  </ul>
+                </div>
+              ))}
 
             {/* Contact Info Section */}
             {contactInfo.IscontactInfo && (
               <div className="space-y-2">
-                <p className="font-bold text-xl">
+                <p className="text-templatePrimaryHeading font-bold text-xl">
                   {contactInfo.contactInfoName}
                 </p>
                 <div className="w-20 h-0.5 bg-primary rounded-full"></div>
                 <div className="space-y-3 mt-4 text-sm">
                   {contactInfo.IsSubscribe && (
                     <div>
-                      <p className="text-xs">{contactInfo.subscribe}</p>
+                      <p className="text-templatePrimaryText text-xs">
+                        {contactInfo.subscribe}
+                      </p>
                       <Input
                         suffix={<TfiEmail className="text-xl" />}
                         className="bg-white hover:bg-white focus-within:border-black focus-within:shadow-none focus-within:bg-white border-black border-solid border-b-2 border-x-0 border-t-0 my-3 rounded-none outline-none"

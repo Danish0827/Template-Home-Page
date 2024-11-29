@@ -8,7 +8,6 @@ import Slider from "@/components/Sliders/SlidersV1/Slider";
 import ShopByCategory from "@/components/Category/ShopByCategory";
 import HomeBannerV2 from "@/components/BannersComp/HomeBannerV2";
 import TextWithIcons from "@/components/ProcessType/TextWithIcons";
-import ColorPallete from "@/components/Pallete/ColorPallete";
 import HeaderV1 from "@/components/Headers/HeaderV1/HeaderV1";
 import FooterV1 from "@/components/Footers/FooterV1/FooterV1";
 // import Slider from "@/components/Sliders/SlidersV2/Slider";
@@ -20,7 +19,6 @@ const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
 const Homepage = () => {
   return (
     <>
-      <ColorPallete />
       <HeaderV1 />
       <Slider />
       <ShopByCategory />

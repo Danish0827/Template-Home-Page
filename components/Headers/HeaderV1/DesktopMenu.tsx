@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { menuItem } from "@/lib/MenuItem";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -24,7 +24,7 @@ const DesktopMenu = () => {
             }}
           >
             <Link
-              className="text-sm lg:text-xs xl:text-sm tracking-wide flex items-center gap-0.5 px-4 capitalize text-templateText"
+              className="text-sm lg:text-xs xl:text-sm tracking-wide font-bold flex items-center gap-0.5 px-4 capitalize text-templatePrimaryText hover:text-templatePrimary"
               href={item.url}
             >
               {item.name}
@@ -46,7 +46,7 @@ const DesktopMenu = () => {
                     >
                       <Link
                         href={dropdownItem.url}
-                        className="text-sm flex items-center justify-between hover:text-templatePrimary py-2 hover:pl-0.5 transition-all ease-linear text-templateText"
+                        className="text-sm flex items-center justify-between py-2 hover:pl-0.5 transition-all ease-linear text-templatePrimaryText hover:text-templatePrimary"
                       >
                         {dropdownItem.name}
                         {/* Indicate sub-menu exists */}
@@ -63,7 +63,7 @@ const DesktopMenu = () => {
                                   <li key={subIndex}>
                                     <Link
                                       href={subItem.url}
-                                      className="text-sm block hover:text-templatePrimary py-2 hover:pl-0.5 transition-all ease-linear text-templateText"
+                                      className="text-sm block py-2 hover:pl-0.5 transition-all ease-linear text-templatePrimaryText hover:text-templatePrimary"
                                     >
                                       {subItem.name}
                                     </Link>
@@ -90,7 +90,7 @@ const DesktopMenu = () => {
               >
                 <div className="bg-white mt-5 templateContainer mx-auto shadow-lg py-6 w-full left-0">
                   <div className={`grid grid-cols-5`}>
-                  {/* ${item.megamenu.length} */}
+                    {/* ${item.megamenu.length} */}
                     {item.megamenu.map((submenu, submenuIndex) => (
                       <div key={submenuIndex} className=" space-y-4">
                         <h4 className="text-templatePrimary font-medium">

@@ -23,7 +23,7 @@ const AddCart = () => {
         />
       </div>
       <Drawer
-        title={<p className="text-4xl p-3">Cart</p>}
+        title={<p className="text-4xl p-3 text-templatePrimary">Cart</p>}
         width={520}
         placement="right"
         onClose={onClose}

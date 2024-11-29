@@ -37,7 +37,7 @@ const CartFooter = ({ totalFinalPrice }: any) => {
         <div className="gokwik-checkout">
           <button
             type="button"
-            className="button w-full bg-black hover:bg-zinc-900 text-white font-semibold py-3 px-6 rounded-lg transition-all ease-in-out duration-300 flex justify-between items-center"
+            className="button w-full bg-templatePrimary hover:bg-templatePrimaryLight text-white font-semibold py-3 px-6 rounded-lg transition-all ease-in-out duration-300 flex justify-between items-center"
             onClick={onCheckoutClick}
           >
             <span className="btn-text flex items-center space-x-2">

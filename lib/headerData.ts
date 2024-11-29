@@ -94,7 +94,7 @@ const headerIcons = {
 
 const headers = {
   brandName: "SagarTech",
-  logo: "https://www.cottonculture.co.in/cdn/shop/files/Cotton_Culture_logo_1_3.jpg?v=1722679086&width=150",
+  logo: "https://bovinosbck.demo-web.live/wp-content/uploads/2024/11/images-e1732688867572.jpeg",
   content:
     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
   // navbar: [
