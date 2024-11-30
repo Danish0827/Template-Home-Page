@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaRegUserCircle } from "react-icons/fa";
 import { MdKeyboardArrowDown } from "react-icons/md";
@@ -9,8 +9,21 @@ import { Avatar, Dropdown, Menu } from "antd";
 import { IoStorefrontOutline } from "react-icons/io5";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
+import { useRouter } from "next/navigation";
+import { notification } from "antd";
 
 const CustomerHeader = () => {
+  const router = useRouter();
+
+  // Redirect if auth cookie exists
+  useEffect(() => {
+    const authCookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("auth="));
+    if (!authCookie) {
+      router.push("/login");
+    }
+  }, [router]);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const logo =
@@ -25,6 +38,21 @@ const CustomerHeader = () => {
       href: "/account/profile",
     },
   ];
+
+  const handleLogout = () => {
+    // Remove the 'auth' cookie
+    document.cookie = "auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "user_g=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    // Display success notification
+    notification.success({
+      message: "Logged Out",
+      description: "You have successfully logged out.",
+      duration: 3,
+    });
+
+    // Redirect to the login page
+    window.location.href = "/login";
+  };
 
   const accountMenu = (
     <Menu>
@@ -47,7 +75,7 @@ const CustomerHeader = () => {
           </li>
           <li>
             <button
-              onClick={() => alert("Logged out")}
+              onClick={handleLogout}
               className="w-full flex items-center gap-1 text-left px-4 py-2 text-templatePrimaryText hover:bg-gray-100"
             >
               <IoMdLogOut className="text-xl" />
@@ -60,7 +88,7 @@ const CustomerHeader = () => {
   );
 
   return (
-    <header className="bg-gray-100 p-4 shadow-md">
+    <header className="bg-gray-100 p-4 shadow-lg">
       <div className="container mx-auto flex justify-between items-center">
         {/* Hamburger Menu for Mobile */}
         <div className="md:hidden">
@@ -162,7 +190,7 @@ const CustomerHeader = () => {
                 <p>s.danish@gamil.com</p>
               </div>
               <button
-                onClick={() => alert("Logged out")}
+                onClick={handleLogout}
                 className="w-full flex items-center gap-4 text-left px-5 py-2 text-templatePrimaryText hover:bg-gray-100"
               >
                 <IoMdLogOut className="text-xl" />

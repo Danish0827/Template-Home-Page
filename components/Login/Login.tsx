@@ -1,28 +1,44 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { notification } from "antd";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [generatedOtp, setGeneratedOtp] = useState(null);
   const [step, setStep] = useState(1); // 1: Email input, 2: OTP confirmation
+  const [isSending, setIsSending] = useState(false); // Disable button while sending OTP
   const router = useRouter();
+
+  // Redirect if auth cookie exists
+  useEffect(() => {
+    const authCookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("auth="));
+    if (authCookie) {
+      router.push("/account/orders");
+    }
+  }, [router]);
 
   const generateOtp = () => {
     const otp: any = Math.floor(100000 + Math.random() * 900000).toString(); // Generate random 6-digit OTP
     const enhancedOtp = `258${otp}963`; // Add prefix and suffix
     localStorage.setItem("otp", enhancedOtp); // Store in localStorage
-    console.log("Generated OTP (for testing):", otp); // Log OTP for testing
     return otp;
   };
 
   const sendOtp = async (e: any) => {
     e.preventDefault();
-    if (!email) return alert("Email is required");
+    if (!email)
+      return notification.error({
+        message: "Email is required",
+        description: `Please enter valid Email`,
+        duration: 3,
+      });
 
+    setIsSending(true); // Disable the button
     const otp = generateOtp();
-    console.log(email, otp, "dasdsa");
 
     try {
       const response = await fetch("/api/send-otp", {
@@ -32,15 +48,29 @@ const Login = () => {
       });
 
       if (response.ok) {
-        alert(`OTP sent to ${email}`);
+        notification.success({
+          message: "OTP sent",
+          description: `OTP sent to ${email}`,
+          duration: 3,
+        });
         setGeneratedOtp(otp); // Save OTP locally for confirmation
         setStep(2); // Move to OTP confirmation step
       } else {
-        alert("Failed to send OTP. Please try again.");
+        notification.error({
+          message: "Failed",
+          description: `Error sending OTP. Please try again.`,
+          duration: 3,
+        });
       }
     } catch (error) {
-      console.error("Error sending OTP:", error);
-      alert("Error sending OTP. Please try again.");
+      // console.error("Error sending OTP:", error);
+      notification.error({
+        message: "Failed",
+        description: `Error sending OTP. Please try again.`,
+        duration: 3,
+      });
+    } finally {
+      setIsSending(false); // Re-enable the button
     }
   };
 
@@ -51,17 +81,34 @@ const Login = () => {
     const originalOtp = storedOtp?.substring(3, 9); // Extract the original OTP
 
     if (otp === originalOtp) {
-      alert("OTP confirmed! Logging in...");
-
+      notification.success({
+        message: "Success!",
+        description: `OTP confirmed! Logging in...`,
+        duration: 3,
+        showProgress: true,
+      });
       // Clear OTP from localStorage
       localStorage.removeItem("otp");
 
       // Create a cookie (example cookie creation)
-      document.cookie = `auth=true; path=/; max-age=3600*24;`; // Cookie valid for 1 hour
+      document.cookie = `auth=true; path=/; max-age=3600*24;`; // Cookie valid for 1 day
+
+      // Process email
+      let modifiedEmail = email.replace("@gmail.com", ""); // Remove @gmail.com
+      modifiedEmail = `alhgga-${modifiedEmail}-vsstaa`; // Add prefix and suffix
+
+      // Set the modified email as a cookie with no expiration
+      document.cookie = `user_g=${modifiedEmail}; path=/;`;
+
+      console.log("Cookie set:", `user_g=${modifiedEmail}`);
       // Navigate to home page
-      router.push("/");
+      router.push("/account/orders");
     } else {
-      alert("Invalid OTP. Please try again.");
+      notification.error({
+        message: "Invalid OTP",
+        description: `Invalid OTP. Please try again.`,
+        duration: 3,
+      });
     }
   };
 
@@ -109,9 +156,10 @@ const Login = () => {
 
               <button
                 type="submit"
-                className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-400"
+                disabled={isSending}
               >
-                Send OTP
+                {isSending ? "Sending..." : "Send OTP"}
               </button>
             </form>
           </>
