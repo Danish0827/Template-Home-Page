@@ -96,46 +96,62 @@ const CustomerSingleOrder = ({ params }: any) => {
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-              <thead className="bg-gray-100 border-b">
-                <tr>
-                  <th className="text-left py-2 px-4 text-gray-700 font-semibold">
-                    Image
-                  </th>
-                  <th className="text-left py-2 px-4 text-gray-700 font-semibold">
-                    Product Name
-                  </th>
-                  <th className="text-left py-2 px-4 text-gray-700 font-semibold">
-                    Price
-                  </th>
-                  <th className="text-left py-2 px-4 text-gray-700 font-semibold">
-                    Quantity
-                  </th>
-                  <th className="text-left py-2 px-4 text-gray-700 font-semibold">
-                    Subtotal
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+              <div className="">
                 {orders.line_items.map((item: any) => (
-                  <tr key={item.id} className="border-b hover:bg-gray-50">
-                    <td className="py-2 px-4">
+                  <div
+                    key={item.id}
+                    className="flex flex-col lg:flex-row items-start bg-white overflow-hidden border-b duration-300"
+                  >
+                    {/* Image Section */}
+                    <div className="w-full lg:w-1/4">
                       <img
                         src={item.image?.src || "/placeholder-image.png"}
-                        alt={item.name}
-                        className="h-12 w-12 object-cover rounded-lg border border-gray-200"
+                        alt={item.parent_name}
+                        className="w-full h-auto object-cover border-b lg:border-b-0 lg:border-r border-gray-200"
                       />
-                    </td>
-                    <td className="py-2 px-4 font-medium text-gray-800">
-                      {item.name}
-                    </td>
-                    <td className="py-2 px-4 text-gray-600">₹{item.price}</td>
-                    <td className="py-2 px-4 text-gray-600">{item.quantity}</td>
-                    <td className="py-2 px-4 text-gray-600">
-                      ₹{item.subtotal}
-                    </td>
-                  </tr>
+                    </div>
+
+                    {/* Details Section */}
+                    <div className="flex flex-col flex-grow p-6">
+                      {/* Product Name */}
+                      <a
+                        href={item?.link}
+                        className="text-lg lg:text-2xl font-semibold text-gray-800 hover:text-gray-600 transition-colors duration-200"
+                      >
+                        {item.name}
+                      </a>
+
+                      {/* Metadata */}
+                      <div className="mt-4 space-y-2">
+                        {item.meta_data.map((meta: any) => (
+                          <p
+                            key={meta.id}
+                            className="text-sm lg:text-base text-gray-700"
+                          >
+                            <b>{meta.display_key}:</b> {meta.display_value}
+                          </p>
+                        ))}
+
+                        {/* Quantity */}
+                        <p className="text-sm lg:text-base text-gray-700 font-semibold">
+                          Quantity:{" "}
+                          <span className="font-medium">{item.quantity}</span>
+                        </p>
+
+                        {/* Price */}
+                        <p className="text-lg font-semibold text-gray-800">
+                          Price: Rs. {parseFloat(item.total).toFixed(2)}
+                        </p>
+
+                        {/* Subtotal */}
+                        <p className="text-lg text-gray-900 font-bold mt-2">
+                          Subtotal: Rs. {parseFloat(item.subtotal).toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 ))}
-              </tbody>
+              </div>
             </table>
           </div>
         )}
