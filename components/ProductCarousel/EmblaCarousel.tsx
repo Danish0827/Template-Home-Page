@@ -49,9 +49,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3000/api/get-products?featured=true"
-        );
+        const response = await fetch("/api/get-products?featured=true");
         const data = await response.json();
         if (data.success) {
           setProducts(data.products);

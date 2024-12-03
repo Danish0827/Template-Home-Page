@@ -9,7 +9,7 @@ const Product = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/get-products?featured=true"
+          `/api/get-products?featured=true`
         );
         const data = await response.json();
         if (data.success) {
@@ -93,9 +93,10 @@ const Product = () => {
       <div className="text-center mt-16">
         <a
           href="/collections/kurtas"
-          className="inline-block text-white py-3 px-8 bg-templatePrimary hover:bg-templatePrimaryLight rounded-lg shadow-md hover:shadow-lg transition"
+          className="bg-black w-40 ml-4 -mt-20 text-white py-3 px-6 hover:bg-zinc-800"
         >
-          View All
+          View All <br />
+          {products.length} Products
         </a>
       </div>
     </div>
