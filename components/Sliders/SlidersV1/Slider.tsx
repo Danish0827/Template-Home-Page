@@ -8,15 +8,33 @@ import "./styles.css";
 
 export default function App() {
   const [sliderData, setSliderData] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Fetch data from the API
+  // Determine if the user is on a mobile device
+  useEffect(() => {
+    const updateDeviceType = () => {
+      setIsMobile(window.innerWidth <= 768); // Mobile if screen width is <= 768px
+    };
+
+    updateDeviceType(); // Check on initial render
+    window.addEventListener("resize", updateDeviceType);
+
+    return () => {
+      window.removeEventListener("resize", updateDeviceType);
+    };
+  }, []);
+
+  // Fetch data from the appropriate API
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "https://bovinosbck.demo-web.live/wp-json/wp/v2/main-banner?_fields=meta.image"
-        );
+        const apiUrl = isMobile
+          ? "https://bovinosbck.demo-web.live/wp-json/wp/v2/main-banner-mobile?_fields=meta.image"
+          : "https://bovinosbck.demo-web.live/wp-json/wp/v2/main-banner?_fields=meta.image";
+
+        const response = await fetch(apiUrl);
         const data = await response.json();
+
         // Map the images from the API response
         const images = data.map((item: any) => ({
           image: item.meta.image,
@@ -28,7 +46,7 @@ export default function App() {
     };
 
     fetchData();
-  }, []);
+  }, [isMobile]); // Refetch when `isMobile` changes
 
   return (
     <>

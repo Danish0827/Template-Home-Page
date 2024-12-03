@@ -67,13 +67,13 @@ const ShopByCategory: React.FC = () => {
           {categories.map((category) => (
             <div
               key={category.id}
-              className="w-1/2 lg:w-1/4 xl:w-1/5 px-1 sm:px-3 mb-3 sm:mb-5"
+              className="w-1/2 lg:w-1/4 xxl:w-1/5 px-1 sm:px-3 mb-3 sm:mb-5"
             >
               <a
                 href={`/shop/${category.slug}`} // Adjust the link based on your routing structure
                 className="collection-item relative block group"
               >
-                <div className="collection-image overflow-hidden rounded-lg shadow-md">
+                <div className="collection-image overflow-hidden shadow-md">
                   <img
                     src={
                       category.image
@@ -84,9 +84,9 @@ const ShopByCategory: React.FC = () => {
                     className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-300 ease-in-out"
                   />
                 </div>
-                <span className="collection-item__title absolute bottom-0 left-0 right-0 text-center py-1 sm:py-2 text-templateSecondaryHeading bg-white bg-opacity-50 text-base sm:text-lg font-semibold">
+                <h6 className="w-full text-center py-2 lg:py-3 text-templateSecondaryHeading bg-white bg-opacity-50 text-base sm:text-lg font-semibold">
                   {category.name}
-                </span>
+                </h6>
               </a>
             </div>
           ))}

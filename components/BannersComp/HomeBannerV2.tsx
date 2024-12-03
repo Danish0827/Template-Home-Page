@@ -7,7 +7,7 @@ import { backgroundData } from "@/lib/headerData";
 const BackgroundMediaText = ({ data }: any) => {
   return (
     <div
-      className="background-media-text loaded aos-init aos-animate pt-12"
+      className="background-media-text loaded aos-init aos-animate pt-12 mb-28 lg:mb-0"
       data-aos="background-media-text__animation"
     >
       <div className="background-media-text__container relative flex items-center">
@@ -20,7 +20,7 @@ const BackgroundMediaText = ({ data }: any) => {
           className="image-fit background-media-text__image h-[550px] object-cover md:h-auto"
         />
 
-        <div className="absolute px-3 lg:px-10">
+        <div className="absolute px-3 lg:px-10 -bottom-28 lg:bottom-auto">
           <div className="bg-white p-4  w-full lg:w-1/2">
             <div className="animation-contents border-black border">
               <div className="background-media-text__text background-media-text__text--framed p-5">

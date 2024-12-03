@@ -40,7 +40,7 @@ const HeaderV1 = () => {
         // Add `fixed`, `top-0`, `left-0`, and `w-full` for a fixed header
         <div
           id="header"
-          className={`bg-white text-templateDark shadow-md pb-2 pt-2 md:py-4 lg:py-5 space-y-3  z-50 w-full ${
+          className={`bg-white text-templateDark shadow-md pb-2 pt-2 md:py-4 lg:py-3 space-y-3  z-50 w-full ${
             isFixed ? "fixed top-0 left-0" : "relative"
           }`}
         >
@@ -51,7 +51,7 @@ const HeaderV1 = () => {
                 <img
                   src={headers.logo}
                   alt="logo"
-                  className="h-[70px] w-auto object-contain"
+                  className="h-[90px] w-auto object-contain"
                 />
               </Link>
             </div>

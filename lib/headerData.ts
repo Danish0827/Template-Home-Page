@@ -94,7 +94,7 @@ const headerIcons = {
 
 const headers = {
   brandName: "SagarTech",
-  logo: "https://bovinosbck.demo-web.live/wp-content/uploads/2024/11/images-e1732688867572.jpeg",
+  logo: "https://bovinosbck.demo-web.live/wp-content/uploads/2024/12/shoes-logo-design-template-e21760dc27d8a44fe578b7acf2e2bad2_screen-e1733218316459.jpg",
   content:
     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
   // navbar: [
@@ -610,39 +610,38 @@ const filters = [
   },
 ];
 
+const ProductPage = [
+  {
+    src: "//www.cottonculture.co.in/cdn/shop/files/ashira-cc112-311023-light-purple-1.jpg?v=1721303387&width=1080",
+    alt: "Light Purple Georgette Flared Embroidered Kurta Pant Suit Set - 1",
+  },
+  {
+    src: "//www.cottonculture.co.in/cdn/shop/files/1j8a9778.jpg?v=1721303387&width=1080",
+    alt: "Light Purple Georgette Flared Embroidered Kurta Pant Suit Set - 2",
+  },
+  {
+    src: "//www.cottonculture.co.in/cdn/shop/files/ashira-cc112-311023-light-purple-2.jpg?v=1721303387&width=1080",
+    alt: "Light Purple Georgette Flared Embroidered Kurta Pant Suit Set - 3",
+  },
+  {
+    src: "//www.cottonculture.co.in/cdn/shop/files/ashira-cc112-311023-light-purple-3.jpg?v=1721303387&width=1080",
+    alt: "Light Purple Georgette Flared Embroidered Kurta Pant Suit Set - 4",
+  },
+];
 
+const cartData = {
+  key: "50195998212414:43dc2e987ef349a7fe32fdbfa1dc1473",
+  product: {
+    name: "Light Purple Georgette Flared Embroidered kurta Pant Suit Set",
+    size: "XS",
+    image:
+      "//www.cottonculture.co.in/cdn/shop/files/ashira-cc112-311023-light-purple-1.jpg?v=1721303387",
+    price: 1899.5,
+    link: "/products/ashira-light-purple-georgette-embroidered-suit-set?variant=50195998212414",
+  },
+  quantity: 1,
+};
 
-  const ProductPage = [
-    {
-      src: "//www.cottonculture.co.in/cdn/shop/files/ashira-cc112-311023-light-purple-1.jpg?v=1721303387&width=1080",
-      alt: "Light Purple Georgette Flared Embroidered Kurta Pant Suit Set - 1",
-    },
-    {
-      src: "//www.cottonculture.co.in/cdn/shop/files/1j8a9778.jpg?v=1721303387&width=1080",
-      alt: "Light Purple Georgette Flared Embroidered Kurta Pant Suit Set - 2",
-    },
-    {
-      src: "//www.cottonculture.co.in/cdn/shop/files/ashira-cc112-311023-light-purple-2.jpg?v=1721303387&width=1080",
-      alt: "Light Purple Georgette Flared Embroidered Kurta Pant Suit Set - 3",
-    },
-    {
-      src: "//www.cottonculture.co.in/cdn/shop/files/ashira-cc112-311023-light-purple-3.jpg?v=1721303387&width=1080",
-      alt: "Light Purple Georgette Flared Embroidered Kurta Pant Suit Set - 4",
-    },
-  ]
-
-  const cartData = {
-    key: "50195998212414:43dc2e987ef349a7fe32fdbfa1dc1473",
-    product: {
-      name: "Light Purple Georgette Flared Embroidered kurta Pant Suit Set",
-      size: "XS",
-      image: "//www.cottonculture.co.in/cdn/shop/files/ashira-cc112-311023-light-purple-1.jpg?v=1721303387",
-      price: 1899.50,
-      link: "/products/ashira-light-purple-georgette-embroidered-suit-set?variant=50195998212414"
-    },
-    quantity: 1,
-  };
-  
 export {
   topAnnouncement,
   headerMedia,
@@ -658,5 +657,5 @@ export {
   iconData,
   filters,
   ProductPage,
-  cartData
+  cartData,
 };

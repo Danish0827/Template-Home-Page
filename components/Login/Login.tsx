@@ -13,13 +13,26 @@ const Login = () => {
 
   // Redirect if auth cookie exists
   useEffect(() => {
+    // Check for auth cookie
     const authCookie = document.cookie
       .split("; ")
       .find((row) => row.startsWith("auth="));
+
     if (authCookie) {
       router.push("/account/orders");
+    } else {
+      // Restore step from localStorage
+      const savedStep = localStorage.getItem("loginStep");
+      if (savedStep) {
+        setStep(parseInt(savedStep, 10)); // Restore step from localStorage
+      }
     }
   }, [router]);
+
+  // Update localStorage whenever step changes
+  useEffect(() => {
+    localStorage.setItem("loginStep", step.toString());
+  }, [step]);
 
   const generateOtp = () => {
     const otp: any = Math.floor(100000 + Math.random() * 900000).toString(); // Generate random 6-digit OTP
@@ -88,7 +101,8 @@ const Login = () => {
         showProgress: true,
       });
       // Clear OTP from localStorage
-      localStorage.removeItem("otp");
+      localStorage.removeItem("loginStep"); // Clear login step
+      localStorage.removeItem("otp"); // Clear OTP
 
       // Create a cookie (example cookie creation)
       document.cookie = `auth=true; path=/; max-age=3600*24;`; // Cookie valid for 1 day
@@ -113,8 +127,8 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg px-8 py-14 w-1/3">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-3">
+      <div className="bg-white shadow-lg rounded-lg px-8 py-14 w-full sm:w-3/5 lg:w-1/3">
         <div className="flex items-center justify-center mb-4">
           <a href="/">
             <img

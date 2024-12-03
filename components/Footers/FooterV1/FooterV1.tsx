@@ -51,15 +51,15 @@ const FooterV1 = () => {
           {/* About Section */}
           <div>
             <img
-              className={`${headers.content ? "" : "m-auto xl:m-0"}`}
+              className={`${headers.content ? "" : "m-auto xl:m-0 w-48"}`}
               src={headers.logo}
               alt=""
             />
-            {headers.content && (
+            {/* {headers.content && (
               <p className="text-templatePrimaryText mt-5 text-base font-medium text-justify">
                 {headers.content}
               </p>
-            )}
+            )} */}
           </div>
 
           {/* Speciality Section */}

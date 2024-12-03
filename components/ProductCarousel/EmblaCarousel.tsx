@@ -1,9 +1,9 @@
 "use client";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
 import { DotButton, useDotButton } from "./EmblaCarouselDotButton";
-import { products } from "@/lib/headerData";
+// import { products } from "@/lib/headerData";
 import {
   NextButton,
   PrevButton,
@@ -43,6 +43,33 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   //   autoplay();
   // }, [autoplay]);
 
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/get-products?featured=true"
+        );
+        const data = await response.json();
+        if (data.success) {
+          setProducts(data.products);
+        }
+      } catch (error) {
+        console.error("Failed to fetch products", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return <div className="text-center py-16">Loading...</div>;
+  }
+
   return (
     <section className="embla overflow-hidden py-4 md:py-8 lg:py-12">
       {/* <div className="embla__controls">
@@ -70,54 +97,64 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
       </div>
 
       <div className="embla__viewport" ref={emblaRef}>
-        <div className="embla__container p-2 items-center">
-          {products.map((product) => (
+        <div className="embla__container p-2 ">
+          {products.map((product: any) => (
             <div key={product.id} className="embla__slide rounded-lg">
-              <div className="relative">
-                <img
-                  className="w-full h-auto"
-                  src={product.images[0].primary}
-                  alt={product.title}
-                />
-                <img
-                  className="absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-100 transition-opacity"
-                  src={product.images[0].secondary}
-                  alt={product.title}
-                />
-              </div>
+              <div className="rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white overflow-hidden">
+                <div className="relative group">
+                  <img
+                    className="w-full h-auto object-cover"
+                    src={product.images[0]?.src}
+                    alt={product.name}
+                  />
+                  {product.images[1] && (
+                    <img
+                      className="absolute top-0 left-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      src={product.images[1]?.src}
+                      alt={product.name}
+                    />
+                  )}
+                </div>
 
-              <a
-                href={product.productUrl}
-                className="mt-2 text-lg font-semibold text-center line-clamp-1"
-              >
-                {product.title}
-              </a>
-
-              <div className="text-center mt-2 font-semibold text-gray-700">
-                {product.price}
-              </div>
-
-              {/* Size Variants */}
-              <div className="flex justify-center flex-wrap mt-3 space-x-2 h-20">
-                {product.sizes.map((size, index) => (
-                  <span
-                    key={index}
-                    className="border border-gray-400 mt-2 rounded-full w-8 h-8 flex flex-wrap items-center justify-center text-sm font-medium text-gray-700"
+                <div className="p-4">
+                  <a
+                    href={product.permalink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-templateSecondaryHeading block mt-2 text-base font-semibold text-center line-clamp-2 h-[50px] hover:text-templatePrimary"
                   >
-                    {size}
-                  </span>
-                ))}
+                    {product.name}
+                  </a>
+
+                  <div className="text-templateSecondaryText text-center mt-2 font-semibold text-gray-700">
+                    ₹{product.price}
+                  </div>
+
+                  {/* Size Variants */}
+                  <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                    {product.attributes
+                      .find((attr: any) => attr.name.toLowerCase() === "size")
+                      ?.options.map((size: any, index: any) => (
+                        <span
+                          key={index}
+                          className="border border-templatePrimary mt-2 rounded-full w-8 h-8 flex items-center justify-center text-xs font-medium text-templateDark"
+                        >
+                          {size}
+                        </span>
+                      ))}
+                  </div>
+                </div>
               </div>
             </div>
           ))}
           <div className="embla__slide rounded-lg">
-            <div className="text-center flex justify-center items-center mt-16">
+            <div className="text-center flex justify-center items-center mt-16 absolute top-1/2">
               <a
                 href="/collections/kurtas"
-                className="bg-black -mt-20 text-white py-3 px-6 hover:bg-zinc-800"
+                className="bg-black w-40 ml-4 -mt-20 text-white py-3 px-6 hover:bg-zinc-800"
               >
                 View All <br />
-                250 Products
+                {products.length} Products
               </a>
             </div>
           </div>
