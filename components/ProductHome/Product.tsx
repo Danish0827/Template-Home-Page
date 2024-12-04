@@ -1,16 +1,28 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-const Product = () => {
+// Skeleton Loader Component
+const SkeletonLoader: React.FC = () => {
+  return (
+    <div className="rounded-lg shadow-lg bg-gray-200 animate-pulse overflow-hidden">
+      <div className="w-full h-56 bg-gray-300"></div>
+      <div className="p-4">
+        <div className="h-4 bg-gray-300 rounded mb-4"></div>
+        <div className="h-4 bg-gray-300 rounded w-2/3 mx-auto mb-4"></div>
+        <div className="h-4 bg-gray-300 rounded w-1/3 mx-auto"></div>
+      </div>
+    </div>
+  );
+};
+
+const Product: React.FC = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(
-          `/api/get-products?featured=true`
-        );
+        const response = await fetch("/api/get-products?featured=true");
         const data = await response.json();
         if (data.success) {
           setProducts(data.products);
@@ -26,7 +38,20 @@ const Product = () => {
   }, []);
 
   if (loading) {
-    return <div className="text-center py-16">Loading...</div>;
+    return (
+      <div className="page-width page-width--flush-small py-16">
+        <div>
+          <h3 className="text-templatePrimaryHeading text-2xl md:text-3xl lg:text-4xl text-center pb-5 font-bold">
+            Best Sellers
+          </h3>
+        </div>
+        <div className="px-4 md:px-8 lg:px-12 xl:px-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xxl:grid-cols-5 gap-6">
+          {Array.from({ length: 10 }).map((_, index) => (
+            <SkeletonLoader key={index} />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -93,10 +118,9 @@ const Product = () => {
       <div className="text-center mt-16">
         <a
           href="/collections/kurtas"
-          className="bg-black w-40 ml-4 -mt-20 text-white py-3 px-6 hover:bg-zinc-800"
+          className="inline-block text-white py-3 px-8 bg-templatePrimary hover:bg-templatePrimaryLight rounded-lg shadow-md hover:shadow-lg transition"
         >
-          View All <br />
-          {products.length} Products
+          View All
         </a>
       </div>
     </div>

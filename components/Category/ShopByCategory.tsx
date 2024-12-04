@@ -14,6 +14,17 @@ interface Category {
   image: CategoryImage | null;
 }
 
+const SkeletonLoader: React.FC = () => {
+  return (
+    <div className="w-1/2 lg:w-1/4 xxl:w-1/5 px-1 sm:px-3 mb-3 sm:mb-5">
+      <div className="collection-item relative block">
+        <div className="collection-image overflow-hidden shadow-md bg-gray-200 h-80 animate-pulse"></div>
+        <div className="w-full text-center py-2 lg:py-3 bg-gray-200 h-6 mt-2 animate-pulse"></div>
+      </div>
+    </div>
+  );
+};
+
 const ShopByCategory: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -48,7 +59,22 @@ const ShopByCategory: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Replace with a loader component if desired
+    return (
+      <div className="px-3 md:px-8 lg:px-12 xl:px-16 shop-by-category-section pt-12 bg-gray-50">
+        <div className="page-width">
+          <div className="section-header text-center mb-8">
+            <h3 className="text-templatePrimaryHeading text-2xl md:text-3xl lg:text-4xl text-center">
+              {categoriesHeading}
+            </h3>
+          </div>
+          <div className="flex flex-wrap justify-center items-center">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <SkeletonLoader key={index} />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {

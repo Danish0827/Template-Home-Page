@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import ProductDetailsCarousel from "@/components/ProductSingle/ProductDetailsCarousel";
 import Wrapper from "@/components/ProductSingle/Wrapper";
 import AddToCart from "@/components/Cart/add-to-cart";
+import SkeletonLoader from "@/components/ProductSingle/SkeletonLoader"; // Import the SkeletonLoader
 
 interface Product {
   id: number;
@@ -42,6 +43,7 @@ const ProductDetails = ({ params }: any) => {
         const fetchedProduct = data.products[0];
         setProduct(fetchedProduct);
 
+        const urlSize = params.size; // Extract size from params
         const availableSize = fetchedProduct.attributes
           .find((attr: any) => attr.name === "Size")
           ?.options.find((size: string) => {
@@ -51,10 +53,15 @@ const ProductDetails = ({ params }: any) => {
             return variant && variant.stock_status !== "outofstock";
           });
 
-        setSelectedSize(availableSize || null);
+        // Set the size based on URL parameter or default available size
+        const initialSize = urlSize && fetchedProduct.attributes
+          .find((attr: any) => attr.name === "Size")
+          ?.options.includes(urlSize) ? urlSize : availableSize;
+
+        setSelectedSize(initialSize || null);
 
         const defaultVariant = fetchedProduct.variations.find((v: any) =>
-          v.attributes.some((attr: any) => attr.option === availableSize)
+          v.attributes.some((attr: any) => attr.option === initialSize)
         );
         setSelectedVariant(defaultVariant);
       } catch (error) {
@@ -74,9 +81,7 @@ const ProductDetails = ({ params }: any) => {
   };
 
   // Render loading state if product is not yet available
-  if (!product) return <div>Loading...</div>;
-
-  // console.log(selectedVariant,"asdsa");
+  if (!product) return <SkeletonLoader />; // Show skeleton loader while loading
 
   return (
     <div className="w-full py-5 md:py-10 lg:py-16">

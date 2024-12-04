@@ -31,7 +31,7 @@ export const AppProvider = (props) => {
 
   // Show a loading message until cart data is ready
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return <div>Loading....</div>;
   }
 
   return (

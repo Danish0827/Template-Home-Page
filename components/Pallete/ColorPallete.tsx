@@ -1,4 +1,5 @@
 "use client";
+import NextTopLoader from "nextjs-toploader";
 import React, { useEffect, useState } from "react";
 
 const ColorPallete = () => {
@@ -61,7 +62,7 @@ const ColorPallete = () => {
     }
   }, [colorPalette]);
 
-  return null; // No visible UI required
+  return <NextTopLoader color={colorPalette?.primary} showSpinner={false} />; // No visible UI required
 };
 
 export default ColorPallete;
