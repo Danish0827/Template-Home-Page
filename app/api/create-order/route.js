@@ -18,7 +18,7 @@ export async function POST(req) {
   };
 
   const body = await req.json(); // Parse the JSON body from the request
-  console.log(body, "Request Body");
+  // console.log(body, "Request Body");
 
   if (isEmpty(body)) {
     responseData.error = "Required data not sent";

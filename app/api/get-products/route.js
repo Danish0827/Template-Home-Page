@@ -30,6 +30,8 @@ export async function GET(req) {
     if (slug) {
       const productResponse = await api.get("products", { slug });
       data = productResponse.data;
+      console.log(productResponse, "productResponse");
+      console.log();
 
       // Ensure a product with the slug is found
       if (data.length === 0) {

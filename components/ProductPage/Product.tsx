@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { SlEqualizer } from "react-icons/sl";
 import { IoIosArrowDown } from "react-icons/io";
 import Filter from "./Filter";
+import Link from "next/link";
 
 interface Product {
   id: number;
@@ -34,10 +35,15 @@ const ProductPart = ({ params }: any) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?categorySlug=${params}&includeVariations=true`
-        );
+        // Build the API URL conditionally
+        const apiUrl =
+          `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?` +
+          (params === "best-sellers" ? "" : `categorySlug=${params}&`) +
+          "includeVariations=true";
+
+        const response = await fetch(apiUrl);
         const data = await response.json();
+
         if (Array.isArray(data.products)) {
           setProducts(data.products);
         }
@@ -49,7 +55,7 @@ const ProductPart = ({ params }: any) => {
     };
 
     fetchProducts();
-  }, []);
+  }, [params]);
 
   const [categories, setCategories] = useState<any>([]);
   const [error, setError] = useState<string | null>(null);
@@ -91,6 +97,7 @@ const ProductPart = ({ params }: any) => {
     setSelectedVariant(variant);
   };
 
+  const star = params.replace("-", " ");
   return (
     <>
       <div className="page-width page-width--flush-small py-16 px-3 md:px-6 lg:px-10">
@@ -98,9 +105,10 @@ const ProductPart = ({ params }: any) => {
           ""
         ) : (
           <div className="pb-5">
-            <h3 className="text-templatePrimaryHeading text-xl md:text-2xl lg:text-3xl pb-3 font-bold">
-              {categories.name}
+            <h3 className="text-templatePrimaryHeading text-xl md:text-2xl lg:text-3xl pb-3 font-bold capitalize">
+              {categories.name ? categories.name : star}
             </h3>
+
             {categories.description && (
               <p
                 className={`text-templatePrimaryText ext-lg ${
@@ -116,13 +124,20 @@ const ProductPart = ({ params }: any) => {
                 </span>
               </p>
             )}
-            {isExpanded === false && categories.description !== "" && (
-              <span
-                onClick={toggleReadMore}
-                className="text-blue-700 text-lg font-semibold hover:text-blue-800 underline pl-2 cursor-pointer"
-              >
-                {isExpanded ? "" : "Read more"}
-              </span>
+
+            {params === "best-sellers" ? (
+              ""
+            ) : (
+              <>
+                {isExpanded === false && categories.description !== "" && (
+                  <span
+                    onClick={toggleReadMore}
+                    className="text-blue-700 text-lg font-semibold hover:text-blue-800 underline pl-2 cursor-pointer"
+                  >
+                    {isExpanded ? "" : "Read more"}
+                  </span>
+                )}
+              </>
             )}
           </div>
         )}
@@ -150,7 +165,7 @@ const ProductPart = ({ params }: any) => {
               {Array.isArray(products) && products.length > 0 && (
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
                   {products.map((product: Product) => (
-                    <a
+                    <Link
                       href={`/shop/${params}/product/${product.slug}?size=${selectedSize}`}
                       key={product.id}
                       className="rounded-lg border shadow-md block"
@@ -170,7 +185,7 @@ const ProductPart = ({ params }: any) => {
                         )}
                       </div>
                       <div className="p-3">
-                        <h4 className="mt-2 text-xs lg:text-lg font-semibold text-center line-clamp-1">
+                        <h4 className="mt-2 text-xs lg:text-lg font-semibold text-center line-clamp-1 text-templateSecondaryHeading hover:text-templatePrimary">
                           {product.name}
                         </h4>
                         <div className="text-center text-sm mt-2 font-semibold text-gray-700">
@@ -197,7 +212,7 @@ const ProductPart = ({ params }: any) => {
                                     !isOutOfStock &&
                                     handleSizeChange(product.id, size)
                                   }
-                                  className={`border text-xs lg:text-sm flex items-center justify-center rounded-full text-center w-8 h-8  lg:w-12 lg:h-12 font-medium cursor-pointer ${
+                                  className={`border border-templatePrimary mt-2 rounded-full w-10 h-10 flex items-center justify-center text-xs font-medium text-templateDark cursor-pointer ${
                                     selectedSize === size
                                       ? "border-black"
                                       : "border-gray-400"
@@ -213,7 +228,7 @@ const ProductPart = ({ params }: any) => {
                             })}
                         </div>
                       </div>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               )}

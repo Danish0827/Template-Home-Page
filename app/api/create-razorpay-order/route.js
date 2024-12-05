@@ -1,7 +1,7 @@
 import Razorpay from "razorpay";
 
 async function handler(req, res) {
-  console.log("Request Body:", req.body);
+  // console.log("Request Body:", req.body);
 
   // Ensure only POST method is allowed
   if (req.method !== "POST") {
@@ -14,7 +14,7 @@ async function handler(req, res) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  console.log("Request Body:", req.body);
+  // console.log("Request Body:", req.body);
 
   // Initialize Razorpay instance
   const razorpayInstance = new Razorpay({
@@ -30,7 +30,7 @@ async function handler(req, res) {
       receipt,
     });
 
-    console.log("Order Created:", order);
+    // console.log("Order Created:", order);
     res.status(200).json(order);
   } catch (error) {
     console.error("Razorpay Order Error:", error);

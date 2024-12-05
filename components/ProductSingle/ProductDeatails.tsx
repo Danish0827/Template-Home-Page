@@ -43,7 +43,17 @@ const ProductDetails = ({ params }: any) => {
         const fetchedProduct = data.products[0];
         setProduct(fetchedProduct);
 
-        const urlSize = params.size; // Extract size from params
+        // const urlSize = params.size; // Extract size from params
+        const url = window.location.href;
+
+        // Parse the URL and extract the 'size' parameter
+        const parsedUrl = new URL(url);
+        const urlSize = parsedUrl.searchParams.get("size");
+        console.log(urlSize, "urlSize");
+
+        // console.log("Current URL:", url);
+        // console.log("Size parameter:", size);
+
         const availableSize = fetchedProduct.attributes
           .find((attr: any) => attr.name === "Size")
           ?.options.find((size: string) => {
@@ -54,9 +64,13 @@ const ProductDetails = ({ params }: any) => {
           });
 
         // Set the size based on URL parameter or default available size
-        const initialSize = urlSize && fetchedProduct.attributes
-          .find((attr: any) => attr.name === "Size")
-          ?.options.includes(urlSize) ? urlSize : availableSize;
+        const initialSize =
+          urlSize &&
+          fetchedProduct.attributes
+            .find((attr: any) => attr.name === "Size")
+            ?.options.includes(urlSize)
+            ? urlSize
+            : availableSize;
 
         setSelectedSize(initialSize || null);
 
