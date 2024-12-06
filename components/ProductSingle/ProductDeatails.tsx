@@ -23,7 +23,7 @@ interface Product {
   }>;
 }
 
-const ProductDetails = ({ params }: any) => {
+const ProductDetails = ({ params, productData }: any) => {
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
@@ -42,6 +42,8 @@ const ProductDetails = ({ params }: any) => {
         const data = await res.json();
         const fetchedProduct = data.products[0];
         setProduct(fetchedProduct);
+        // console.log(fetchedProduct,"danish data sjka");
+        productData(fetchedProduct);
 
         // const urlSize = params.size; // Extract size from params
         const url = window.location.href;
@@ -186,7 +188,7 @@ const ProductDetails = ({ params }: any) => {
             />
 
             <button className="w-full py-2 bg-black text-white text-lg font-medium transition-transform active:scale-95 hover:opacity-75 mb-10 uppercase">
-              Buy it Now
+              Rate Now
             </button>
 
             {/* Product Description */}
