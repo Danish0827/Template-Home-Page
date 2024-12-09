@@ -16,7 +16,6 @@ export async function POST(req) {
     orderDetails: null,
     error: "",
   };
-
   const body = await req.json(); // Parse the JSON body from the request
   // console.log(body, "Request Body");
 
