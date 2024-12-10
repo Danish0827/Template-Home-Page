@@ -23,7 +23,9 @@ interface Product {
   }>;
 }
 
-const ProductDetails = ({ params, productData }: any) => {
+const ProductDetails = ({ params, productData, reviewsData }: any) => {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
@@ -44,6 +46,17 @@ const ProductDetails = ({ params, productData }: any) => {
         setProduct(fetchedProduct);
         // console.log(fetchedProduct,"danish data sjka");
         productData(fetchedProduct);
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-productReviews?productId=${data.products[0]?.id}&page=1&perPage=100`
+        );
+        const datas = await response.json();
+        console.log(data, "product danish ahmed");
+
+        if (data.success) {
+          setReviews(datas.reviews);
+          reviewsData(datas.reviews);
+        }
 
         // const urlSize = params.size; // Extract size from params
         const url = window.location.href;

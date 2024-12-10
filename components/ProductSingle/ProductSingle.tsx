@@ -23,13 +23,16 @@ interface Product {
 }
 const ProductSingle = ({ params }: any) => {
   const [product, setProduct] = useState<Product | null>(null);
-  const [reviews, setReviews] = useState([]);
-
+  const [reviews, setReviews1] = useState([]);
   return (
     <>
-      <ProductDetails params={params} productData={setProduct} />
-      <Reviews products={product} reviewsData={setReviews} />
-      <ReviewComponent reviews={reviews} />
+      <ProductDetails
+        params={params}
+        productData={setProduct}
+        reviewsData={setReviews1}
+      />
+      <Reviews reviews={reviews} />
+      <ReviewComponent review={reviews} product={product} />
     </>
   );
 };

@@ -15,38 +15,40 @@ const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("en-US", options);
 };
 
-const ReviewsCarousel = ({ products, reviewsData }: any) => {
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
+const ReviewsCarousel = ({ reviews }: any) => {
+  // const [reviews, setReviews] = useState([]);
+  // const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await fetch(
-          `/api/get-productReviews?productId=${products.id}&page=1&perPage=100`
-        );
-        const data = await response.json();
-        if (data.success) {
-          setReviews(data.reviews);
-          reviewsData(data.reviews);
-        }
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchReviews = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-productReviews?productId=${products?.id}&page=1&perPage=100`
+  //       );
+  //       const data = await response.json();
+  //       console.log(data,"product danish ahmed");
 
-    fetchReviews();
-  }, []);
+  //       if (data.success) {
+  //         setReviews(data.reviews);
+  //         reviewsData(data.reviews);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching reviews:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-500"></div>
-      </div>
-    );
-  }
+  //   fetchReviews();
+  // }, []);
+
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-500"></div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="p-8 bg-gradient-to-r from-gray-100 to-gray-50">
