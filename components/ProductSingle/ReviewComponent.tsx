@@ -12,14 +12,24 @@ interface Review {
 
 interface product {
   id: number;
+  // slug: string;
 }
 
 interface ReviewProps {
   review: Review[];
-  product: product[];
+  product: any;
+  render: boolean;
+  setRender: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ReviewComponent: React.FC<ReviewProps> = ({ review, product }) => {
+const ReviewComponent: React.FC<ReviewProps> = ({
+  review,
+  product,
+  render,
+  setRender,
+}) => {
+  console.log(product, "product");
+
   const [showReview, setShowReview] = useState(false);
   const handleShowReview = () => {
     setShowReview(!showReview);
@@ -36,13 +46,24 @@ const ReviewComponent: React.FC<ReviewProps> = ({ review, product }) => {
     }[]
   >([]);
   const [newReview, setNewReview] = useState({
+    product_id: product?.id,
     rating: 0,
-    name: "",
-    email: "",
-    comment: "",
-    media: null as File | null,
+    reviewer: "",
+    reviewer_email: "",
+    review: "",
+    // media: null as File | null,
   });
-
+  useEffect(() => {
+    setNewReview({
+      product_id: product?.id,
+      rating: 0,
+      reviewer: "",
+      reviewer_email: "",
+      review: "",
+      // media: null as File | null,
+    });
+  }, [product]);
+  console.log(newReview, "newReview");
   useEffect(() => {
     if (review) {
       setReviews(
@@ -68,35 +89,77 @@ const ReviewComponent: React.FC<ReviewProps> = ({ review, product }) => {
     (_, i) => reviews.filter((r) => r.rating === 5 - i).length
   );
 
-  const handleReviewSubmit = (e: React.FormEvent) => {
+  const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(newReview);
 
-    if (newReview.rating && newReview.name && newReview.comment) {
-      console.log(newReview.rating && newReview.name && newReview.comment);
-      setReviews([
-        ...reviews,
-        {
-          ...newReview,
-          date: new Date().toLocaleDateString(),
-          reviewer: "You",
-          avatar: "", // Placeholder avatar
+    try {
+      const response = await fetch("/api/createProductReviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ]);
-      setNewReview({
-        rating: 0,
-        name: "",
-        email: "",
-        comment: "",
-        media: null,
+        body: JSON.stringify(newReview),
       });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Review submitted successfully!");
+        setNewReview({
+          product_id: product?.id,
+          rating: 0,
+          reviewer: "",
+          reviewer_email: "",
+          review: "",
+        });
+        setRender(!render);
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      alert("Failed to submit review. Please try again.");
     }
   };
+  //   if (
+  //     newReview.product_id &&
+  //     newReview.reviewer_email &&
+  //     newReview.rating &&
+  //     newReview.reviewer &&
+  //     newReview.review
+  //   ) {
+  //     setReviews([
+  //       ...reviews,
+  //       {
+  //         ...newReview,
+  //         date: new Date().toLocaleDateString(),
+  //         reviewer: "You",
+  //         avatar: "", // Placeholder avatar
+  //       },
+  //     ]);
+  //     setNewReview({
+  //       product_id: "",
+  //       rating: 0,
+  //       reviewer: "",
+  //       reviewer_email: "",
+  //       review: "",
+  //       ff,
+  //       // media: null,
+  //     });
+  //     console.log(newReview);
+  //   }
+  // };
+
+  // console.log(product?.id);
 
   return (
     <div className="p-8 max-w-4xl mx-auto bg-white">
       {/* Overall Rating */}
-      {reviews ? (
+      {reviews.length === 0 ? (
+        <h2 className="text-4xl font-bold text-gray-800 text-center mb-2">
+          No Review
+        </h2>
+      ) : (
         <div className="text-center mb-8">
           <h2 className="text-4xl font-bold text-gray-800">
             {averageRating} out of 5
@@ -123,29 +186,54 @@ const ReviewComponent: React.FC<ReviewProps> = ({ review, product }) => {
             ))}
           </div>
         </div>
-      ) : (
-        <h2 className="text-4xl font-bold text-gray-800 text-center mb-2">
-          {averageRating} out of 5
-        </h2>
       )}
-      {/* Star Distribution */}
       <div className="flex gap-3 items-center">
-        <div className="my-5 w-1/2">
-          {starCounts.map((count, i) => (
-            <div key={i} className="mb-4">
-              <div className="flex justify-between text-gray-500">
-                <span>{5 - i} stars</span>
-                <span>{count}</span>
-              </div>
-              <div className="w-full h-2 bg-gray-200 rounded-full relative">
-                <div
-                  className="absolute top-0 left-0 h-2 bg-orange-400 rounded-full"
-                  style={{ width: `${(count / totalReviews) * 100}%` }}
-                />
-              </div>
+        {reviews.length === 0 ? (
+          <div className="my-5 w-1/2">
+            <div className="flex justify-center items-center space-x-1 mt-2">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <svg
+                  key={i}
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill={
+                    i < Math.round(parseFloat(averageRating))
+                      ? "orange"
+                      : "none"
+                  }
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="w-6 h-6 text-orange-400"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 17.25l6.16 3.73-1.64-7.03L21 9.75l-7.19-.61L12 3 10.19 9.14 3 9.75l4.48 4.2-1.64 7.03L12 17.25z"
+                  />
+                </svg>
+              ))}
             </div>
-          ))}
-        </div>
+            <p className="mt-2 flex justify-center">
+              Be the first to write a review
+            </p>
+          </div>
+        ) : (
+          <div className="my-5 w-1/2">
+            {starCounts.map((count, i) => (
+              <div key={i} className="mb-4">
+                <div className="flex justify-between text-gray-500">
+                  <span>{5 - i} stars</span>
+                  <span>{count}</span>
+                </div>
+                <div className="w-full h-2 bg-gray-200 rounded-full relative">
+                  <div
+                    className="absolute top-0 left-0 h-2 bg-orange-400 rounded-full"
+                    style={{ width: `${(count / totalReviews) * 100}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="flex justify-center w-1/2">
           <button
             onClick={handleShowReview}
@@ -189,13 +277,12 @@ const ReviewComponent: React.FC<ReviewProps> = ({ review, product }) => {
               ))}
             </div>
             {/* Title */}
-
             <input
               type="text"
               placeholder="Enter your name"
-              value={newReview.name}
+              value={newReview.reviewer}
               onChange={(e) =>
-                setNewReview({ ...newReview, name: e.target.value })
+                setNewReview({ ...newReview, reviewer: e.target.value })
               }
               className="w-full p-2 border border-gray-300 rounded-md"
               required
@@ -203,9 +290,9 @@ const ReviewComponent: React.FC<ReviewProps> = ({ review, product }) => {
             <input
               type="email"
               placeholder="Enter your email address"
-              value={newReview.email}
+              value={newReview.reviewer_email}
               onChange={(e) =>
-                setNewReview({ ...newReview, email: e.target.value })
+                setNewReview({ ...newReview, reviewer_email: e.target.value })
               }
               className="w-full p-2 border border-gray-300 rounded-md"
               required
@@ -213,9 +300,9 @@ const ReviewComponent: React.FC<ReviewProps> = ({ review, product }) => {
             {/* Comment */}
             <textarea
               placeholder="Write your comments here"
-              value={newReview.comment}
+              value={newReview.review}
               onChange={(e) =>
-                setNewReview({ ...newReview, comment: e.target.value })
+                setNewReview({ ...newReview, review: e.target.value })
               }
               className="w-full p-2 border border-gray-300 rounded-md"
               rows={4}

@@ -23,8 +23,7 @@ interface Product {
   }>;
 }
 
-const ProductDetails = ({ params, productData, reviewsData }: any) => {
-  const [reviews, setReviews] = useState([]);
+const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -54,7 +53,7 @@ const ProductDetails = ({ params, productData, reviewsData }: any) => {
         console.log(data, "product danish ahmed");
 
         if (data.success) {
-          setReviews(datas.reviews);
+          // setReviews(datas.reviews);
           reviewsData(datas.reviews);
         }
 
@@ -98,7 +97,7 @@ const ProductDetails = ({ params, productData, reviewsData }: any) => {
       }
     };
     fetchProduct();
-  }, [params]);
+  }, [params, render]);
 
   // Handle size selection
   const handleSizeChange = (size: string) => {
