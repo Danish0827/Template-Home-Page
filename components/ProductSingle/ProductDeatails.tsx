@@ -4,6 +4,7 @@ import ProductDetailsCarousel from "@/components/ProductSingle/ProductDetailsCar
 import Wrapper from "@/components/ProductSingle/Wrapper";
 import AddToCart from "@/components/Cart/add-to-cart";
 import SkeletonLoader from "@/components/ProductSingle/SkeletonLoader"; // Import the SkeletonLoader
+import Link from "next/link";
 
 interface Product {
   id: number;
@@ -199,9 +200,11 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
               price={setPrice}
             />
 
-            <button className="w-full py-2 bg-black text-white text-lg font-medium transition-transform active:scale-95 hover:opacity-75 mb-10 uppercase">
-              Rate Now
-            </button>
+            <Link href="#reviews">
+              <button className="w-full py-2 bg-black text-white text-lg font-medium transition-transform active:scale-95 hover:opacity-75 mb-10 uppercase">
+                Rate Now
+              </button>
+            </Link>
 
             {/* Product Description */}
             <div>

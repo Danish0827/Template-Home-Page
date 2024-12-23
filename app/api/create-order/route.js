@@ -17,7 +17,7 @@ export async function POST(req) {
     error: "",
   };
   const body = await req.json(); // Parse the JSON body from the request
-  // console.log(body, "Request Body");
+  console.log(body, "Request Body");
 
   if (isEmpty(body)) {
     responseData.error = "Required data not sent";
@@ -33,6 +33,7 @@ export async function POST(req) {
     // Include the entire response data
     responseData.success = true;
     responseData.orderDetails = data;
+    console.log(data, responseData, "orderDetails");
 
     // Send email notification
     const transporter = nodemailer.createTransport({
@@ -60,9 +61,7 @@ export async function POST(req) {
 			<p style="font-size: 16px;">Thank you for your purchase, ${
         body.billing.first_name
       }!</p>
-			<p>We’re getting your order ready to be shipped. We’ll notify you once it has been sent.</p>
-			
-			
+			<p>We're getting your order ready to be shipped. We’ll notify you once it has been sent.</p>
 			
 	  
 			<h3 style="border-bottom: 1px solid #ddd; padding-bottom: 10px;">Order Summary</h3>

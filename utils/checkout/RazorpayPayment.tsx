@@ -1,3 +1,4 @@
+import { clearCart } from "../cart";
 // utils/loadRazorpayScript.js
 const loadRazorpayScript = async () => {
   return new Promise((resolve, reject) => {
@@ -44,13 +45,28 @@ export const RazorpayPayment = async ({
   name,
   email,
   contact,
+  setIsOrderProcessing,
+  setCart,
 }: any) => {
+  // {
+  //   isOrderProcessing && (
+  //     <div className="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="w-16 h-16 block m-auto border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+  //         <p className="mt-4 text-white font-medium">
+  //           Processing your order...
+  //         </p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
   try {
     // Load the Razorpay script
     const isScriptLoaded = await loadRazorpayScript();
     if (!isScriptLoaded || !window.Razorpay) {
       throw new Error("Razorpay SDK failed to load.");
     }
+    setIsOrderProcessing(true);
 
     // Generate a Razorpay order ID
     const createdOrderId = await createOrderId(amount);
@@ -74,6 +90,7 @@ export const RazorpayPayment = async ({
         color: "#3399cc",
       },
       handler: async (response: any) => {
+        setIsOrderProcessing(true);
         const dataRes = {
           orderCreationId: createdOrderId,
           razorpayPaymentId: response.razorpay_payment_id,
@@ -111,11 +128,22 @@ export const RazorpayPayment = async ({
               await updateOrderStatuss(orderId);
 
               // alert("Payment captured successfully and order status updated!");
-              localStorage.setItem("x-wc-session", JSON.stringify(null));
-              console.log("x-wc-session");
+              // console.log("x-wc-session");
 
-              localStorage.removeItem("next-cart");
+              // setIsOrderProcessing(false);
+
+              const cartCleared = await clearCart(setCart, () => {});
+              setCart(null);
+              setIsOrderProcessing(false);
+
+              // if (isEmpty(customerOrderData?.orderDetails) || cartCleared?.error) {
+              //   setRequestError("Clear cart failed");
+              //   return null;
+              // }
               window.location.href = `${process.env.NEXT_PUBLIC_SITE_URL}/thank-you?orderId=${orderId}`;
+              localStorage.setItem("x-wc-session", JSON.stringify(null));
+              localStorage.removeItem("x-wc-session");
+              localStorage.removeItem("next-cart");
             } else {
               // alert("Failed to update order status.");
               alert(captureData.message || "Payment capture failed.");

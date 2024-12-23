@@ -41,26 +41,25 @@ const Product: React.FC = () => {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(
-          "/api/get-products?featured=true&includeVariations=true"
-        );
-        const data = await response.json();
-        if (data.success) {
-          setProducts(data.products);
-        } else {
-          setError("Failed to fetch products");
-        }
-      } catch (error) {
-        console.error("Failed to fetch products", error);
-        setError("Something went wrong while fetching products.");
-      } finally {
-        setLoading(false);
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(
+        "/api/get-products?featured=true&includeVariations=true"
+      );
+      const data = await response.json();
+      if (data.success) {
+        setProducts(data.products);
+      } else {
+        setError("Failed to fetch products");
       }
-    };
-
+    } catch (error) {
+      console.error("Failed to fetch products", error);
+      setError("Something went wrong while fetching products.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchProducts();
   }, []);
 

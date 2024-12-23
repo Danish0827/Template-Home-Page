@@ -153,7 +153,7 @@ const ReviewComponent: React.FC<ReviewProps> = ({
   // console.log(product?.id);
 
   return (
-    <div className="p-8 max-w-4xl mx-auto bg-white">
+    <div id="reviews" className="p-8 max-w-4xl mx-auto bg-white">
       {/* Overall Rating */}
       {reviews.length === 0 ? (
         <h2 className="text-4xl font-bold text-gray-800 text-center mb-2">

@@ -6,7 +6,6 @@ import { clearCart } from "../cart";
 import axios from "axios";
 import { WOOCOMMERCE_STATES_ENDPOINT } from "../constants/endpoints";
 import { RazorpayPayment } from "./RazorpayPayment";
-import Razorpay from "razorpay";
 
 export const handleRazorpayCheckout = async (
   input,
@@ -14,7 +13,8 @@ export const handleRazorpayCheckout = async (
   setRequestError,
   setCart,
   setIsOrderProcessing,
-  setCreatedOrderData
+  setCreatedOrderData,
+  isOrderProcessing
 ) => {
   try {
     // Indicate order processing has started
@@ -40,23 +40,19 @@ export const handleRazorpayCheckout = async (
     const email = input.billing.email;
     const contact = input.billing.phone;
 
-    // Debug logs (can be removed later)
-    console.log("Order Details: ", { orderId, amount, currency, name });
+    await RazorpayPayment({
+      orderId,
+      amount,
+      currency,
+      name,
+      email,
+      contact,
+      setIsOrderProcessing,
+      isOrderProcessing,
+      setCart,
+    });
 
-    console.log(customerOrderData, "before");
-    await RazorpayPayment({ orderId, amount, currency, name, email, contact });
-    console.log(customerOrderData, "after");
-
-    const cartCleared = await clearCart(setCart, () => {});
-    setCart(null);
     setIsOrderProcessing(false);
-
-    if (isEmpty(customerOrderData?.orderDetails) || cartCleared?.error) {
-      setRequestError("Clear cart failed");
-      return null;
-    }
-    // localStorage.removeItem("next-cart");
-
     setCreatedOrderData(customerOrderData.orderDetails);
   } catch (error) {
     console.error("Razorpay Checkout Error:", error);
@@ -104,6 +100,7 @@ export const handleOtherPaymentMethodCheckout = async (
     ""
   );
   // console.log(customerOrderData, "");
+  setCreatedOrderData(customerOrderData.orderDetails);
   const cartCleared = await clearCart(setCart, () => {});
   setCart(null);
   setIsOrderProcessing(false);
@@ -112,9 +109,8 @@ export const handleOtherPaymentMethodCheckout = async (
     setRequestError("Clear cart failed");
     return null;
   }
-  localStorage.removeItem("next-cart");
 
-  setCreatedOrderData(customerOrderData.orderDetails);
+  localStorage.removeItem("next-cart");
 
   return customerOrderData;
 };

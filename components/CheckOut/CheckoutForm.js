@@ -17,35 +17,35 @@ import {
 } from "@/utils/checkout";
 
 // // Use this for testing purposes, so you dont have to fill the checkout form over an over again.
-// const defaultCustomerInfo = {
-//   firstName: "danish",
-//   lastName: "shaikh",
-//   address1: "123 Abc farm",
-//   address2: "Hill Road",
-//   city: "Mumbai",
-//   country: "IN",
-//   state: "Maharastra",
-//   postcode: "221029",
-//   email: "s.danish0827@gmail.com",
-//   phone: "9867356907",
-//   company: "The Company",
-//   errors: null,
-// };
-
 const defaultCustomerInfo = {
-  firstName: "",
-  lastName: "",
-  address1: "",
-  address2: "",
-  city: "",
-  country: "",
-  state: "",
-  postcode: "",
-  email: "",
-  phone: "",
-  company: "",
+  firstName: "danish",
+  lastName: "shaikh",
+  address1: "123 Abc farm",
+  address2: "Hill Road",
+  city: "Mumbai",
+  country: "IN",
+  state: "Maharastra",
+  postcode: "221029",
+  email: "s.danish0827@gmail.com",
+  phone: "9867356907",
+  company: "The Company",
   errors: null,
 };
+
+// const defaultCustomerInfo = {
+//   firstName: "",
+//   lastName: "",
+//   address1: "",
+//   address2: "",
+//   city: "",
+//   country: "",
+//   state: "",
+//   postcode: "",
+//   email: "",
+//   phone: "",
+//   company: "",
+//   errors: null,
+// };
 
 const CheckoutForm = ({ countriesData }) => {
   const { billingCountries, shippingCountries } = countriesData || {};
@@ -142,7 +142,8 @@ const CheckoutForm = ({ countriesData }) => {
         setRequestError,
         setCart,
         setIsOrderProcessing,
-        setCreatedOrderData
+        setCreatedOrderData,
+        isOrderProcessing
       );
       return null;
     }
@@ -312,7 +313,17 @@ const CheckoutForm = ({ countriesData }) => {
               </div>
 
               {/* Checkout Loading*/}
-              {isOrderProcessing && <p>Processing Order...</p>}
+              {isOrderProcessing && (
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 z-50 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-16 h-16 block m-auto border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+                    <p className="mt-4 text-white font-medium">
+                      Processing your order...
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {requestError && (
                 <p>Error : {requestError} :( Please try again</p>
               )}
