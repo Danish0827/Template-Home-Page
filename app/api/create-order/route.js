@@ -24,7 +24,7 @@ export async function POST(req) {
     return new Response(JSON.stringify(responseData), { status: 400 });
   }
 
-  body.status = body.payment_method == "cod" ? "pending" : "failed";
+  body.status = body.payment_method == "cod" ? "processing" : "failed";
   body.set_paid = false;
 
   try {
@@ -36,22 +36,23 @@ export async function POST(req) {
     console.log(data, responseData, "orderDetails");
 
     // Send email notification
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com", // Change host if not using Gmail
-      port: 465, // For SSL, use 587 for TLS
-      secure: true, // Use true for 465, false for 587
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    if (body.status !== "failed" && body.status !== "processing") {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com", // Change host if not using Gmail
+        port: 465, // For SSL, use 587 for TLS
+        secure: true, // Use true for 465, false for 587
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
 
-    const mailOptions = {
-      from: `"Your Store Name" <${process.env.SMTP_USER}>`, // Sender address
-      to: body.billing.email, // Send to the customer's email address
-      subject: `Order Confirmation - #${data.id}`, // Subject line
-      text: `Thank you for your order! Your order ID is #${data.id}.`, // Plain text body
-      html: `
+      const mailOptions = {
+        from: `"Your Store Name" <${process.env.SMTP_USER}>`, // Sender address
+        to: body.billing.email, // Send to the customer's email address
+        subject: `Order Confirmation - #${data.id}`, // Subject line
+        text: `Thank you for your order! Your order ID is #${data.id}.`, // Plain text body
+        html: `
 		  <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; padding: 20px;">
 			<div style="text-align: center; border-bottom: 1px solid #ddd; padding-bottom: 20px; margin-bottom: 20px;">
 			  <img src="https://www.cottonculture.co.in/cdn/shop/files/Cotton_Culture_logo_1_3.jpg?v=1722679086&width=150" alt="Your Store Logo" style="max-width: 150px;">
@@ -108,15 +109,15 @@ export async function POST(req) {
 			</footer>
 		  </div>
 		`,
-    };
-    {
-      /* <div style="text-align: center; margin: 20px 0;">
+      };
+      {
+        /* <div style="text-align: center; margin: 20px 0;">
 			  <a href="VIEW_ORDER_LINK_HERE" style="display: inline-block; background-color: #007bff; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-size: 16px;">View your order</a>
 			  <p style="margin-top: 10px;"><a href="STORE_LINK_HERE" style="color: #007bff; text-decoration: none;">or Visit our store</a></p>
 			</div> */
+      }
+      await transporter.sendMail(mailOptions);
     }
-    await transporter.sendMail(mailOptions);
-
     return new Response(JSON.stringify(responseData), { status: 200 });
   } catch (error) {
     responseData.error = error.message;

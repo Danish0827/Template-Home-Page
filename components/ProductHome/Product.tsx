@@ -153,7 +153,6 @@ const Product: React.FC = () => {
                   {product.price
                     ? `₹${parseFloat(product.price).toLocaleString()}`
                     : "Price Not Available"}{" "}
-                  {selectedSize}
                 </div>
 
                 {/* Size Variants */}

@@ -99,18 +99,54 @@ export const handleOtherPaymentMethodCheckout = async (
     setRequestError,
     ""
   );
-  // console.log(customerOrderData, "");
-  setCreatedOrderData(customerOrderData.orderDetails);
+  // console.log(
+  //   customerOrderData?.orderDetails?.orderDetails?.id,
+  //   "customerOrderData?.orderDetails?.id"
+  // );
+
+  const updateOrderStatus = async (orderId) => {
+    const data = {
+      status: "pending",
+    };
+
+    const encodedCredentials = btoa(
+      `${process.env.WC_CONSUMER_KEY}:${process.env.WC_CONSUMER_SECRET}`
+    );
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wc/v3/orders/${orderId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Basic ${encodedCredentials}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP status ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      // console.log("Order updated:", responseData);
+    } catch (error) {
+      console.error("Error updating order:", error);
+    }
+  };
+  await updateOrderStatus(customerOrderData?.orderDetails?.orderDetails?.id);
   const cartCleared = await clearCart(setCart, () => {});
   setCart(null);
-  setIsOrderProcessing(false);
 
   if (isEmpty(customerOrderData?.orderDetails) || cartCleared?.error) {
     setRequestError("Clear cart failed");
     return null;
   }
-
+  setCreatedOrderData(customerOrderData.orderDetails);
   localStorage.removeItem("next-cart");
+  setIsOrderProcessing(false);
 
   return customerOrderData;
 };
@@ -186,7 +222,7 @@ const createCheckoutSessionAndRedirect = async (products, input, orderId) => {
     payment_method_types: ["card"],
     mode: "payment",
   };
-  console.log("sessionData", sessionData);
+  // console.log("sessionData", sessionData);
   let session = {};
   try {
     session = await createCheckoutSession(sessionData);
