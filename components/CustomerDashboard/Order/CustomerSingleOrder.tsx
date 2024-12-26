@@ -123,14 +123,16 @@ const CustomerSingleOrder = ({ params }: any) => {
 
                       {/* Metadata */}
                       <div className="mt-4 space-y-2">
-                        {item.meta_data.map((meta: any) => (
-                          <p
-                            key={meta.id}
-                            className="text-sm lg:text-base text-gray-700"
-                          >
-                            <b>{meta.display_key}:</b> {meta.display_value}
-                          </p>
-                        ))}
+                        {item.meta_data
+                          .filter((meta: any) => meta.key !== "_reduced_stock") // Exclude "_reduced_stock"
+                          .map((meta: any) => (
+                            <p
+                              key={meta.id}
+                              className="text-sm lg:text-base text-gray-700"
+                            >
+                              <b>{meta.display_key}:</b> {meta.display_value}
+                            </p>
+                          ))}
 
                         {/* Quantity */}
                         <p className="text-sm lg:text-base text-gray-700 font-semibold">

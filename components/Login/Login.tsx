@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { notification } from "antd";
+import { IoIosArrowDropleftCircle } from "react-icons/io";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ const Login = () => {
   const [generatedOtp, setGeneratedOtp] = useState(null);
   const [step, setStep] = useState(1); // 1: Email input, 2: OTP confirmation
   const [isSending, setIsSending] = useState(false); // Disable button while sending OTP
+  const [timer, setTimer] = useState(0); // Timer state
   const router = useRouter();
 
   // Redirect if auth cookie exists
@@ -126,15 +128,83 @@ const Login = () => {
     }
   };
 
+  const reSendOtp = async (e: any) => {
+    e.preventDefault();
+    if (!email)
+      return notification.error({
+        message: "Email is required",
+        description: `Please enter valid Email`,
+        duration: 3,
+      });
+
+    setIsSending(true); // Disable the button
+    setTimer(30); // Start a 30-second time
+    const otp = generateOtp();
+
+    try {
+      const response = await fetch("/api/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp }),
+      });
+
+      if (response.ok) {
+        notification.success({
+          message: "OTP sent",
+          description: `OTP sent to ${email}`,
+          duration: 3,
+        });
+        setGeneratedOtp(otp); // Save OTP locally for confirmation
+        setStep(2); // Move to OTP confirmation step
+      } else {
+        notification.error({
+          message: "Failed",
+          description: `Error sending OTP. Please try again.`,
+          duration: 3,
+        });
+      }
+    } catch (error) {
+      // console.error("Error sending OTP:", error);
+      notification.error({
+        message: "Failed",
+        description: `Error sending OTP. Please try again.`,
+        duration: 3,
+      });
+    } finally {
+      setIsSending(false); // Re-enable the button
+    }
+  };
+
+  // Timer logic
+  useEffect(() => {
+    if (timer > 0) {
+      const interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+
+      return () => clearInterval(interval); // Cleanup on unmount or when timer reaches 0
+    }
+  }, [timer]);
+
+  const backStep = async (e: any) => {
+    e.preventDefault();
+    setStep(1);
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-3">
       <div className="bg-white shadow-lg rounded-lg px-8 py-14 w-full sm:w-3/5 lg:w-1/3">
+        {step === 2 && (
+          <p onClick={backStep} className="-mt-10 -ml-4">
+            <IoIosArrowDropleftCircle className="text-templatePrimary text-2xl lg:text-3xl" />
+          </p>
+        )}
         <div className="flex items-center justify-center mb-4">
           <a href="/">
             <img
               alt="logo"
-              src="https://bovinosbck.demo-web.live/wp-content/uploads/2024/11/images-e1732688867572.jpeg"
-              className="w-32 h-auto"
+              src="https://bovinosbck.demo-web.live/wp-content/uploads/2024/12/logo.jpg"
+              className="w-44 h-auto"
             />
           </a>
         </div>
@@ -170,7 +240,7 @@ const Login = () => {
 
               <button
                 type="submit"
-                className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-400"
+                className="w-full py-2 px-4 bg-templatePrimary text-white font-semibold rounded-md hover:bg-templatePrimaryLight focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-400"
                 disabled={isSending}
               >
                 {isSending ? "Sending..." : "Send OTP"}
@@ -182,7 +252,7 @@ const Login = () => {
         {step === 2 && (
           <>
             <div className="mb-4">
-              <h1 className="text-2xl font-bold text-gray-700">Enter OTP</h1>
+              <h1 className="text-xl font-bold text-gray-700">Enter OTP</h1>
               <h3 className="text-gray-500">Sent to {email}</h3>
             </div>
 
@@ -208,7 +278,7 @@ const Login = () => {
 
               <button
                 type="submit"
-                className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full py-2 px-4 bg-templatePrimary text-white font-semibold rounded-md hover:bg-templatePrimaryLight focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Confirm OTP
               </button>
@@ -216,13 +286,32 @@ const Login = () => {
           </>
         )}
 
-        <footer className="mt-4 text-left">
+        <footer className="mt-4 flex justify-between">
           <a
             href="/policies/privacy-policy"
-            className="text-blue-600 hover:underline"
+            className="text-templatePrimary hover:underline"
           >
             Privacy
           </a>
+          {step === 2 && (
+            <div className="flex items-center gap-3">
+              <div>
+                {timer > 0 && (
+                  <span className="w-8 h-8 text-sm flex justify-center items-center border-templatePrimary border rounded-full">
+                    {timer}
+                  </span>
+                )}
+              </div>
+              <p
+                onClick={!isSending && timer === 0 ? reSendOtp : undefined}
+                className={`text-templatePrimary hover:text-templatePrimaryLight cursor-pointer ${
+                  isSending || timer > 0 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                Resend OTP
+              </p>
+            </div>
+          )}
         </footer>
       </div>
     </div>
@@ -230,3 +319,4 @@ const Login = () => {
 };
 
 export default Login;
+// danishshaikh.st@gmail.com
