@@ -128,8 +128,10 @@ const Login = () => {
     }
   };
 
-  const reSendOtp = async (e: any) => {
+  const reSendOtp = async (e: any, email: any) => {
     e.preventDefault();
+    // console.log(email,"emailcas");
+
     if (!email)
       return notification.error({
         message: "Email is required",
@@ -303,7 +305,13 @@ const Login = () => {
                 )}
               </div>
               <p
-                onClick={!isSending && timer === 0 ? reSendOtp : undefined}
+                onClick={
+                  !isSending && timer === 0
+                    ? (e) => {
+                        reSendOtp(e, email);
+                      }
+                    : undefined
+                }
                 className={`text-templatePrimary hover:text-templatePrimaryLight cursor-pointer ${
                   isSending || timer > 0 ? "opacity-50 cursor-not-allowed" : ""
                 }`}

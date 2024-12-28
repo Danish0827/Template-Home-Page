@@ -151,3 +151,39 @@ h6 {
     margin: 0;
   }
 }
+
+.custom-steps .ant-steps-icon-dot {
+  background-color: var(
+    --template-primary
+  ) !important; /* Change the color of finished step dots */
+  border-color: black !important; /* Change the border color of the dot */
+}
+
+.custom-steps .ant-steps-item-process .ant-steps-icon-dot {
+  background-color: var(
+    --template-primary
+  ) !important; /* Change the color of the active step dot */
+  border-color: black !important; /* Change the border color of the dot */
+}
+
+.custom-steps .ant-steps-item-finish .ant-steps-icon-dot {
+  background-color: var(
+    --template-primary
+  ) !important; /* Change the color of finished step dots */
+  border-color: black !important; /* Change the border color of the dot */
+}
+
+.custom-steps .ant-steps-item-wait .ant-steps-icon-dot {
+  background-color: var(
+    --template-primary
+  ) !important; /* Change the color of waiting step dots */
+  border-color: black !important; /* Change the border color of the dot */
+}
+.custom-steps
+  .ant-steps-item-finish
+  > .ant-steps-item-container
+  > .ant-steps-item-tail::after {
+  background-color: var(
+    --template-primary
+  ) !important; /* Change the color of finished step dots */
+}

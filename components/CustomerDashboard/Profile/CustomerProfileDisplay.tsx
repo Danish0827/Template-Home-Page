@@ -1,9 +1,24 @@
 import React from "react";
-import { Card, Descriptions, Row, Col, Typography, Space, Alert } from "antd";
+import {
+  Card,
+  Descriptions,
+  Row,
+  Col,
+  Typography,
+  Space,
+  Alert,
+  Divider,
+} from "antd";
+import {
+  UserOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  HomeOutlined,
+} from "@ant-design/icons";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
-const CustomerProfileDisplay = ({ order }:any) => {
+const CustomerProfileDisplay = ({ order }: any) => {
   if (!order) {
     return (
       <Row justify="center" style={{ marginTop: 50 }}>
@@ -32,74 +47,76 @@ const CustomerProfileDisplay = ({ order }:any) => {
 
   return (
     <Row justify="center" style={{ marginTop: 50 }}>
-      <Col span={20}>
+      <Col xs={22} sm={20} md={18} lg={16}>
         <Card
           bordered={false}
           style={{
-            borderRadius: 8,
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            borderRadius: 12,
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
+            background: "linear-gradient(135deg, #ffffff, #f9f9ff)",
           }}
         >
-          <Title level={3} style={{ marginBottom: 20, textAlign: "center" }}>
-            Customer Profile
-          </Title>
-          <Space direction="vertical" size={20} style={{ width: "100%" }}>
+          <div className="w-24 h-24 flex justify-center items-center lg:w-28 lg:h-28 rounded-full uppercase border border-templatePrimaryLight m-auto mb-5 text-4xl font-bold bg-templatePrimary text-white">
+            {`${billing.first_name.slice(0, 1)}${billing.last_name.slice(
+              0,
+              1
+            )}`}
+          </div>
+
+          <Space direction="vertical" size={30} style={{ width: "100%" }}>
             <Descriptions
               bordered
-              column={1}
-              labelStyle={{ fontWeight: 600 }}
               size="middle"
+              column={1}
+              labelStyle={{ fontWeight: 600, color: "#555" }}
+              contentStyle={{ fontSize: "16px", color: "#333" }}
             >
-              <Descriptions.Item label="Name" className="capitalize" labelStyle={{ fontWeight: 900 }}>
-                {billing.first_name} {billing.last_name}
+              <Descriptions.Item
+                label={
+                  <>
+                    <UserOutlined /> Name
+                  </>
+                }
+              >
+                <Text
+                  strong
+                >{`${billing.first_name} ${billing.last_name}`}</Text>
               </Descriptions.Item>
-              <Descriptions.Item label="Email">
-                {billing.email}
+              <Descriptions.Item
+                label={
+                  <>
+                    <MailOutlined /> Email
+                  </>
+                }
+              >
+                <Text>{billing.email}</Text>
               </Descriptions.Item>
-              <Descriptions.Item label="Phone">
-                {billing.phone}
+              <Descriptions.Item
+                label={
+                  <>
+                    <PhoneOutlined /> Phone
+                  </>
+                }
+              >
+                <Text>{billing.phone}</Text>
               </Descriptions.Item>
-              <Descriptions.Item label="Billing Address">
-                {billing.address_1}, {billing.address_2}, {billing.city},{" "}
-                {billing.state}, {billing.country} - {billing.postcode}
+              <Descriptions.Item
+                label={
+                  <>
+                    <HomeOutlined /> Billing Address
+                  </>
+                }
+              >
+                <Text>
+                  {billing.address_1},{" "}
+                  {billing.address_2 && `${billing.address_2}, `}
+                  {billing.city}, {billing.state}, {billing.country} -{" "}
+                  {billing.postcode}
+                </Text>
               </Descriptions.Item>
-              {/* <Descriptions.Item label="Shipping Address">
-                {shipping.first_name} {shipping.last_name}, {shipping.address_1}
-                , {shipping.address_2}, {shipping.city}, {shipping.state},{" "}
-                {shipping.country} - {shipping.postcode}
-              </Descriptions.Item> */}
             </Descriptions>
 
-            {/* <Card title="Order Details" size="small">
-              <Descriptions
-                bordered
-                column={1}
-                labelStyle={{ fontWeight: 600 }}
-                size="middle"
-              >
-                <Descriptions.Item label="Order Status">
-                  {status}
-                </Descriptions.Item>
-                <Descriptions.Item label="Payment Method">
-                  {payment_method_title}
-                </Descriptions.Item>
-                <Descriptions.Item label="Order Total">
-                  {currency_symbol} {total}
-                </Descriptions.Item>
-                <Descriptions.Item label="Order Date">
-                  {new Date(date_created).toLocaleString()}
-                </Descriptions.Item>
-                <Descriptions.Item label="Payment URL">
-                  <a
-                    href={payment_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Complete Payment
-                  </a>
-                </Descriptions.Item>
-              </Descriptions>
-            </Card> */}
+            <Divider />
           </Space>
         </Card>
       </Col>
