@@ -43,11 +43,8 @@ const Product: React.FC = () => {
 
   const fetchProducts = async () => {
     try {
-      // const response = await fetch(
-      //   "/api/get-products?featured=true&includeVariations=true"
-      // );
       const response = await fetch(
-        "https://headless-ecommerce.demo-web.live/api/get-products?featured=true&includeVariations=true"
+        "/api/get-products?featured=true&includeVariations=true"
       );
       const data = await response.json();
       if (data.success) {
