@@ -9,12 +9,12 @@ export async function POST(req) {
 
   try {
     const { slug, trackingNumber } = await req.json();
-    console.log(
-      "Received slug:",
-      slug,
-      "Received trackingNumber:",
-      trackingNumber
-    );
+    // console.log(
+    //   "Received slug:",
+    //   slug,
+    //   "Received trackingNumber:",
+    //   trackingNumber
+    // );
 
     if (!slug || !trackingNumber) {
       return NextResponse.json(
