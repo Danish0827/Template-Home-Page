@@ -12,7 +12,7 @@ const DesktopMenu = () => {
   return (
     <div>
       <ul className="flex items-center justify-center gap-1">
-        {menuItem.map((item, index) => (
+        {menuItem.map((item: any, index: any) => (
           <li
             key={index}
             className="relative hover-class"
@@ -37,44 +37,48 @@ const DesktopMenu = () => {
             {item.dropdown && hoveredDropdown === index && (
               <div className="absolute w-[200px] left-0">
                 <ul className="mt-4 bg-white shadow-lg p-4">
-                  {item.dropdown.map((dropdownItem, dropdownIndex) => (
-                    <li
-                      key={dropdownIndex}
-                      className="relative"
-                      onMouseEnter={() => setHoveredSubMenu(dropdownIndex)}
-                      onMouseLeave={() => setHoveredSubMenu(null)}
-                    >
-                      <Link
-                        href={dropdownItem.url}
-                        className="text-sm flex items-center justify-between py-2 hover:pl-0.5 transition-all ease-linear text-templatePrimaryText hover:text-templatePrimary"
+                  {item.dropdown.map(
+                    (dropdownItem: any, dropdownIndex: any) => (
+                      <li
+                        key={dropdownIndex}
+                        className="relative"
+                        onMouseEnter={() => setHoveredSubMenu(dropdownIndex)}
+                        onMouseLeave={() => setHoveredSubMenu(null)}
                       >
-                        {dropdownItem.name}
-                        {/* Indicate sub-menu exists */}
-                        {dropdownItem.subMenuItem && <IoChevronForwardSharp />}
-                      </Link>
+                        <Link
+                          href={dropdownItem.url}
+                          className="text-sm flex items-center justify-between py-2 hover:pl-0.5 transition-all ease-linear text-templatePrimaryText hover:text-templatePrimary"
+                        >
+                          {dropdownItem.name}
+                          {/* Indicate sub-menu exists */}
+                          {dropdownItem.subMenuItem && (
+                            <IoChevronForwardSharp />
+                          )}
+                        </Link>
 
-                      {/* Show subMenuItem only if this item is hovered */}
-                      {dropdownItem.subMenuItem &&
-                        hoveredSubMenu === dropdownIndex && (
-                          <div className="absolute left-full top-0 w-[200px] bg-white shadow-lg">
-                            <ul className="px-4 py-2">
-                              {dropdownItem.subMenuItem.map(
-                                (subItem, subIndex) => (
-                                  <li key={subIndex}>
-                                    <Link
-                                      href={subItem.url}
-                                      className="text-sm block py-2 hover:pl-0.5 transition-all ease-linear text-templatePrimaryText hover:text-templatePrimary"
-                                    >
-                                      {subItem.name}
-                                    </Link>
-                                  </li>
-                                )
-                              )}
-                            </ul>
-                          </div>
-                        )}
-                    </li>
-                  ))}
+                        {/* Show subMenuItem only if this item is hovered */}
+                        {dropdownItem.subMenuItem &&
+                          hoveredSubMenu === dropdownIndex && (
+                            <div className="absolute left-full top-0 w-[200px] bg-white shadow-lg">
+                              <ul className="px-4 py-2">
+                                {dropdownItem.subMenuItem.map(
+                                  (subItem: any, subIndex: any) => (
+                                    <li key={subIndex}>
+                                      <Link
+                                        href={subItem.url}
+                                        className="text-sm block py-2 hover:pl-0.5 transition-all ease-linear text-templatePrimaryText hover:text-templatePrimary"
+                                      >
+                                        {subItem.name}
+                                      </Link>
+                                    </li>
+                                  )
+                                )}
+                              </ul>
+                            </div>
+                          )}
+                      </li>
+                    )
+                  )}
                 </ul>
               </div>
             )}
@@ -91,14 +95,14 @@ const DesktopMenu = () => {
                 <div className="bg-white mt-5 templateContainer mx-auto shadow-lg py-6 w-full left-0">
                   <div className={`grid grid-cols-5`}>
                     {/* ${item.megamenu.length} */}
-                    {item.megamenu.map((submenu, submenuIndex) => (
+                    {item.megamenu.map((submenu: any, submenuIndex: any) => (
                       <div key={submenuIndex} className=" space-y-4">
                         <h4 className="text-templatePrimary font-medium">
                           {submenu.title}
                           {item.megamenu.length}
                         </h4>
                         <ul className="space-y-2">
-                          {submenu.items.map((subItem, subIndex) => (
+                          {submenu.items.map((subItem: any, subIndex: any) => (
                             <li key={subIndex}>
                               <Link
                                 href={subItem.url}

@@ -110,13 +110,13 @@ const Login = () => {
       document.cookie = `auth=true; path=/; max-age=3600*24;`; // Cookie valid for 1 day
 
       // Process email
-      let modifiedEmail = email.replace("@gmail.com", ""); // Remove @gmail.com
-      modifiedEmail = `alhgga-${modifiedEmail}-vsstaa`; // Add prefix and suffix
+      const modifiedEmail = email.replace("@gmail.com", ""); // Remove @gmail.com
+      const modifiedEmails = `alhgga-${modifiedEmail}-vsstaa`; // Add prefix and suffix
 
       // Set the modified email as a cookie with no expiration
-      document.cookie = `user_g=${modifiedEmail}; path=/;`;
+      document.cookie = `user_g=${modifiedEmails}; path=/;`;
 
-      console.log("Cookie set:", `user_g=${modifiedEmail}`);
+      console.log("Cookie set:", `user_g=${modifiedEmails}`);
       // Navigate to home page
       router.push("/account/orders");
     } else {

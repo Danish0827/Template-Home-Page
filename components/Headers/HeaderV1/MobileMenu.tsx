@@ -26,13 +26,15 @@ const MobileMenu = () => {
   return (
     <div className="p-4 overflow-y-scroll h-full">
       <ul className="space-y-6">
-        {menuItem.map((item, index) => (
+        {menuItem.map((item: any, index: any) => (
           <li key={index} className="relative group">
             <div
               onClick={() => toggleSubMenu(index)}
               className="text-base tracking-wide flex font-medium items-center justify-between capitalize text-templateText"
             >
-              <span>{item.name}</span>
+              <Link href={item.url}>
+                <span>{item.name}</span>
+              </Link>
               {(item.dropdown || item.megamenu) && (
                 <IoChevronForwardSharp
                   className={`transition-all ease-in-out ${
@@ -45,7 +47,7 @@ const MobileMenu = () => {
             {/* Check if the item has a dropdown and if it's open */}
             {item.dropdown && openIndex === index && (
               <ul className="p-4 space-y-4">
-                {item.dropdown.map((dropdownItem, dropdownIndex) => (
+                {item.dropdown.map((dropdownItem: any, dropdownIndex: any) => (
                   <li key={dropdownIndex}>
                     <div
                       onClick={() => toggleSubMenuItem(dropdownIndex)}
@@ -67,16 +69,18 @@ const MobileMenu = () => {
                     {dropdownItem.subMenuItem &&
                       openSubMenuIndex === dropdownIndex && (
                         <ul className="ml-4 mt-2 space-y-2">
-                          {dropdownItem.subMenuItem.map((subItem, subIndex) => (
-                            <li key={subIndex}>
-                              <Link
-                                href={subItem.url}
-                                className="text-sm tracking-wide capitalize text-templateText"
-                              >
-                                {subItem.name}
-                              </Link>
-                            </li>
-                          ))}
+                          {dropdownItem.subMenuItem.map(
+                            (subItem: any, subIndex: any) => (
+                              <li key={subIndex}>
+                                <Link
+                                  href={subItem.url}
+                                  className="text-sm tracking-wide capitalize text-templateText"
+                                >
+                                  {subItem.name}
+                                </Link>
+                              </li>
+                            )
+                          )}
                         </ul>
                       )}
                   </li>
@@ -88,7 +92,7 @@ const MobileMenu = () => {
             {item.megamenu && openIndex === index && (
               <div className="py-4 pl-4">
                 <ul className="space-y-4">
-                  {item.megamenu.map((submenu, submenuIndex) => (
+                  {item.megamenu.map((submenu: any, submenuIndex: any) => (
                     <li key={submenuIndex} className="relative">
                       <div
                         onClick={() => toggleMegaMenu(submenuIndex)}
@@ -105,7 +109,7 @@ const MobileMenu = () => {
                       {/* Show items when megamenu title is clicked */}
                       {openMegaIndex === submenuIndex && (
                         <ul className="p-4 space-y-4">
-                          {submenu.items.map((subItem, subIndex) => (
+                          {submenu.items.map((subItem: any, subIndex: any) => (
                             <li key={subIndex}>
                               <Link
                                 href={subItem.url}
