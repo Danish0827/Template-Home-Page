@@ -163,17 +163,30 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
                 id="sizesGrid"
                 className="grid grid-cols-6 sm:grid-cols-10 lg:grid-cols-6 xl:grid-cols-9 2xl:grid-cols-12 gap-2"
               >
-                {product.attributes
-                  .find((attr) => attr.name === "Size")
-                  ?.options.map((size, index) => {
+                {[
+                  ...new Set(
+                    product.variations?.map(
+                      (variant) =>
+                        variant.attributes.find((attr) => attr.name === "Size")
+                          ?.option
+                    )
+                  ),
+                ] // Create a unique array of size options
+                  .sort((a: any, b: any) => {
+                    // Custom sorting logic if necessary, e.g., numerical sorting
+                    const sizeA = a.split("/").map(Number);
+                    const sizeB = b.split("/").map(Number);
+                    return sizeA[0] - sizeB[0] || sizeA[1] - sizeB[1];
+                  })
+                  .map((size: any) => {
+                    // Find the variant with the corresponding size option
                     const variant = product.variations.find((v) =>
                       v.attributes.some((attr) => attr.option === size)
                     );
                     const isOutOfStock = variant?.stock_status === "outofstock";
-
                     return (
                       <div
-                        key={index}
+                        key={`${product.id}-${size}`}
                         onClick={() => !isOutOfStock && handleSizeChange(size)}
                         className={`border text-sm xl:text-lg flex items-center justify-center rounded-md text-center w-12 h-12 sm:w-14 sm:h-14 lg:w-12 lg:h-12 xl:w-14 xl:h-14 font-medium cursor-pointer ${
                           selectedSize === size

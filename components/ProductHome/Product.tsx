@@ -3,7 +3,6 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 // Skeleton Loader Component
-
 interface Product {
   id: number;
   name: string;
@@ -18,9 +17,11 @@ interface Product {
     regular_price: string;
     stock_status: string;
     image: { src: string };
-    attributes: Array<{ name: string; option: string }>;
+    name: string;
+    attributes: Array<{ name: any; option: any }>;
   }>;
 }
+
 const SkeletonLoader: React.FC = () => {
   return (
     <div className="rounded-lg shadow-lg bg-gray-200 animate-pulse overflow-hidden">
@@ -40,6 +41,9 @@ const Product: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
+  const [hoveredProductColor, setHoveredProductColor] = useState<
+    Record<number, any | null>
+  >({}); // Track hovered color per product
 
   const fetchProducts = async () => {
     try {
@@ -59,6 +63,7 @@ const Product: React.FC = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -72,9 +77,14 @@ const Product: React.FC = () => {
     );
 
     setSelectedSize(size);
-    console.log(size, "sadsad");
-
     setSelectedVariant(variant);
+  };
+
+  const getImageForColor = (product: Product, color: string) => {
+    const variant = product.variations.find((v) =>
+      v.attributes.some((attr) => attr.option === color)
+    );
+    return variant ? variant.image.src : product.images[0]?.src;
   };
 
   if (loading) {
@@ -133,7 +143,14 @@ const Product: React.FC = () => {
               <div className="relative group">
                 <img
                   className="w-full h-auto object-cover"
-                  src={product.images[0]?.src}
+                  src={
+                    hoveredProductColor[product.id]
+                      ? getImageForColor(
+                          product,
+                          hoveredProductColor[product.id]
+                        )
+                      : product.images[0]?.src
+                  }
                   alt={product.name}
                 />
                 {product.images[1] && (
@@ -152,14 +169,74 @@ const Product: React.FC = () => {
                 <div className="text-center text-sm mt-2 font-semibold text-gray-700">
                   {product.price
                     ? `₹${parseFloat(product.price).toLocaleString()}`
-                    : "Price Not Available"}{" "}
+                    : "Price Not Available"}
                 </div>
 
                 {/* Size Variants */}
                 <div className="flex justify-center flex-wrap mt-3 space-x-2">
                   {product.attributes
-                    .find((attr) => attr.name === "Size")
-                    ?.options.map((size) => {
+                    .find((attr) => attr.name === "Colour")
+                    ?.options.map((colour) => {
+                      const variant = product.variations.find((v) =>
+                        v.attributes.some((attr) => attr.option === colour)
+                      );
+                      const isOutOfStock =
+                        variant?.stock_status === "outofstock";
+
+                      return (
+                        <>
+                          <div
+                            key={`${product.id}-${colour}`}
+                            onMouseEnter={() =>
+                              setHoveredProductColor((prevState) => ({
+                                ...prevState,
+                                [product.id]: colour,
+                              }))
+                            } // Set hovered color on hover for specific product
+                            onMouseLeave={() =>
+                              setHoveredProductColor((prevState) => ({
+                                ...prevState,
+                                [product.id]: null,
+                              }))
+                            } // Reset on mouse leave for specific product
+                            className={`border hover:border-templatePrimary mt-2 rounded-full text-white bg-black w-8 h-8 flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
+                              selectedSize === colour
+                                ? "border-black"
+                                : "border-gray-400"
+                            } ${
+                              isOutOfStock
+                                ? "opacity-50 cursor-not-allowed line-through"
+                                : "hover:border-templatePrimary"
+                            }`}
+                            style={{
+                              backgroundColor: colour, // Setting the background color to the colour value
+                            }}
+                          ></div>
+                          {/* <span className="sr-">{colour}</span> */}
+                        </>
+                      );
+                    })}
+                </div>
+                <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                  {/* Extract unique size values from variations */}
+                  {[
+                    ...new Set(
+                      product.variations?.map(
+                        (variant) =>
+                          variant.attributes.find(
+                            (attr) => attr.name === "Size"
+                          )?.option
+                      )
+                    ),
+                  ] // Create a unique array of size options
+                    .sort((a, b) => {
+                      // Custom sorting logic if necessary, e.g., numerical sorting
+                      const sizeA = a.split("/").map(Number);
+                      const sizeB = b.split("/").map(Number);
+                      return sizeA[0] - sizeB[0] || sizeA[1] - sizeB[1];
+                    })
+                    .map((size) => {
+                      // Find the variant with the corresponding size option
                       const variant = product.variations.find((v) =>
                         v.attributes.some((attr) => attr.option === size)
                       );
@@ -167,23 +244,30 @@ const Product: React.FC = () => {
                         variant?.stock_status === "outofstock";
 
                       return (
-                        <div
-                          key={`${product.id}-${size}`}
-                          onClick={() =>
-                            !isOutOfStock && handleSizeChange(product.id, size)
-                          }
-                          className={`border border-templatePrimary mt-2 rounded-full w-10 h-10 flex items-center justify-center text-xs font-medium text-templateDark cursor-pointer ${
-                            selectedSize === size
-                              ? "border-black"
-                              : "border-gray-400"
-                          } ${
-                            isOutOfStock
-                              ? "opacity-50 cursor-not-allowed line-through"
-                              : "hover:border-black "
-                          }`}
+                        <Link
+                          href={`/shop/best-sellers/product/${
+                            product.slug
+                          }?size=${isOutOfStock ? null : size}`}
                         >
-                          {size}
-                        </div>
+                          <div
+                            key={`${product.id}-${size}`}
+                            onClick={() =>
+                              !isOutOfStock &&
+                              handleSizeChange(product.id, size)
+                            }
+                            className={`border border-templatePrimary mt-2 rounded-full w-10 h-10 flex items-center justify-center text-xs font-medium text-templateDark cursor-pointer ${
+                              selectedSize === size
+                                ? "border-black"
+                                : "border-gray-400"
+                            } ${
+                              isOutOfStock
+                                ? "opacity-50 cursor-not-allowed line-through"
+                                : "hover:border-black"
+                            }`}
+                          >
+                            {size} {/* Display the size option like "6/40" */}
+                          </div>
+                        </Link>
                       );
                     })}
                 </div>

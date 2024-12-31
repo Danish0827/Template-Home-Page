@@ -17,7 +17,7 @@ export async function POST(req) {
     error: "",
   };
   const body = await req.json(); // Parse the JSON body from the request
-  console.log(body, "Request Body");
+  // console.log(body, "Request Body");
 
   if (isEmpty(body)) {
     responseData.error = "Required data not sent";
@@ -33,7 +33,7 @@ export async function POST(req) {
     // Include the entire response data
     responseData.success = true;
     responseData.orderDetails = data;
-    console.log(data, responseData, "orderDetails");
+    // console.log(data, responseData, "orderDetails");
 
     // Send email notification
     if (body.status !== "failed" && body.status !== "processing") {

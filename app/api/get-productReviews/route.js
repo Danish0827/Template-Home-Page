@@ -26,7 +26,7 @@ export async function GET(req) {
       page,
       per_page: perPage,
     });
-    console.log(reviewsResponse);
+    // console.log(reviewsResponse);
 
     let reviews = reviewsResponse.data || [];
 

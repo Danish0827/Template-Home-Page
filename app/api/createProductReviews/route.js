@@ -12,7 +12,7 @@ export async function POST(req) {
   try {
     const body = await req.json(); // Parse request body
     const { product_id, rating, reviewer, reviewer_email, review } = body;
-    console.log(product_id, rating, reviewer, reviewer_email, review);
+    // console.log(product_id, rating, reviewer, reviewer_email, review);
 
     // Validation
     if (!product_id || !rating || !reviewer || !reviewer_email || !review) {

@@ -19,7 +19,8 @@ interface Product {
     regular_price: string;
     stock_status: string;
     image: { src: string };
-    attributes: Array<{ name: string; option: string }>;
+    name: string;
+    attributes: Array<{ name: any; option: any }>;
   }>;
 }
 
@@ -31,6 +32,9 @@ const ProductPart = ({ params }: any) => {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [hoveredProductColor, setHoveredProductColor] = useState<
+    Record<number, any | null>
+  >({}); // Track hovered color per product
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -95,6 +99,12 @@ const ProductPart = ({ params }: any) => {
 
     setSelectedSize(size);
     setSelectedVariant(variant);
+  };
+  const getImageForColor = (product: Product, color: string) => {
+    const variant = product.variations.find((v) =>
+      v.attributes.some((attr) => attr.option === color)
+    );
+    return variant ? variant.image.src : product.images[0]?.src;
   };
 
   const star = params.replace("-", " ");
@@ -164,68 +174,154 @@ const ProductPart = ({ params }: any) => {
             <>
               {Array.isArray(products) && products.length > 0 && (
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
-                  {products.map((product: Product) => (
+                  {products.slice(0, 8).map((product) => (
                     <Link
-                      href={`/shop/${params}/product/${product.slug}?size=${selectedSize}`}
+                      href={`/shop/best-sellers/product/${product.slug}?size=${selectedSize}`}
                       key={product.id}
                       className="rounded-lg border shadow-md block"
                     >
-                      <div className="relative">
-                        <img
-                          className="w-full h-auto rounded-t-lg"
-                          src={product.images[0]?.src}
-                          alt={product.name}
-                        />
-                        {product.images[1] && (
+                      <div
+                        key={product.id}
+                        className="rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white overflow-hidden"
+                      >
+                        <div className="relative group">
                           <img
-                            className="absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-100 transition-opacity rounded-t-lg"
-                            src={product.images[1]?.src}
+                            className="w-full h-auto object-cover"
+                            src={
+                              hoveredProductColor[product.id]
+                                ? getImageForColor(
+                                    product,
+                                    hoveredProductColor[product.id]
+                                  )
+                                : product.images[0]?.src
+                            }
                             alt={product.name}
                           />
-                        )}
-                      </div>
-                      <div className="p-3">
-                        <h4 className="mt-2 text-xs lg:text-lg font-semibold text-center line-clamp-1 text-templateSecondaryHeading hover:text-templatePrimary">
-                          {product.name}
-                        </h4>
-                        <div className="text-center text-sm mt-2 font-semibold text-gray-700">
-                          {product.price
-                            ? `₹${parseFloat(product.price).toLocaleString()}`
-                            : "Price Not Available"}
+                          {product.images[1] && (
+                            <img
+                              className="absolute top-0 left-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                              src={product.images[1]?.src}
+                              alt={product.name}
+                            />
+                          )}
                         </div>
-                        <div className="flex justify-center flex-wrap my-3 space-x-1">
-                          {product.attributes
-                            .find((attr) => attr.name === "Size")
-                            ?.options.map((size, index) => {
-                              const variant = product.variations.find((v) =>
-                                v.attributes.some(
-                                  (attr) => attr.option === size
-                                )
-                              );
-                              const isOutOfStock =
-                                variant?.stock_status === "outofstock";
 
-                              return (
-                                <div
-                                  key={index}
-                                  onClick={() =>
-                                    !isOutOfStock &&
-                                    handleSizeChange(product.id, size)
-                                  }
-                                  className={`border border-templatePrimary mt-2 rounded-full w-10 h-10 flex items-center justify-center text-xs font-medium text-templateDark cursor-pointer ${
-                                    selectedSize === size
-                                      ? "border-black"
-                                      : "border-gray-400"
-                                  } ${
-                                    isOutOfStock
-                                      ? "opacity-50 cursor-not-allowed line-through"
-                                      : "hover:border-black "
-                                  }`}
-                                >
-                                  {size}
-                                </div>
-                              );
-                            })}
+                        <div className="p-3">
+                          <h4 className="mt-2 text-xs lg:text-lg font-semibold text-center line-clamp-1 text-templateSecondaryHeading hover:text-templatePrimary">
+                            {product.name}
+                          </h4>
+                          <div className="text-center text-sm mt-2 font-semibold text-gray-700">
+                            {product.price
+                              ? `₹${parseFloat(product.price).toLocaleString()}`
+                              : "Price Not Available"}
+                          </div>
+
+                          {/* Size Variants */}
+                          <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                            {product.attributes
+                              .find((attr) => attr.name === "Colour")
+                              ?.options.map((colour) => {
+                                const variant = product.variations.find((v) =>
+                                  v.attributes.some(
+                                    (attr) => attr.option === colour
+                                  )
+                                );
+                                const isOutOfStock =
+                                  variant?.stock_status === "outofstock";
+
+                                return (
+                                  <>
+                                    <div
+                                      key={`${product.id}-${colour}`}
+                                      onMouseEnter={() =>
+                                        setHoveredProductColor((prevState) => ({
+                                          ...prevState,
+                                          [product.id]: colour,
+                                        }))
+                                      } // Set hovered color on hover for specific product
+                                      onMouseLeave={() =>
+                                        setHoveredProductColor((prevState) => ({
+                                          ...prevState,
+                                          [product.id]: null,
+                                        }))
+                                      } // Reset on mouse leave for specific product
+                                      className={`border hover:border-templatePrimary mt-2 rounded-full text-white bg-black w-8 h-8 flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
+                                        selectedSize === colour
+                                          ? "border-black"
+                                          : "border-gray-400"
+                                      } ${
+                                        isOutOfStock
+                                          ? "opacity-50 cursor-not-allowed line-through"
+                                          : "hover:border-templatePrimary"
+                                      }`}
+                                      style={{
+                                        backgroundColor: colour, // Setting the background color to the colour value
+                                      }}
+                                    ></div>
+                                    {/* <span className="sr-">{colour}</span> */}
+                                  </>
+                                );
+                              })}
+                          </div>
+                          <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                            {/* Extract unique size values from variations */}
+                            {[
+                              ...new Set(
+                                product.variations?.map(
+                                  (variant) =>
+                                    variant.attributes.find(
+                                      (attr) => attr.name === "Size"
+                                    )?.option
+                                )
+                              ),
+                            ] // Create a unique array of size options
+                              .sort((a, b) => {
+                                // Custom sorting logic if necessary, e.g., numerical sorting
+                                const sizeA = a.split("/").map(Number);
+                                const sizeB = b.split("/").map(Number);
+                                return (
+                                  sizeA[0] - sizeB[0] || sizeA[1] - sizeB[1]
+                                );
+                              })
+                              .map((size) => {
+                                // Find the variant with the corresponding size option
+                                const variant = product.variations.find((v) =>
+                                  v.attributes.some(
+                                    (attr) => attr.option === size
+                                  )
+                                );
+                                const isOutOfStock =
+                                  variant?.stock_status === "outofstock";
+
+                                return (
+                                  <Link
+                                    href={`/shop/best-sellers/product/${
+                                      product.slug
+                                    }?size=${isOutOfStock ? null : size}`}
+                                  >
+                                    <div
+                                      key={`${product.id}-${size}`}
+                                      onClick={() =>
+                                        !isOutOfStock &&
+                                        handleSizeChange(product.id, size)
+                                      }
+                                      className={`border border-templatePrimary mt-2 rounded-full w-10 h-10 flex items-center justify-center text-xs font-medium text-templateDark cursor-pointer ${
+                                        selectedSize === size
+                                          ? "border-black"
+                                          : "border-gray-400"
+                                      } ${
+                                        isOutOfStock
+                                          ? "opacity-50 cursor-not-allowed line-through"
+                                          : "hover:border-black"
+                                      }`}
+                                    >
+                                      {size}{" "}
+                                      {/* Display the size option like "6/40" */}
+                                    </div>
+                                  </Link>
+                                );
+                              })}
+                          </div>
                         </div>
                       </div>
                     </Link>
