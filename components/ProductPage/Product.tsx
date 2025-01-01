@@ -245,24 +245,39 @@ const ProductPart = ({ params }: any) => {
                                           [product.id]: null,
                                         }))
                                       } // Reset on mouse leave for specific product
-                                      className={`border hover:border-templatePrimary mt-2 rounded-full text-white bg-black w-8 h-8 flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
+                                      // style={{
+                                      //   backgroundColor: colour, // Setting the background color to the colour value
+                                      // }}
+                                      className={` mt-2 rounded-ful flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
                                         selectedSize === colour
                                           ? "border-black"
                                           : "border-gray-400"
-                                      } ${
-                                        isOutOfStock
-                                          ? "opacity-50 cursor-not-allowed line-through"
-                                          : "hover:border-templatePrimary"
-                                      }`}
-                                      style={{
-                                        backgroundColor: colour, // Setting the background color to the colour value
-                                      }}
-                                    ></div>
+                                      } `}
+                                    >
+                                      {product.variations.find((v) =>
+                                        v.attributes.some(
+                                          (attr) => attr.option === colour
+                                        )
+                                      )?.image.src && (
+                                        <img
+                                          className="w-10 h-10 border bor shadow-md rounded-full m-auto object-cover"
+                                          src={
+                                            product.variations.find((v) =>
+                                              v.attributes.some(
+                                                (attr) => attr.option === colour
+                                              )
+                                            )?.image.src
+                                          }
+                                          alt={product.name}
+                                        />
+                                      )}
+                                    </div>
                                     {/* <span className="sr-">{colour}</span> */}
                                   </>
                                 );
                               })}
                           </div>
+
                           <div className="flex justify-center flex-wrap mt-3 space-x-2">
                             {/* Extract unique size values from variations */}
                             {[
