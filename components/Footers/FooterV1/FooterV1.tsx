@@ -33,7 +33,7 @@ const FooterV1 = () => {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
-        console.log(data, "footer data");
+        // console.log(data, "footer data");
 
         setFooterData(data); // Set the fetched data to state
       } catch (error) {

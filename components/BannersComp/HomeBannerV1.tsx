@@ -43,8 +43,8 @@ const HomeBannerV1: React.FC = () => {
       try {
         setLoading(true); // Set loading to true before fetching
         const apiUrl = isMobile
-          ? "https://bovinosbck.demo-web.live/wp-json/wp/v2/mobile-image-sliders?_fields=meta.image"
-          : "https://bovinosbck.demo-web.live/wp-json/wp/v2/desktop-image-slider?_fields=meta.image";
+          ? `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/mobile-image-sliders?_fields=meta.image`
+          : `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/desktop-image-slider?_fields=meta.image`;
 
         const response = await fetch(apiUrl);
         const data = await response.json();

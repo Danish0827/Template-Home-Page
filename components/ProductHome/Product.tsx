@@ -37,6 +37,8 @@ const SkeletonLoader: React.FC = () => {
 
 const Product: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [attribute, setAttribute] = useState<any>([]);
+  const [showColor, setShowColor] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -63,9 +65,36 @@ const Product: React.FC = () => {
       setLoading(false);
     }
   };
-
+  const fetchProductAttribute = async () => {
+    try {
+      const response = await fetch("/api/get-attributeTerm");
+      const data = await response.json();
+      if (data.success) {
+        setAttribute(data.terms);
+      } else {
+        setError("Failed to fetch products");
+      }
+    } catch (error) {
+      console.error("Failed to fetch products", error);
+      setError("Something went wrong while fetching products.");
+    }
+  };
+  const fetchProductColor = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/product-color?_fields=id,title,meta.show-product-color`
+      );
+      const data = await response.json();
+      setShowColor(data?.[0]);
+    } catch (error) {
+      console.error("Failed to fetch products", error);
+      setError("Something went wrong while fetching products.");
+    }
+  };
   useEffect(() => {
     fetchProducts();
+    fetchProductAttribute();
+    fetchProductColor();
   }, []);
 
   const handleSizeChange = (productId: number, size: string) => {
@@ -172,65 +201,113 @@ const Product: React.FC = () => {
                     : "Price Not Available"}
                 </div>
 
-                {/* Size Variants */}
-                <div className="flex justify-center flex-wrap mt-3 space-x-2">
-                  {product.attributes
-                    .find((attr) => attr.name === "Colour")
-                    ?.options.map((colour) => {
-                      const variant = product.variations.find((v) =>
-                        v.attributes.some((attr) => attr.option === colour)
-                      );
-                      const isOutOfStock =
-                        variant?.stock_status === "outofstock";
+                {/* Size Variants Color Image*/}
+                {showColor.meta?.["show-product-color"]?.showImage ==
+                  "true" && (
+                  <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                    {product.attributes
+                      .find((attr) => attr.name === "Colour")
+                      ?.options.map((colour) => {
+                        const variant = product.variations.find((v) =>
+                          v.attributes.some((attr) => attr.option === colour)
+                        );
+                        const isOutOfStock =
+                          variant?.stock_status === "outofstock";
 
-                      return (
-                        <>
-                          <div
-                            key={`${product.id}-${colour}`}
-                            onMouseEnter={() =>
-                              setHoveredProductColor((prevState) => ({
-                                ...prevState,
-                                [product.id]: colour,
-                              }))
-                            } // Set hovered color on hover for specific product
-                            onMouseLeave={() =>
-                              setHoveredProductColor((prevState) => ({
-                                ...prevState,
-                                [product.id]: null,
-                              }))
-                            } // Reset on mouse leave for specific product
-                            // style={{
-                            //   backgroundColor: colour, // Setting the background color to the colour value
-                            // }}
-                            className={` mt-2 rounded-ful flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
-                              selectedSize === colour
-                                ? "border-black"
-                                : "border-gray-400"
-                            } `}
-                          >
-                            {product.variations.find((v) =>
-                              v.attributes.some(
-                                (attr) => attr.option === colour
-                              )
-                            )?.image.src && (
-                              <img
-                                className="w-10 h-10 border bor shadow-md rounded-full m-auto object-cover"
-                                src={
-                                  product.variations.find((v) =>
-                                    v.attributes.some(
-                                      (attr) => attr.option === colour
-                                    )
-                                  )?.image.src
-                                }
-                                alt={product.name}
-                              />
-                            )}
-                          </div>
-                          {/* <span className="sr-">{colour}</span> */}
-                        </>
-                      );
-                    })}
-                </div>
+                        return (
+                          <>
+                            <div
+                              key={`${product.id}-${colour}`}
+                              onMouseEnter={() =>
+                                setHoveredProductColor((prevState) => ({
+                                  ...prevState,
+                                  [product.id]: colour,
+                                }))
+                              } // Set hovered color on hover for specific product
+                              onMouseLeave={() =>
+                                setHoveredProductColor((prevState) => ({
+                                  ...prevState,
+                                  [product.id]: null,
+                                }))
+                              }
+                              className={` mt-2 rounded-ful flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
+                                selectedSize === colour
+                                  ? "border-black"
+                                  : "border-gray-400"
+                              } `}
+                            >
+                              {product.variations.find((v) =>
+                                v.attributes.some(
+                                  (attr) => attr.option === colour
+                                )
+                              )?.image.src && (
+                                <img
+                                  className="w-10 h-10 border bor shadow-md rounded-full m-auto object-cover"
+                                  src={
+                                    product.variations.find((v) =>
+                                      v.attributes.some(
+                                        (attr) => attr.option === colour
+                                      )
+                                    )?.image.src
+                                  }
+                                  alt={product.name}
+                                />
+                              )}
+                            </div>
+                            {/* <span className="sr-">{colour}</span> */}
+                          </>
+                        );
+                      })}
+                  </div>
+                )}
+
+                {/* Size Variants Color */}
+                {showColor.meta?.["show-product-color"]?.showColor ==
+                  "true" && (
+                  <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                    {product.attributes
+                      .find((attr) => attr.name === "Colour")
+                      ?.options.map((colour) => {
+                        const variant = product.variations.find((v) =>
+                          v.attributes.some((attr) => attr.option === colour)
+                        );
+                        const isOutOfStock =
+                          variant?.stock_status === "outofstock";
+
+                        return (
+                          <>
+                            <div
+                              key={`${product.id}-${colour}`}
+                              onMouseEnter={() =>
+                                setHoveredProductColor((prevState) => ({
+                                  ...prevState,
+                                  [product.id]: colour,
+                                }))
+                              } // Set hovered color on hover for specific product
+                              onMouseLeave={() =>
+                                setHoveredProductColor((prevState) => ({
+                                  ...prevState,
+                                  [product.id]: null,
+                                }))
+                              } // Reset on mouse leave for specific product
+                              style={{
+                                backgroundColor: attribute.find(
+                                  (attr: any) => attr.name === colour
+                                )?.woo_variation_swatches.primary_color, // Setting the background color to the colour value
+                              }}
+                              className={`border-black border mt-2 rounded-full w-8 h-8 flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
+                                selectedSize === colour
+                                  ? "border-black"
+                                  : "border-gray-400"
+                              } `}
+                            ></div>
+                          </>
+                        );
+                      })}
+                  </div>
+                )}
+                {/* Size Variants size*/}
+
                 <div className="flex justify-center flex-wrap mt-3 space-x-2">
                   {/* Extract unique size values from variations */}
                   {[

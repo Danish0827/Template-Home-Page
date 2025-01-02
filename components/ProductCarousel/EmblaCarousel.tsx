@@ -66,7 +66,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
     );
 
     setSelectedSize(size);
-    console.log(size, "sadsad");
+    // console.log(size, "sadsad");
 
     setSelectedVariant(variant);
   };

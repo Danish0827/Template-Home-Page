@@ -18,9 +18,7 @@ const BlogPostComponent = ({
   inView: boolean;
 }) => {
   return (
-    <div
-      className={` duration-1000 `}
-    >
+    <div className={` duration-1000 `}>
       <div
         className="rounded-xl"
         style={{ boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px" }}
@@ -135,7 +133,7 @@ const Blog = ({ title }: { title: string }) => {
       >
         <header className="mb-8 text-center">
           <h1 className="text-3xl md:text-4xl lg:text-5xl text-black tracking-tight uppercase">
-         Blog
+            Blog
           </h1>
         </header>
 

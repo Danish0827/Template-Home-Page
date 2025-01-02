@@ -19,7 +19,7 @@ export default function App() {
           "https://bovinosbck.demo-web.live/wp-json/wp/v2/announcement?_fields=id,slug,meta.title"
         );
         const data = await response.json();
-        console.log(data, "sas");
+        // console.log(data, "sas");
 
         // // Map the images from the API response
         // const images = data.map((item: any) => ({

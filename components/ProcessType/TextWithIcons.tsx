@@ -10,7 +10,7 @@ const TextWithIcons = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://bovinosbck.demo-web.live/wp-json/wp/v2/our-expertise?_fields=id,meta.icon,meta.title,meta.para"
+          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/our-expertise?_fields=id,meta.icon,meta.title,meta.para`
         );
         const data = await response.json();
 
@@ -36,7 +36,7 @@ const TextWithIcons = () => {
     return (
       <div className="px-4 md:px-8 lg:px-12 xl:px-16 py-10">
         <div className="flex flex-wrap justify-center">
-          {Array.from({ length: 6 }).map((_, index) => (
+          {Array.from({ length: 4 }).map((_, index) => (
             <div
               className="w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 px-3 mb-10"
               key={index}
