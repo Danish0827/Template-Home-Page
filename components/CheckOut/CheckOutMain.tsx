@@ -13,6 +13,15 @@ const CheckOutMain = () => {
   const [cart] = useContext<any>(AppContext);
   const [countries, setCountries] = useState(null); // State for countries data
   const router = useRouter();
+  // Redirect if auth cookie exists
+  useEffect(() => {
+    const authCookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("auth="));
+    if (!authCookie) {
+      router.push("/login");
+    }
+  }, [router]);
 
   useEffect(() => {
     if (!cart || !cart?.cartItems || cart?.cartItems?.length === 0) {

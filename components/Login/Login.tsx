@@ -39,7 +39,7 @@ const Login = () => {
   const generateOtp = () => {
     const otp: any = Math.floor(100000 + Math.random() * 900000).toString(); // Generate random 6-digit OTP
     const enhancedOtp = `258${otp}963`; // Add prefix and suffix
-    localStorage.setItem("otp", enhancedOtp); // Store in localStorage
+    localStorage.setItem("very_id", enhancedOtp); // Store in localStorage
     return otp;
   };
 
@@ -92,7 +92,7 @@ const Login = () => {
   const confirmOtp = (e: any) => {
     e.preventDefault();
 
-    const storedOtp = localStorage.getItem("otp");
+    const storedOtp = localStorage.getItem("very_id");
     const originalOtp = storedOtp?.substring(3, 9); // Extract the original OTP
 
     if (otp === originalOtp) {
