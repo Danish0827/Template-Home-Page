@@ -12,7 +12,9 @@ const RefundPolicy = () => {
 
         <div className="shopify-policy__body">
           <div className="rte text-black">
-            <p className="pb-3 text-2xl font-semibold">Cotton Culture Return Policy</p>
+            <p className="pb-3 text-2xl font-semibold">
+              Cotton Culture Return Policy
+            </p>
             <ul className="list-decimal list-inside mb-4 space-y-2">
               <li>
                 Shipping costs vary based on location and the size/weight of the
