@@ -76,7 +76,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   return (
     <section className="embla overflow-hidden py-4 md:py-8 lg:py-12">
       <div>
-        <h3 className="text-templatePrimaryHeading text-2xl md:text-3xl lg:text-4xl text-center py-2">
+        <h3 className="text-templatePrimaryHeading text-2xl md:text-3xl lg:text-4xl text-center py-2 uppercase">
           Best Sellers
         </h3>
       </div>
@@ -130,10 +130,10 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                           >
                             {product.name}
                           </Link>
-                          <div className="text-templatePrimaryText text-base text-center mt-2 font-semibold text-gray-700">
+                          <div className="text-templatePrimaryText text-base text-center mt-0 font-semibold text-gray-700">
                             ₹{product.price}
                           </div>
-                          <div className="flex justify-center flex-wrap mt-3 space-x-1">
+                          <div className="flex justify-center flex-wrap mt-0 space-x-1">
                             {product.attributes
                               .find((attr) => attr.name === "Size")
                               ?.options.map((size) => {
@@ -153,7 +153,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                                       !isOutOfStock &&
                                       handleSizeChange(product.id, size)
                                     }
-                                    className={`border border-templatePrimary mt-2 rounded-full w-10 h-10 flex items-center justify-center text-xs font-medium text-templateDark cursor-pointer ${
+                                    className={`border border-templatePrimary mt-2 rounded-full w-7 h-7 flex items-center justify-center text-[10px] font-medium text-templateDark cursor-pointer ${
                                       selectedSize === size
                                         ? "border-black"
                                         : "border-gray-400"

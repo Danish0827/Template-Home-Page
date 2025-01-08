@@ -27,7 +27,7 @@ const CustomerHeader = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const logo =
-    "https://bovinosbck.demo-web.live/wp-content/uploads/2024/12/logo.jpg";
+    `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-content/uploads/2024/12/logo.jpg`;
   const header = [
     {
       label: "Orders",

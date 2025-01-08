@@ -145,8 +145,8 @@ const ProductPart = ({ params }: any) => {
         {loading ? (
           ""
         ) : (
-          <div className="pb-5">
-            <h3 className="text-templatePrimaryHeading text-xl md:text-2xl lg:text-3xl pb-3 font-bold capitalize">
+          <div className="md:pb-5">
+            <h3 className="text-templatePrimaryHeading text-xl md:text-2xl lg:text-3xl pb-3 font-bold uppercase">
               {categories.name ? categories.name : star}
             </h3>
 
@@ -237,7 +237,7 @@ const ProductPart = ({ params }: any) => {
                           )}
                         </div>
 
-                        <div className="p-3">
+                        <div className="py-3">
                           <h4 className="mt-2 text-xs lg:text-lg font-semibold text-center line-clamp-1 text-templateSecondaryHeading hover:text-templatePrimary">
                             {product.name}
                           </h4>
@@ -317,7 +317,7 @@ const ProductPart = ({ params }: any) => {
                           {/* Size Variants Color */}
                           {showColor.meta?.["show-product-color"]?.showColor ==
                             "true" && (
-                            <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                            <div className="flex justify-center flex-wrap mt-0 space-x-2">
                               {product.attributes
                                 .find((attr) => attr.name === "Colour")
                                 ?.options.map((colour) => {
@@ -367,7 +367,7 @@ const ProductPart = ({ params }: any) => {
                             </div>
                           )}
                           {/* Size Variants size*/}
-                          <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                          <div className="flex justify-center flex-wrap mt-3 space-x-1 md:space-x-2">
                             {/* Extract unique size values from variations */}
                             {[
                               ...new Set(
@@ -409,7 +409,7 @@ const ProductPart = ({ params }: any) => {
                                         !isOutOfStock &&
                                         handleSizeChange(product.id, size)
                                       }
-                                      className={`border border-templatePrimary mt-2 rounded-full w-10 h-10 flex items-center justify-center text-xs font-medium text-templateDark cursor-pointer ${
+                                      className={`border border-templatePrimary rounded-full md:w-10 md:h-10 w-7 h-7 flex items-center justify-center text-[10px] md:text-xs font-medium text-templateDark cursor-pointer ${
                                         selectedSize === size
                                           ? "border-black"
                                           : "border-gray-400"

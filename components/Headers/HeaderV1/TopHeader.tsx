@@ -1,4 +1,5 @@
 "use client";
+import LanguageSwitcher from "@/hooks/LanguageSwitcher";
 import { headerIcons, headerMedia } from "@/lib/headerData";
 import Link from "next/link";
 import React from "react";
@@ -8,8 +9,8 @@ const TopHeader = () => {
   const { Isicon, icon } = headerIcons;
   return (
     <>
-      <div className="bg-white text-templateDark px-4 lg:px-10 py-2 hidden md:flex flex-wrap items-center border-b">
-        {Ismedia && (
+      <div className="bg-white text-templateDark px-4 lg:px-10 md:py-2 block md:flex flex-wrap justify-between items-center border-b">
+        {/* {Ismedia && (
           <ul className="flex gap-3 items-center w-full md:w-1/2">
             {media.map((media) => (
               <li className="text-[13px]" key={media.id}>
@@ -17,23 +18,26 @@ const TopHeader = () => {
               </li>
             ))}
           </ul>
-        )}
-        {Isicon && (
-          <div className="w-full md:w-1/2 flex justify-end">
-            <ul className="flex gap-2 items-center md:justify-end w-full md:w-1/2">
+        )} */}
+        <div className="hidden md:block">
+          {Isicon && (
+            <ul className="flex gap-2 items-center  w-full md:w-1/2">
               {icon.map(
                 (media) =>
                   media.url && (
                     <li key={media.id}>
                       <Link href={media.url}>
-                        <media.icon />
+                        <media.icon className="text-templatePrimary text-xl" />
                       </Link>
                     </li>
                   )
               )}
             </ul>
-          </div>
-        )}
+          )}
+        </div>
+        <div className="w-full md:w-1/2 flex justify-center md:justify-end">
+          <LanguageSwitcher />
+        </div>
       </div>
     </>
   );

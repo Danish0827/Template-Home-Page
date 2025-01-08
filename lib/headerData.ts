@@ -69,10 +69,10 @@ const headerIcons = {
   Isicon: true,
   icon: [
     { id: 1, icon: FaFacebook, url: "https://www.facebook.com" },
-    // { id: 2, icon: FaTwitter, url: "https://www.twitter.com" },
-    // { id: 3, icon: FaInstagram, url: "https://www.instagram.com" },
-    // { id: 4, icon: FaLinkedin, url: "https://www.linkedin.com" },
-    // { id: 5, icon: FaYoutube, url: "https://www.youtube.com" },
+    { id: 2, icon: FaTwitter, url: "https://www.twitter.com" },
+    { id: 3, icon: FaInstagram, url: "https://www.instagram.com" },
+    { id: 4, icon: FaLinkedin, url: "https://www.linkedin.com" },
+    { id: 5, icon: FaYoutube, url: "https://www.youtube.com" },
     // { id: 6, icon: FaPinterest, url: "https://www.pinterest.com" }, //https://www.pinterest.com
     // { id: 7, icon: FaSnapchat, url: "" }, //https://www.snapchat.com
     // { id: 8, icon: FaTiktok, url: "https://www.tiktok.com" },
@@ -94,7 +94,7 @@ const headerIcons = {
 
 const headers = {
   brandName: "SagarTech",
-  logo: "https://bovinosbck.demo-web.live/wp-content/uploads/2024/12/shoes-logo-design-template-e21760dc27d8a44fe578b7acf2e2bad2_screen-e1733218316459.jpg",
+  logo: `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-content/uploads/2024/12/shoes-logo-design-template-e21760dc27d8a44fe578b7acf2e2bad2_screen-e1733218316459.jpg`,
   content:
     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
   // navbar: [

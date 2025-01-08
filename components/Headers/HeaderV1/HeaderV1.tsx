@@ -11,6 +11,7 @@ import { GrClose } from "react-icons/gr";
 import TopHeader from "./TopHeader";
 import { useScroll } from "framer-motion";
 import Link from "next/link";
+import LanguageSwitcher from "@/hooks/LanguageSwitcher";
 const HeaderV1 = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -36,6 +37,7 @@ const HeaderV1 = () => {
     <>
       <Banner />
       <TopHeader />
+
       {showSearch === false ? (
         // Add `fixed`, `top-0`, `left-0`, and `w-full` for a fixed header
         <div

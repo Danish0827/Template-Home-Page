@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { AppProvider } from "@/components/context";
 import ColorPallete from "@/components/Pallete/ColorPallete";
+import Script from "next/script";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,6 +23,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          src="/assets/scripts/translation.js"
+          strategy="beforeInteractive"
+        />
+        {process.env.GOOGLE_TRANSLATION_CONFIG && (
+          <Script
+            src="//translate.google.com/translate_a/element.js?cb=TranslateInit"
+            strategy="afterInteractive"
+          />
+        )}
+      </head>
       <body
         className={`${geistSans.variable} antialiased font-[family-name:var(--font-geist-sans)]`}
       >

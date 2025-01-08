@@ -346,7 +346,7 @@ const Product: React.FC = () => {
                               !isOutOfStock &&
                               handleSizeChange(product.id, size)
                             }
-                            className={`border border-templatePrimary mt-2 rounded-full w-10 h-10 flex items-center justify-center text-xs font-medium text-templateDark cursor-pointer ${
+                            className={`border border-templatePrimary mt-2 rounded-full md:w-10 md:h-10 w-7 h-7 flex items-center justify-center text-[10px] md:text-xs font-medium text-templateDark cursor-pointer ${
                               selectedSize === size
                                 ? "border-black"
                                 : "border-gray-400"

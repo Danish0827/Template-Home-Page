@@ -9,7 +9,7 @@ const ColorPallete = () => {
     const fetchColorPalettes = async () => {
       try {
         const response = await fetch(
-          "https://bovinosbck.demo-web.live/wp-json/wp/v2/color-palette?_fields=id,title,meta"
+          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/color-palette?_fields=id,title,meta`
         );
         const data = await response.json();
 

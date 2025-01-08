@@ -205,7 +205,7 @@ const Login = () => {
           <a href="/">
             <img
               alt="logo"
-              src="https://bovinosbck.demo-web.live/wp-content/uploads/2024/12/logo.jpg"
+              src={`${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-content/uploads/2024/12/logo.jpg`}
               className="w-44 h-auto"
             />
           </a>

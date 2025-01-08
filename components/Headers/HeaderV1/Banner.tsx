@@ -16,7 +16,7 @@ export default function App() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://bovinosbck.demo-web.live/wp-json/wp/v2/announcement?_fields=id,slug,meta.title"
+          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/announcement?_fields=id,slug,meta.title`
         );
         const data = await response.json();
         // console.log(data, "sas");
