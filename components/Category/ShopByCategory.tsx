@@ -119,13 +119,13 @@ const ShopByCategory: React.FC = () => {
     //     </div>
     //   </div>
     // </div>
-    <div className="px-4 md:px-12 lg:px-16 xl:px-24 shop-by-category-section pt-16 bg-gradient-to-b from-gray-50 via-white to-gray-100">
+    <div className="px-4 md:px-12 lg:px-16 xl:px-24 shop-by-category-section pt-16 bg- from-gray-50 via-white to-gray-100">
       <div className="page-width max-w-7xl mx-auto">
         <div className="section-header text-center mb-12">
           <h3 className="text-templatePrimaryHeading text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-800 uppercase">
             {categoriesHeading}
           </h3>
-          <p className="text-gray-600 mt-4 text-lg md:text-xl">
+          <p className="text-black mt-0 text-base md:text-lg">
             Discover our curated collections and find your favorite products.
           </p>
         </div>

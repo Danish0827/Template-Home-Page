@@ -126,7 +126,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                             href={product.permalink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-templateSecondaryHeading block mt-2 text-sm font-semibold text-center line-clamp-2 h-[50px] hover:text-templatePrimary"
+                            className="text-templateSecondaryHeading line-clamp-1 block mt-2 text-sm font-semibold text-center h-[50px] hover:text-templatePrimary"
                           >
                             {product.name}
                           </Link>

@@ -7,36 +7,47 @@ import { backgroundData } from "@/lib/headerData";
 const BackgroundMediaText = ({ data }: any) => {
   return (
     <div
-      className="background-media-text loaded aos-init aos-animate pt-12 mb-28 lg:mb-0"
+      className="background-media-text loaded aos-init aos-animate pt-12 mb-5 md:mb-28 lg:mb-0"
       data-aos="background-media-text__animation"
     >
-      <div className="background-media-text__container relative flex items-center">
+      <div className="background-media-text__container relative md:flex items-center">
         <img
-          src={data.imageUrl}
+          src={`https://bck.headless-woo-temp.demo-web.live/wp-content/uploads/2025/01/Untitled-design-4.png`}
           alt=""
           width="2400"
           height="889"
           loading="lazy"
-          className="image-fit background-media-text__image h-[550px] object-cover md:h-auto"
+          className="image-fit background-media-text__image h-[550px] object-cover md:h-auto hidden md:block"
+        />
+        <img
+          src={`https://backend.headless-ecommerce-temp2.demo-web.live/wp-content/uploads/2025/01/tedyt.jpg`}
+          alt=""
+          width="2400"
+          height="889"
+          loading="lazy"
+          className="image-fit background-media-text__image h-[400px] object-cover md:h-auto md:hidden block"
         />
 
-        <div className="absolute px-3 lg:px-10 -bottom-28 lg:bottom-auto">
-          <div className="bg-white p-4  w-full lg:w-1/2">
-            <div className="animation-contents border-black border">
+        <div className="md:absolute lg:px-10 -bottom-28 lg:bottom-auto">
+          <div className="bg-white p-4 lg:p-5 w-full lg:w-1/2 rounded-lg shadow-md">
+            <div className="animation-contents border border-black rounded-lg overflow-hidden">
               <div className="background-media-text__text background-media-text__text--framed p-5">
-                <p className="text-2xl pb-2 text-center lg:text-left">
+                <p className="text-lg font-bold text-templatePrimary pb-1 text-center lg:text-left leading-snug uppercase">
                   {data.heading}
                 </p>
-                <p className="text-3xl lg:text-4xl pb-3 text-center lg:text-left">
+
+                <p className="text-3xl lg:text-4xl font-bold text-gray-900 pb-2 text-center lg:text-left leading-tight">
                   {data.subheading}
                 </p>
-                <div className="text-lg text-center lg:text-left">
+
+                <div className="text-sm lg:text-base text-gray-600 leading-normal text-center lg:text-left">
                   <p>{data.description}</p>
                 </div>
-                <div className="text-center lg:text-left mt-8">
+
+                <div className="text-center lg:text-left mt-6">
                   <a
-                    href="/collections/kurtas"
-                    className="bg-black text-white py-3 px-6 hover:bg-zinc-800"
+                    href="/shop/best-sellers"
+                    className="inline-block bg-black text-white py-2 px-6 rounded shadow-sm transition-all duration-300 hover:bg-gray-800 hover:shadow-md"
                   >
                     {data.buttonText}
                   </a>

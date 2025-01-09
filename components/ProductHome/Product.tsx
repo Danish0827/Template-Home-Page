@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
 
 // Skeleton Loader Component
 interface Product {
@@ -46,6 +47,21 @@ const Product: React.FC = () => {
   const [hoveredProductColor, setHoveredProductColor] = useState<
     Record<number, any | null>
   >({}); // Track hovered color per product
+
+  useEffect(() => {
+    const someFunction = async () => {
+      const currencyData = await fetchCountryCurrencyData();
+
+      if (currencyData) {
+        console.log("Country Code:", currencyData.countryCode);
+        console.log("Currency Code:", currencyData.currencyCode);
+        console.log("Currency Symbol:", currencyData.currencySymbol);
+      } else {
+        console.log("Failed to fetch currency data");
+      }
+    };
+    someFunction();
+  }, []);
 
   const fetchProducts = async () => {
     try {
@@ -195,7 +211,7 @@ const Product: React.FC = () => {
                 <h4 className="mt-2 text-xs lg:text-lg font-semibold text-center line-clamp-1 text-templateSecondaryHeading hover:text-templatePrimary">
                   {product.name}
                 </h4>
-                <div className="text-center text-sm mt-2 font-semibold text-gray-700">
+                <div className="text-center text-sm mt-2 font-bold text-black">
                   {product.price
                     ? `₹${parseFloat(product.price).toLocaleString()}`
                     : "Price Not Available"}
@@ -204,7 +220,7 @@ const Product: React.FC = () => {
                 {/* Size Variants Color Image*/}
                 {showColor.meta?.["show-product-color"]?.showImage ==
                   "true" && (
-                  <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                  <div className="flex justify-center flex-wrap mt-0 space-x-2">
                     {product.attributes
                       .find((attr) => attr.name === "Colour")
                       ?.options.map((colour) => {

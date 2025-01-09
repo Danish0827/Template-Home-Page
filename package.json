@@ -23,6 +23,7 @@
     "lucide-react": "^0.445.0",
     "next": "14.2.13",
     "nextjs-toploader": "^3.7.15",
+    "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.16",
     "razorpay": "^2.9.5",
     "react": "^18.3.1",

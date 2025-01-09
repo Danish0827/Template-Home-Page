@@ -36,6 +36,7 @@ export default function RootLayout({
         )}
       </head>
       <body
+        style={{ top: 0, position: "unset" }}
         className={`${geistSans.variable} antialiased font-[family-name:var(--font-geist-sans)]`}
       >
         <AppProvider>

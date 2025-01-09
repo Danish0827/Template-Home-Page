@@ -11,8 +11,16 @@ import { GrClose } from "react-icons/gr";
 import TopHeader from "./TopHeader";
 import { useScroll } from "framer-motion";
 import Link from "next/link";
-import LanguageSwitcher from "@/hooks/LanguageSwitcher";
 const HeaderV1 = () => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      document.body.style.position = "unset";
+    }, 5000);
+    return () => {
+      clearTimeout(timer);
+      document.body.style.position = "";
+    };
+  }, []);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
 

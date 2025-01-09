@@ -187,3 +187,6 @@ h6 {
     --template-primary
   ) !important; /* Change the color of finished step dots */
 }
+.skiptranslate {
+  display: none;
+}
