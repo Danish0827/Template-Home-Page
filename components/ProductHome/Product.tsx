@@ -46,16 +46,27 @@ const Product: React.FC = () => {
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [hoveredProductColor, setHoveredProductColor] = useState<
     Record<number, any | null>
-  >({}); // Track hovered color per product
+  >({});
+
+  // const [currencyCode, setCurrencyCode] = useState<any>();
+  // const [convergenceData, setConvergenceData] = useState();
+  const [currencySymbol, setCurrencySymbol] = useState();
+  const [countryValue, setCountryValue] = useState<number | undefined>(); // For storing your country's value
 
   useEffect(() => {
     const someFunction = async () => {
       const currencyData = await fetchCountryCurrencyData();
+      console.log(currencyData, "jshdkjhaskd hkjsd danish");
 
       if (currencyData) {
-        console.log("Country Code:", currencyData.countryCode);
-        console.log("Currency Code:", currencyData.currencyCode);
-        console.log("Currency Symbol:", currencyData.currencySymbol);
+        // setCurrencyCode(currencyData.currencyCode);
+        setCurrencySymbol(currencyData.currencySymbol);
+        // setConvergenceData(currencyData.ConvergenceData);
+
+        // Extracting your country's value
+        const countryValue =
+          currencyData.ConvergenceData[currencyData.currencyCode];
+        setCountryValue(countryValue);
       } else {
         console.log("Failed to fetch currency data");
       }
@@ -140,7 +151,7 @@ const Product: React.FC = () => {
             Best Sellers
           </h3>
         </div>
-        <div className="px-4 md:px-8 lg:px-12 xl:px-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xxl:grid-cols-5 gap-6">
+        <div className="px-4 md:px-8 lg:px-12 xl:px-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-5 gap-6">
           {Array.from({ length: 8 }).map((_, index) => (
             <SkeletonLoader key={index} />
           ))}
@@ -174,7 +185,7 @@ const Product: React.FC = () => {
           Best Sellers
         </h3>
       </div>
-      <div className="px-4 md:px-8 lg:px-12 xl:px-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xxl:grid-cols-5 gap-6">
+      <div className="px-4 md:px-8 lg:px-12 xl:px-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-5 gap-6">
         {products.slice(0, 8).map((product) => (
           <Link
             href={`/shop/best-sellers/product/${product.slug}?size=${selectedSize}`}
@@ -208,12 +219,21 @@ const Product: React.FC = () => {
               </div>
 
               <div className="p-3">
-                <h4 className="mt-2 text-xs lg:text-lg font-semibold text-center line-clamp-1 text-templateSecondaryHeading hover:text-templatePrimary">
+                <h4 className="mt-0 text-xs lg:text-lg font-semibold text-center line-clamp-1 text-templateSecondaryHeading hover:text-templatePrimary">
                   {product.name}
                 </h4>
                 <div className="text-center text-sm mt-2 font-bold text-black">
-                  {product.price
-                    ? `₹${parseFloat(product.price).toLocaleString()}`
+                  {currencySymbol ? currencySymbol : "₹"}
+                  {countryValue && product.price
+                    ? (
+                        parseFloat(countryValue.toString()) *
+                        parseFloat(product.price.toString())
+                      ).toFixed(2)
+                    : product.price
+                    ? parseFloat(product.price.toString()).toLocaleString(
+                        undefined,
+                        { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                      )
                     : "Price Not Available"}
                 </div>
 
@@ -246,7 +266,7 @@ const Product: React.FC = () => {
                                   [product.id]: null,
                                 }))
                               }
-                              className={` mt-2 rounded-ful flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
+                              className={` mt-0 rounded-ful flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
                                 selectedSize === colour
                                   ? "border-black"
                                   : "border-gray-400"

@@ -2,7 +2,7 @@ export async function POST(req: Request) {
   try {
     // Get the countryCode from the request body
     const { countryCode }: { countryCode: string } = await req.json(); // Use req.json() for parsing the body
-    console.log(countryCode);
+    // console.log(countryCode);
 
     if (!countryCode) {
       return new Response(`Webhook error: Country code is required`, {
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     }
 
     const data = await response.json();
-    console.log(data, "Country data fetched successfully.");
+    // console.log(data, "Country data fetched successfully.");
 
     // Return the data as the response
     return new Response(JSON.stringify(data), {

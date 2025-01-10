@@ -1,11 +1,38 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Import useRouter from Next.js
 import { AppContext } from "./../context";
+import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
 
 const CartFooter = ({ totalFinalPrice }: any) => {
   const [cart] = useContext<any>(AppContext);
   const router = useRouter(); // Initialize the router
+
+  // const [currencyCode, setCurrencyCode] = useState<any>();
+  // const [convergenceData, setConvergenceData] = useState();
+  const [currencySymbol, setCurrencySymbol] = useState();
+  const [countryValue, setCountryValue] = useState<number | undefined>(); // For storing your country's value
+
+  useEffect(() => {
+    const someFunction = async () => {
+      const currencyData = await fetchCountryCurrencyData();
+      // console.log(currencyData, "currencyData");
+
+      if (currencyData) {
+        // setCurrencyCode(currencyData.currencyCode);
+        setCurrencySymbol(currencyData.currencySymbol);
+        // setConvergenceData(currencyData.ConvergenceData);
+
+        // Extracting your country's value
+        const countryValue =
+          currencyData.ConvergenceData[currencyData.currencyCode];
+        setCountryValue(countryValue);
+      } else {
+        console.log("Failed to fetch currency data");
+      }
+    };
+    someFunction();
+  }, []);
 
   const onCheckoutClick = () => {
     console.log("Proceeding to checkout...");
@@ -28,7 +55,18 @@ const CartFooter = ({ totalFinalPrice }: any) => {
           Subtotal
         </div>
         <div className="text-lg font-bold text-gray-900">
-          Rs. {totalFinalPrice}
+          {currencySymbol ? currencySymbol : "₹"}
+          {countryValue && totalFinalPrice
+            ? (
+                parseFloat(countryValue.toString()) *
+                parseFloat(totalFinalPrice.toString())
+              ).toFixed(2)
+            : totalFinalPrice
+            ? parseFloat(totalFinalPrice.toString()).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })
+            : "0.00"}
         </div>
       </div>
 

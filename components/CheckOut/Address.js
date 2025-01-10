@@ -145,9 +145,10 @@ const Address = ({
       <InputField
         name="email"
         type="email"
-        inputValue={email}
+        inputValue={input?.email}
+        defaultValue={email}
         required
-        // handleOnChange={handleOnChange}
+        handleOnChange={handleOnChange}
         label="Email"
         errors={errors}
         isShipping={isShipping}

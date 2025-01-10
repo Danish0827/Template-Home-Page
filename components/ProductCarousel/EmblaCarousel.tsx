@@ -4,6 +4,7 @@ import { EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
 import "./EmblaStyle.css";
 import Link from "next/link";
+import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
 
 type PropType = {
   slides: number[];
@@ -34,6 +35,31 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  // const [currencyCode, setCurrencyCode] = useState<any>();
+  // const [convergenceData, setConvergenceData] = useState();
+  const [currencySymbol, setCurrencySymbol] = useState();
+  const [countryValue, setCountryValue] = useState<number | undefined>(); // For storing your country's value
+
+  useEffect(() => {
+    const someFunction = async () => {
+      const currencyData = await fetchCountryCurrencyData();
+      // console.log(currencyData, "currencyData");
+
+      if (currencyData) {
+        // setCurrencyCode(currencyData.currencyCode);
+        setCurrencySymbol(currencyData.currencySymbol);
+        // setConvergenceData(currencyData.ConvergenceData);
+
+        // Extracting your country's value
+        const countryValue =
+          currencyData.ConvergenceData[currencyData.currencyCode];
+        setCountryValue(countryValue);
+      } else {
+        console.log("Failed to fetch currency data");
+      }
+    };
+    someFunction();
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -131,7 +157,20 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                             {product.name}
                           </Link>
                           <div className="text-templatePrimaryText text-base text-center mt-0 font-semibold text-gray-700">
-                            ₹{product.price}
+                            {currencySymbol ? currencySymbol : "₹"}
+                            {countryValue && product.price
+                              ? (
+                                  parseFloat(countryValue.toString()) *
+                                  parseFloat(product.price.toString())
+                                ).toFixed(2)
+                              : product.price
+                              ? parseFloat(
+                                  product.price.toString()
+                                ).toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })
+                              : "Price Not Available"}
                           </div>
                           <div className="flex justify-center flex-wrap mt-0 space-x-1">
                             {product.attributes

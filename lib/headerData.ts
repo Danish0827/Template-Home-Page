@@ -539,7 +539,7 @@ const backgroundData = {
   heading: "Impressive",
   subheading: "COLLECTIONS FOR FESTIVALS & PARTIES",
   description:
-    "Attend parties in stunning clothes and celebrate the festive season in unmatched elegance. Find your perfect outfit for styling best.",
+    "Attend parties in stunning shoes and celebrate the festive season in unmatched elegance. Find your perfect shoes for styling best.",
   buttonText: "Shop Now",
   buttonLink: "/collections/ethnic-suits",
 };

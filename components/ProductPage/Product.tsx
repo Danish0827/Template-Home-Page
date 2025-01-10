@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { SlEqualizer } from "react-icons/sl";
-import { IoIosArrowDown } from "react-icons/io";
 import Filter from "./Filter";
 import Link from "next/link";
+import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
 
 interface Product {
   id: number;
@@ -37,6 +36,31 @@ const ProductPart = ({ params }: any) => {
   const [hoveredProductColor, setHoveredProductColor] = useState<
     Record<number, any | null>
   >({}); // Track hovered color per product
+  // const [currencyCode, setCurrencyCode] = useState<any>();
+  // const [convergenceData, setConvergenceData] = useState();
+  const [currencySymbol, setCurrencySymbol] = useState();
+  const [countryValue, setCountryValue] = useState<number | undefined>(); // For storing your country's value
+
+  useEffect(() => {
+    const someFunction = async () => {
+      const currencyData = await fetchCountryCurrencyData();
+      // console.log(currencyData, "currencyData");
+
+      if (currencyData) {
+        // setCurrencyCode(currencyData.currencyCode);
+        setCurrencySymbol(currencyData.currencySymbol);
+        // setConvergenceData(currencyData.ConvergenceData);
+
+        // Extracting your country's value
+        const countryValue =
+          currencyData.ConvergenceData[currencyData.currencyCode];
+        setCountryValue(countryValue);
+      } else {
+        console.log("Failed to fetch currency data");
+      }
+    };
+    someFunction();
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -135,7 +159,7 @@ const ProductPart = ({ params }: any) => {
     const variant = product.variations.find((v) =>
       v.attributes.some((attr) => attr.option === color)
     );
-    return variant ? variant.image.src : product.images[0]?.src;
+    return variant ? variant?.image?.src : product.images[0]?.src;
   };
 
   const star = params.replace("-", " ");
@@ -185,7 +209,7 @@ const ProductPart = ({ params }: any) => {
         <Filter count={products.length} />
         {loading ? (
           <div className="page-width page-width--flush-small py-3 px-3 md:px-6 lg:px-10">
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-5 gap-2 md:gap-4">
               {Array.from({ length: 8 }).map((_, index) => (
                 <div
                   key={index}
@@ -204,7 +228,7 @@ const ProductPart = ({ params }: any) => {
           products && (
             <>
               {Array.isArray(products) && products.length > 0 && (
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-5 gap-2 md:gap-4">
                   {products.slice(0, 8).map((product) => (
                     <Link
                       href={`/shop/best-sellers/product/${product.slug}?size=${selectedSize}`}
@@ -241,9 +265,20 @@ const ProductPart = ({ params }: any) => {
                           <h4 className="mt-2 text-xs lg:text-lg font-semibold text-center line-clamp-1 text-templateSecondaryHeading hover:text-templatePrimary">
                             {product.name}
                           </h4>
-                          <div className="text-center text-sm mt-2 font-semibold text-gray-700">
-                            {product.price
-                              ? `₹${parseFloat(product.price).toLocaleString()}`
+                          <div className="text-center text-sm mt-2 font-bold text-gray-700">
+                            {currencySymbol ? currencySymbol : "₹"}
+                            {countryValue && product.price
+                              ? (
+                                  parseFloat(countryValue.toString()) *
+                                  parseFloat(product.price.toString())
+                                ).toFixed(2)
+                              : product.price
+                              ? parseFloat(
+                                  product.price.toString()
+                                ).toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })
                               : "Price Not Available"}
                           </div>
 

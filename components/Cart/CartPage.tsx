@@ -4,6 +4,7 @@ import { AppContext } from "./../context"; // Import the context
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { updateCart, deleteCartItem } from "../../utils/cart";
 import Link from "next/link";
+import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
 
 interface CartItemType {
   variation_id: number;
@@ -20,6 +21,8 @@ interface CartItemProps {
   setCart: (newCart: any) => void; // SetCart function to update cart state
   setRemovingProduct: (isRemoving: boolean) => void;
   setUpdatingProduct: (isUpdating: boolean) => void;
+  countryValue: any;
+  currencySymbol: any;
 }
 
 const CartItem: React.FC<CartItemProps> = ({
@@ -28,6 +31,8 @@ const CartItem: React.FC<CartItemProps> = ({
   setCart,
   setRemovingProduct,
   setUpdatingProduct,
+  countryValue,
+  currencySymbol,
 }) => {
   const [quantity, setQuantity] = useState(item.quantity);
 
@@ -137,7 +142,21 @@ const CartItem: React.FC<CartItemProps> = ({
                     </b>
                   </p>
                   <p className="text-base lg:text-lg text-black font-bold">
-                    Rs. {(item?.data?.price * quantity).toFixed(2)}
+                    {/* Rs. {(item?.data?.price * quantity).toFixed(2)} */}
+                    {currencySymbol ? currencySymbol : "₹"}
+                    {countryValue && item?.data?.price * quantity
+                      ? (
+                          parseFloat(countryValue.toString()) *
+                          parseFloat((item?.data?.price * quantity).toString())
+                        ).toFixed(2)
+                      : item?.data?.price * quantity
+                      ? parseFloat(
+                          (item?.data?.price * quantity).toString()
+                        ).toLocaleString(undefined, {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : "0.00"}
                   </p>
                 </div>
               </div>
@@ -161,6 +180,31 @@ const CartPage = () => {
     });
     return response.json();
   };
+  // const [currencyCode, setCurrencyCode] = useState<any>();
+  // const [convergenceData, setConvergenceData] = useState();
+  const [currencySymbol, setCurrencySymbol] = useState();
+  const [countryValue, setCountryValue] = useState<any>(); // For storing your country's value
+
+  useEffect(() => {
+    const someFunction = async () => {
+      const currencyData = await fetchCountryCurrencyData();
+      // console.log(currencyData, "currencyData");
+
+      if (currencyData) {
+        // setCurrencyCode(currencyData.currencyCode);
+        setCurrencySymbol(currencyData.currencySymbol);
+        // setConvergenceData(currencyData.ConvergenceData);
+
+        // Extracting your country's value
+        const countryValue =
+          currencyData.ConvergenceData[currencyData.currencyCode];
+        setCountryValue(countryValue);
+      } else {
+        console.log("Failed to fetch currency data");
+      }
+    };
+    someFunction();
+  }, []);
 
   const removeItem = async (variationId: number, productId: number) => {
     try {
@@ -253,6 +297,8 @@ const CartPage = () => {
                   newQuantity
                 )
               }
+              currencySymbol={currencySymbol}
+              countryValue={countryValue}
             />
           ))}
         </div>
@@ -264,7 +310,21 @@ const CartPage = () => {
           </h2>
           <div className="flex justify-between items-center mb-4">
             <span>Subtotal</span>
-            <span className="font-bold">Rs. {subtotal.toFixed(2)}</span>
+            <span className="font-bold">
+              {/* Rs. {subtotal.toFixed(2)} */}
+              {currencySymbol ? currencySymbol : "₹"}
+              {countryValue && subtotal
+                ? (
+                    parseFloat(countryValue.toString()) *
+                    parseFloat(subtotal.toString())
+                  ).toFixed(2)
+                : subtotal
+                ? parseFloat(subtotal.toString()).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                : "0.00"}
+            </span>
           </div>
           <Link href="/checkouts">
             <button className="w-full bg-black text-white py-3 rounded-md font-medium hover:bg-gray-800">

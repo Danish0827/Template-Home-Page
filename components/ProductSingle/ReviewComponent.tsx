@@ -28,7 +28,7 @@ const ReviewComponent: React.FC<ReviewProps> = ({
   render,
   setRender,
 }) => {
-  console.log(product, "product");
+  // console.log(product, "product");
 
   const [showReview, setShowReview] = useState(false);
   const handleShowReview = () => {
@@ -63,7 +63,7 @@ const ReviewComponent: React.FC<ReviewProps> = ({
       // media: null as File | null,
     });
   }, [product]);
-  console.log(newReview, "newReview");
+  // console.log(newReview, "newReview");
   useEffect(() => {
     if (review) {
       setReviews(
@@ -91,7 +91,7 @@ const ReviewComponent: React.FC<ReviewProps> = ({
 
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(newReview);
+    // console.log(newReview);
 
     try {
       const response = await fetch("/api/createProductReviews", {

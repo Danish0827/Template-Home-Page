@@ -5,6 +5,7 @@ import Wrapper from "@/components/ProductSingle/Wrapper";
 import AddToCart from "@/components/Cart/add-to-cart";
 import SkeletonLoader from "@/components/ProductSingle/SkeletonLoader"; // Import the SkeletonLoader
 import Link from "next/link";
+import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
 
 interface Product {
   id: number;
@@ -33,6 +34,32 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
   const [regularPrice, setRegularPrice] = useState<string | undefined>(
     undefined
   );
+
+  // const [currencyCode, setCurrencyCode] = useState<any>();
+  // const [convergenceData, setConvergenceData] = useState();
+  const [currencySymbol, setCurrencySymbol] = useState();
+  const [countryValue, setCountryValue] = useState<number | undefined>(); // For storing your country's value
+
+  useEffect(() => {
+    const someFunction = async () => {
+      const currencyData = await fetchCountryCurrencyData();
+      // console.log(currencyData, "currencyData");
+
+      if (currencyData) {
+        // setCurrencyCode(currencyData.currencyCode);
+        setCurrencySymbol(currencyData.currencySymbol);
+        // setConvergenceData(currencyData.ConvergenceData);
+
+        // Extracting your country's value
+        const countryValue =
+          currencyData.ConvergenceData[currencyData.currencyCode];
+        setCountryValue(countryValue);
+      } else {
+        console.log("Failed to fetch currency data");
+      }
+    };
+    someFunction();
+  }, []);
 
   // Fetch product data based on slug
   useEffect(() => {
@@ -139,11 +166,57 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
               {selectedVariant &&
               selectedVariant.price !== selectedVariant.regular_price ? (
                 <div className="text-xl font-semibold">
-                  <del className="text-xl font-semibold">₹{regularPrice}</del> ₹
-                  {price}
+                  <del className="text-xl font-semibold">
+                    {/* ₹{regularPrice} */}
+                    {currencySymbol ? currencySymbol : "₹"}
+                    {countryValue && regularPrice
+                      ? (
+                          parseFloat(countryValue.toString()) *
+                          parseFloat(regularPrice.toString())
+                        ).toFixed(2)
+                      : regularPrice
+                      ? parseFloat(regularPrice.toString()).toLocaleString(
+                          undefined,
+                          {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          }
+                        )
+                      : "Price Not Available"}{" "}
+                  </del>{" "}{" "}{" "}
+                  {/* ₹{price} */}
+                  {currencySymbol ? currencySymbol : "₹"}
+                  {countryValue && price
+                    ? (
+                        parseFloat(countryValue.toString()) *
+                        parseFloat(price.toString())
+                      ).toFixed(2)
+                    : price
+                    ? parseFloat(price.toString()).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })
+                    : "Price Not Available"}
                 </div>
               ) : (
-                <div className="text-xl font-semibold">₹{regularPrice}</div>
+                <div className="text-xl font-semibold">
+                  {" "}
+                  {currencySymbol ? currencySymbol : "₹"}
+                  {countryValue && regularPrice
+                    ? (
+                        parseFloat(countryValue.toString()) *
+                        parseFloat(regularPrice.toString())
+                      ).toFixed(2)
+                    : regularPrice
+                    ? parseFloat(regularPrice.toString()).toLocaleString(
+                        undefined,
+                        {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }
+                      )
+                    : "Price Not Available"}{" "}
+                </div>
               )}
               <div className="text-md font-medium text-black/[0.5]">
                 incl. of taxes

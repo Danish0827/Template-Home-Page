@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { updateCart, deleteCartItem } from "../../utils/cart";
+import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
 
 interface CartItemProps {
   item: any;
@@ -19,6 +20,32 @@ const CartItem: React.FC<CartItemProps> = ({
   setUpdatingProduct,
 }) => {
   const [quantity, setQuantity] = useState(item.quantity);
+
+  // const [currencyCode, setCurrencyCode] = useState<any>();
+  // const [convergenceData, setConvergenceData] = useState();
+  const [currencySymbol, setCurrencySymbol] = useState();
+  const [countryValue, setCountryValue] = useState<number | undefined>(); // For storing your country's value
+
+  useEffect(() => {
+    const someFunction = async () => {
+      const currencyData = await fetchCountryCurrencyData();
+      // console.log(currencyData, "currencyData");
+
+      if (currencyData) {
+        // setCurrencyCode(currencyData.currencyCode);
+        setCurrencySymbol(currencyData.currencySymbol);
+        // setConvergenceData(currencyData.ConvergenceData);
+
+        // Extracting your country's value
+        const countryValue =
+          currencyData.ConvergenceData[currencyData.currencyCode];
+        setCountryValue(countryValue);
+      } else {
+        console.log("Failed to fetch currency data");
+      }
+    };
+    someFunction();
+  }, []);
 
   // Update quantity state when item changes
   useEffect(() => {
@@ -102,7 +129,19 @@ const CartItem: React.FC<CartItemProps> = ({
               </b>
             </p>
             <span className="md:text-lg font-semibold text-gray-900">
-              Rs. {finalPrice}
+              {/* Rs. {finalPrice} */}
+              {currencySymbol ? currencySymbol : "₹"}
+              {countryValue && finalPrice
+                ? (
+                    parseFloat(countryValue.toString()) *
+                    parseFloat(finalPrice.toString())
+                  ).toFixed(2)
+                : finalPrice
+                ? parseFloat(finalPrice.toString()).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })
+                : "0.00"}
             </span>
           </div>
         </div>
