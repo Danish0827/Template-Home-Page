@@ -118,7 +118,7 @@ const Login = () => {
 
       console.log("Cookie set:", `user_g=${modifiedEmails}`);
       // Navigate to home page
-      router.push("/account/orders");
+      router.back();
     } else {
       notification.error({
         message: "Invalid OTP",

@@ -74,6 +74,36 @@ const CheckoutForm = ({ countriesData }) => {
   const [isOrderProcessing, setIsOrderProcessing] = useState(false);
   const [createdOrderData, setCreatedOrderData] = useState({});
 
+  // leave
+
+  //  // const [currencyCode, setCurrencyCode] = useState<any>();
+  //   // const [convergenceData, setConvergenceData] = useState();
+  //   const [currencySymbol, setCurrencySymbol] = useState();
+  //   const [countryValue, setCountryValue] = useState(); // For storing your country's value
+
+  //   useEffect(() => {
+  //     const someFunction = async () => {
+  //       const currencyData = await fetchCountryCurrencyData();
+  //       console.log(currencyData, "currencyData yourOrderPage");
+
+  //       if (currencyData) {
+  //         // setCurrencyCode(currencyData.currencyCode);
+  //         setCurrencySymbol(currencyData.currencySymbol);
+  //         // setConvergenceData(currencyData.ConvergenceData);
+
+  //         // Extracting your country's value
+  //         const countryValue =
+  //           currencyData.ConvergenceData[currencyData.currencyCode];
+  //         setCountryValue(countryValue);
+  //       } else {
+  //         console.log("Failed to fetch currency data");
+  //       }
+  //     };
+  //     someFunction();
+  //   }, []);
+
+  // leave
+
   /**
    * Handle form submit.
    *

@@ -13,7 +13,7 @@ const YourOrder = ({ cart }) => {
   useEffect(() => {
     const someFunction = async () => {
       const currencyData = await fetchCountryCurrencyData();
-      // console.log(currencyData, "currencyData");
+      console.log(currencyData, "currencyData yourOrderPage");
 
       if (currencyData) {
         // setCurrencyCode(currencyData.currencyCode);

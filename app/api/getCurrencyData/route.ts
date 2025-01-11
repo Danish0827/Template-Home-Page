@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     return new Response(
       JSON.stringify({
         error: "An error occurred while fetching country data.",
-        details: error.message,
+        details: "Faield to fetch Country data",
       }),
       {
         status: 500,

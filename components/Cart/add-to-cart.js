@@ -8,7 +8,14 @@ import cx from "classnames";
 import { Input, Space } from "antd";
 import { FaMinus, FaPlus } from "react-icons/fa";
 
-const AddToCart = ({ product, selectedVariant, regular, price }) => {
+const AddToCart = ({
+  product,
+  selectedVariant,
+  regular,
+  price,
+  wholesaleRegular,
+  wholesalePrice,
+}) => {
   const [cart, setCart] = useContext(AppContext);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -18,14 +25,43 @@ const AddToCart = ({ product, selectedVariant, regular, price }) => {
     selectedVariant?.stock_quantity ?? product?.stock_quantity ?? 1;
 
   useEffect(() => setQuantity(1), [selectedVariant]);
-
   const updatePrice = () => {
     if (selectedVariant) {
+      // console.log(selectedVariant,"sadsa");
+
       regular(quantity * selectedVariant.regular_price);
       price(quantity * selectedVariant.price);
+
+      const wholesaleRegularPriceData = selectedVariant.meta_data.find(
+        (data) => data.key === "wholesale_regular_price_amount"
+      );
+
+      const wholesaleSalePriceData = selectedVariant.meta_data.find(
+        (data) => data.key === "wholesale_sale_price_amount"
+      );
+      console.log(
+        wholesaleRegularPriceData?.value,
+        "wholesaleRegularPriceData.value"
+      );
+      console.log(
+        wholesaleSalePriceData?.value,
+        "wholesaleSalePriceData.value"
+      );
+
+      wholesaleRegular(
+        quantity *
+          (wholesaleRegularPriceData
+            ? parseFloat(wholesaleRegularPriceData?.value)
+            : 0)
+      );
+      wholesalePrice(
+        quantity *
+          (wholesaleSalePriceData
+            ? parseFloat(wholesaleSalePriceData?.value)
+            : 0)
+      );
     }
   };
-
   useEffect(updatePrice, [quantity, selectedVariant]);
 
   const adjustQuantity = (amount) => {
@@ -35,6 +71,10 @@ const AddToCart = ({ product, selectedVariant, regular, price }) => {
   };
 
   const handleAddToCart = () => {
+    console.log(quantity, cart, "dadada");
+    console.log(cart, "cart");
+
+    //mark
     const productDetails = {
       id: product.id,
       name: product.name,

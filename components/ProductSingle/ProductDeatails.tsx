@@ -21,6 +21,7 @@ interface Product {
     regular_price: string;
     stock_status: string;
     image: { src: string };
+    meta_data: any;
     attributes: Array<{ name: string; option: string }>;
   }>;
 }
@@ -29,11 +30,14 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [price, setPrice] = useState<string | undefined>(undefined);
   const [regularPrice, setRegularPrice] = useState<string | undefined>(
     undefined
   );
+  const [wholesaleRegular, setWholesaleRegular] = useState<any>();
+  const [wholesalePrice, setWholesalePrice] = useState<any>();
 
   // const [currencyCode, setCurrencyCode] = useState<any>();
   // const [convergenceData, setConvergenceData] = useState();
@@ -78,7 +82,7 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
           `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-productReviews?productId=${data.products[0]?.id}&page=1&perPage=100`
         );
         const datas = await response.json();
-        console.log(data, "product danish ahmed");
+        // console.log(data, "product danish ahmed");
 
         if (data.success) {
           // setReviews(datas.reviews);
@@ -91,7 +95,7 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
         // Parse the URL and extract the 'size' parameter
         const parsedUrl = new URL(url);
         const urlSize = parsedUrl.searchParams.get("size");
-        console.log(urlSize, "urlSize");
+        // console.log(urlSize, "urlSize");
 
         // console.log("Current URL:", url);
         // console.log("Size parameter:", size);
@@ -136,6 +140,14 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
     setSelectedVariant(variant);
   };
 
+  // Handle color selection
+  const handleColorChange = (color: string) => {
+    setSelectedColor(color);
+    const variant = product?.variations.find((v) =>
+      v.attributes.some((attr) => attr.option === color)
+    );
+    setSelectedVariant(variant);
+  };
   // Render loading state if product is not yet available
   if (!product) return <SkeletonLoader />; // Show skeleton loader while loading
 
@@ -183,7 +195,7 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
                           }
                         )
                       : "Price Not Available"}{" "}
-                  </del>{" "}{" "}{" "}
+                  </del>{" "}
                   {/* ₹{price} */}
                   {currencySymbol ? currencySymbol : "₹"}
                   {countryValue && price
@@ -218,13 +230,74 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
                     : "Price Not Available"}{" "}
                 </div>
               )}
-              <div className="text-md font-medium text-black/[0.5]">
+              {wholesaleRegular && (
+                <div className="flex gap-2">
+                  <strong>WholeSale Rate:</strong>
+                  {selectedVariant &&
+                  selectedVariant.price !== wholesaleRegular ? (
+                    <div className="text-xl font-semibold">
+                      <del className="text-xl font-semibold">
+                        {/* ₹{regularPrice} */}
+                        {currencySymbol ? currencySymbol : "₹"}
+                        {countryValue && wholesaleRegular
+                          ? (
+                              parseFloat(countryValue.toString()) *
+                              parseFloat(wholesaleRegular.toString())
+                            ).toFixed(2)
+                          : wholesaleRegular
+                          ? parseFloat(
+                              wholesaleRegular.toString()
+                            ).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })
+                          : "Price Not Available"}{" "}
+                      </del>{" "}
+                      {/* ₹{price} */}
+                      {currencySymbol ? currencySymbol : "₹"}
+                      {countryValue && wholesalePrice
+                        ? (
+                            parseFloat(countryValue.toString()) *
+                            parseFloat(wholesalePrice.toString())
+                          ).toFixed(2)
+                        : wholesalePrice
+                        ? parseFloat(wholesalePrice.toString()).toLocaleString(
+                            undefined,
+                            {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            }
+                          )
+                        : "Price Not Available"}
+                    </div>
+                  ) : (
+                    <div className="text-xl font-semibold">
+                      {" "}
+                      {currencySymbol ? currencySymbol : "₹"}
+                      {countryValue && wholesaleRegular
+                        ? (
+                            parseFloat(countryValue.toString()) *
+                            parseFloat(wholesaleRegular.toString())
+                          ).toFixed(2)
+                        : wholesaleRegular
+                        ? parseFloat(
+                            wholesaleRegular.toString()
+                          ).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })
+                        : "Price Not Available"}{" "}
+                    </div>
+                  )}
+                </div>
+              )}
+              {/* <div className="text-md font-medium text-black/[0.5]">
                 incl. of taxes
-              </div>
+              </div> */}
             </div>
 
             {/* Size selection */}
-            <div className="mb-10">
+            <div className="mb-5">
               <div className="flex justify-between mb-2">
                 <span className="text-md font-semibold">Select Size</span>
                 <span className="text-md font-medium text-black/[0.5] cursor-pointer">
@@ -278,12 +351,72 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
               </div>
             </div>
 
+            {/* Color selection */}
+            {/* <div className="mb-5">
+              <div className="flex justify-between mb-2">
+                <span className="text-md font-semibold">Select Color</span>
+                <span className="text-md font-medium text-black/[0.5] cursor-pointer">
+                  Size Guide
+                </span>
+              </div>
+
+              <div
+                id="sizesGrid"
+                className="grid grid-cols-6 sm:grid-cols-10 lg:grid-cols-8 xl:grid-cols-12 2xl:grid-cols-14 gap-2"
+              >
+                {[
+                  ...new Set(
+                    product.variations?.map(
+                      (variant) =>
+                        variant.attributes.find(
+                          (attr) => attr.name === "Colour"
+                        )?.option
+                    )
+                  ),
+                ] // Create a unique array of size options
+                  .sort((a: any, b: any) => {
+                    // Custom sorting logic if necessary, e.g., numerical sorting
+                    const sizeA = a.split("/").map(Number);
+                    const sizeB = b.split("/").map(Number);
+                    return sizeA[0] - sizeB[0] || sizeA[1] - sizeB[1];
+                  })
+                  .map((color: any) => {
+                    // Find the variant with the corresponding size option
+                    const variant = product.variations.find((v) =>
+                      v.attributes.some((attr) => attr.option === color)
+                    );
+                    const isOutOfStock = variant?.stock_status === "outofstock";
+                    return (
+                      <div
+                        key={`${product.id}-${color}`}
+                        onClick={() =>
+                          !isOutOfStock && handleColorChange(color)
+                        }
+                        className={`border text-[10px] text-white xl:text-sm flex items-center justify-center rounded-full text-center w-12 h-12 sm:w-14 sm:h-14 lg:w-12 lg:h-12 font-medium cursor-pointer ${
+                          selectedColor === color
+                            ? "border-black"
+                            : "border-gray-400"
+                        } ${
+                          isOutOfStock
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:border-black border-black"
+                        }`}
+                        style={{ backgroundColor: color }}
+                      >
+                        {color}
+                      </div>
+                    );
+                  })}
+              </div>
+            </div> */}
             {/* Add to Cart and Buy Now buttons */}
             <AddToCart
               product={product}
               selectedVariant={selectedVariant}
               regular={setRegularPrice}
               price={setPrice}
+              wholesaleRegular={setWholesaleRegular}
+              wholesalePrice={setWholesalePrice}
             />
 
             <Link href="#reviews">
