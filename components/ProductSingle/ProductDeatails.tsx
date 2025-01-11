@@ -230,6 +230,7 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
                     : "Price Not Available"}{" "}
                 </div>
               )}
+              
               {wholesaleRegular && (
                 <div className="flex gap-2">
                   <strong>WholeSale Rate:</strong>
