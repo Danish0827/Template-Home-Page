@@ -71,8 +71,19 @@ const CartItem: React.FC<CartItemProps> = ({
   const handleRemove = () => {
     deleteCartItem(item.key, setCart, setRemovingProduct);
   };
-
-  const finalPrice = (item.data?.price * quantity).toFixed(2);
+  // console.log(quantity,"sadj");
+  const finalPrice =
+    quantity > 10
+      ? item.data?.meta_data?.find(
+          (wSale: any) => wSale.key === "wholesale_sale_price_amount"
+        )?.value !== null
+        ? item.data?.meta_data?.find(
+            (wSale: any) => wSale.key === "wholesale_sale_price_amount"
+          )?.value * quantity
+        : item.data?.meta_data?.find(
+            (wSale: any) => wSale.key === "wholesale_regular_price_amount"
+          )?.value * quantity
+      : item.data?.price * quantity;
 
   return (
     <div

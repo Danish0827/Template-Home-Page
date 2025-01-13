@@ -15,6 +15,7 @@ interface Product {
   regular_price: string;
   images: Array<{ src: string }>;
   attributes: Array<{ name: string; options: string[] }>;
+  meta_data: any;
   variations: Array<{
     id: number;
     price: string;
@@ -36,6 +37,7 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
   const [regularPrice, setRegularPrice] = useState<string | undefined>(
     undefined
   );
+  const [showPrice, setShowPrice] = useState<any>([]);
   const [wholesaleRegular, setWholesaleRegular] = useState<any>();
   const [wholesalePrice, setWholesalePrice] = useState<any>();
 
@@ -63,6 +65,22 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
       }
     };
     someFunction();
+  }, []);
+  const fetchProductColor = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
+      );
+      const data = await response.json();
+      setShowPrice(data?.[0]);
+      // console.log(data?.[0]);
+    } catch (error) {
+      console.error("Failed to fetch products", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProductColor();
   }, []);
 
   // Fetch product data based on slug
@@ -230,9 +248,13 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
                     : "Price Not Available"}{" "}
                 </div>
               )}
-              
-              {wholesaleRegular && (
-                <div className="flex gap-2">
+
+              {showPrice.meta?.["whole_sale_price_feature"]?.showPrice ==
+                "true" ||
+              product?.meta_data?.find(
+                (data: any) => data.key === "show_wholesale_price"
+              )?.value?.yes === "true" ? (
+                <div className="flex gap-2 mt-2">
                   <strong>WholeSale Rate:</strong>
                   {selectedVariant &&
                   selectedVariant.price !== wholesaleRegular ? (
@@ -291,6 +313,8 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
                     </div>
                   )}
                 </div>
+              ) : (
+                ""
               )}
               {/* <div className="text-md font-medium text-black/[0.5]">
                 incl. of taxes
@@ -341,7 +365,7 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
                             : "border-gray-400"
                         } ${
                           isOutOfStock
-                            ? "opacity-50 cursor-not-allowed"
+                            ? "opacity-50 cursor-not-allowed line-through	"
                             : "hover:border-black"
                         }`}
                       >

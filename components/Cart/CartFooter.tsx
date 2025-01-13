@@ -7,7 +7,7 @@ import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
 const CartFooter = ({ totalFinalPrice }: any) => {
   const [cart] = useContext<any>(AppContext);
   const router = useRouter(); // Initialize the router
-
+  
   // const [currencyCode, setCurrencyCode] = useState<any>();
   // const [convergenceData, setConvergenceData] = useState();
   const [currencySymbol, setCurrencySymbol] = useState();
