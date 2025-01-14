@@ -19,8 +19,10 @@ const CartItem: React.FC<CartItemProps> = ({
   setRemovingProduct,
   setUpdatingProduct,
 }) => {
-  const [quantity, setQuantity] = useState(item.quantity);
+  console.log(item, "item danish ");
 
+  const [quantity, setQuantity] = useState(item.quantity);
+  const [showPrice, setShowPrice] = useState<any>([]);
   // const [currencyCode, setCurrencyCode] = useState<any>();
   // const [convergenceData, setConvergenceData] = useState();
   const [currencySymbol, setCurrencySymbol] = useState();
@@ -72,17 +74,39 @@ const CartItem: React.FC<CartItemProps> = ({
     deleteCartItem(item.key, setCart, setRemovingProduct);
   };
   // console.log(quantity,"sadj");
+
+  const fetchProductColor = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
+      );
+      const data = await response.json();
+      setShowPrice(data?.[0]);
+      // console.log(data?.[0]);
+    } catch (error) {
+      console.error("Failed to fetch products", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProductColor();
+  }, []);
+
   const finalPrice =
-    quantity > 10
-      ? item.data?.meta_data?.find(
-          (wSale: any) => wSale.key === "wholesale_sale_price_amount"
-        )?.value !== null
+    showPrice.meta?.["whole_sale_price_feature"]?.showPrice == "true" ||
+    item?.meta_data?.find((data: any) => data.key === "show_wholesale_price")
+      ?.value?.yes === "true"
+      ? quantity > 10
         ? item.data?.meta_data?.find(
             (wSale: any) => wSale.key === "wholesale_sale_price_amount"
-          )?.value * quantity
-        : item.data?.meta_data?.find(
-            (wSale: any) => wSale.key === "wholesale_regular_price_amount"
-          )?.value * quantity
+          )?.value !== ""
+          ? item.data?.meta_data?.find(
+              (wSale: any) => wSale.key === "wholesale_sale_price_amount"
+            )?.value * quantity
+          : item.data?.meta_data?.find(
+              (wSale: any) => wSale.key === "wholesale_regular_price_amount"
+            )?.value * quantity
+        : item.data?.price * quantity
       : item.data?.price * quantity;
 
   return (

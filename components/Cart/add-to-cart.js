@@ -7,6 +7,7 @@ import Link from "next/link";
 import cx from "classnames";
 import { Input, Space } from "antd";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import { empty } from "@apollo/client";
 
 const AddToCart = ({
   product,
@@ -15,6 +16,7 @@ const AddToCart = ({
   price,
   wholesaleRegular,
   wholesalePrice,
+  wPrice,
 }) => {
   const [cart, setCart] = useContext(AppContext);
   const [isAddedToCart, setIsAddedToCart] = useState(false);
@@ -39,14 +41,31 @@ const AddToCart = ({
       const wholesaleSalePriceData = selectedVariant.meta_data.find(
         (data) => data.key === "wholesale_sale_price_amount"
       );
-      console.log(
-        wholesaleRegularPriceData?.value,
-        "wholesaleRegularPriceData.value"
-      );
-      console.log(
-        wholesaleSalePriceData?.value,
-        "wholesaleSalePriceData.value"
-      );
+      if (wholesaleSalePriceData?.value === "") {
+        const wSalePrice = wholesaleRegularPriceData?.value;
+        wPrice(wSalePrice);
+        console.log(
+          wSalePrice,
+          "console.log(wSalePrice);",
+          "wholesaleRegularPriceData"
+        );
+      } else {
+        const wSalePrice = wholesaleSalePriceData?.value;
+        wPrice(wSalePrice);
+        console.log(
+          wSalePrice,
+          "console.log(wSalePrice);",
+          "wholesaleSalePriceData"
+        );
+      }
+      // console.log(
+      //   wholesaleRegularPriceData?.value,
+      //   "wholesaleRegularPriceData.value"
+      // );
+      // console.log(
+      //   wholesaleSalePriceData?.value,
+      //   "wholesaleSalePriceData.value"
+      // );
 
       wholesaleRegular(
         quantity *
@@ -87,7 +106,9 @@ const AddToCart = ({
         ?.map((attr) => attr.option)
         .join(", "),
       variantPrice: selectedVariant?.price,
+      metaData: product.meta_data,
     };
+    console.log(productDetails, "productDetails");
 
     addToCart(
       product.id,

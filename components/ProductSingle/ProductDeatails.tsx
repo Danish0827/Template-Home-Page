@@ -40,7 +40,7 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
   const [showPrice, setShowPrice] = useState<any>([]);
   const [wholesaleRegular, setWholesaleRegular] = useState<any>();
   const [wholesalePrice, setWholesalePrice] = useState<any>();
-
+  const [wPrice, setWPrice] = useState<any>();
   // const [currencyCode, setCurrencyCode] = useState<any>();
   // const [convergenceData, setConvergenceData] = useState();
   const [currencySymbol, setCurrencySymbol] = useState();
@@ -256,8 +256,29 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
               )?.value?.yes === "true" ? (
                 <div className="flex gap-2 mt-2">
                   <strong>WholeSale Rate:</strong>
-                  {selectedVariant &&
-                  selectedVariant.price !== wholesaleRegular ? (
+                  {wPrice ==
+                  selectedVariant?.meta_data?.find(
+                    (data: any) => data.key === "wholesale_regular_price_amount"
+                  ).value ? (
+                    <div className="text-xl font-semibold">
+                      {" "}
+                      {/* product */}
+                      {currencySymbol ? currencySymbol : "₹"}
+                      {countryValue && wholesaleRegular
+                        ? (
+                            parseFloat(countryValue.toString()) *
+                            parseFloat(wholesaleRegular.toString())
+                          ).toFixed(2)
+                        : wholesaleRegular
+                        ? parseFloat(
+                            wholesaleRegular.toString()
+                          ).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })
+                        : "Price Not Available"}{" "}
+                    </div>
+                  ) : (
                     <div className="text-xl font-semibold">
                       <del className="text-xl font-semibold">
                         {/* ₹{regularPrice} */}
@@ -293,24 +314,6 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
                           )
                         : "Price Not Available"}
                     </div>
-                  ) : (
-                    <div className="text-xl font-semibold">
-                      {" "}
-                      {currencySymbol ? currencySymbol : "₹"}
-                      {countryValue && wholesaleRegular
-                        ? (
-                            parseFloat(countryValue.toString()) *
-                            parseFloat(wholesaleRegular.toString())
-                          ).toFixed(2)
-                        : wholesaleRegular
-                        ? parseFloat(
-                            wholesaleRegular.toString()
-                          ).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })
-                        : "Price Not Available"}{" "}
-                    </div>
                   )}
                 </div>
               ) : (
@@ -319,6 +322,7 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
               {/* <div className="text-md font-medium text-black/[0.5]">
                 incl. of taxes
               </div> */}
+              {/* {wPrice} */}
             </div>
 
             {/* Size selection */}
@@ -442,6 +446,7 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
               price={setPrice}
               wholesaleRegular={setWholesaleRegular}
               wholesalePrice={setWholesalePrice}
+              wPrice={setWPrice}
             />
 
             <Link href="#reviews">
