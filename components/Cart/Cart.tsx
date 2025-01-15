@@ -1,14 +1,26 @@
 "use client";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CartItem from "./CartItem";
 import { AppContext } from "./../context";
+
+type MetaDataType = {
+  key: string;
+  value: string;
+};
 
 interface CartItemType {
   variation_id: number;
   product_id: number;
   quantity: number;
   line_total: number;
-  data: { name: string; image?: { src: string }; stock_quantity?: number };
+  data: {
+    name: string;
+    image?: { src: string };
+    stock_quantity?: number;
+    price?: number;
+
+    meta_data?: MetaDataType[];
+  };
   variation?: { attribute_pa_colour?: string; attribute_pa_size?: string };
 }
 
@@ -77,13 +89,62 @@ const Cart: React.FC<CartProps> = ({ TotalFinalPrice }) => {
       console.error("Error updating quantity:", error);
     }
   };
+  const [showPrice, setShowPrice] = useState<any>([]);
+  const fetchProductColor = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
+      );
+      const data = await response.json();
+      setShowPrice(data?.[0]);
+      // console.log(data?.[0]);
+    } catch (error) {
+      console.error("Failed to fetch products", error);
+    }
+  };
 
   useEffect(() => {
+    fetchProductColor();
+  }, []);
+
+  useEffect(() => {
+    const calculateItemPrice = (item: CartItemType): number => {
+      const isWholesaleEnabled =
+        showPrice.meta?.["whole_sale_price_feature"]?.showPrice === "true" ||
+        cart?.cartItems?.meta_data?.some(
+          (data: any) =>
+            data.key === "show_wholesale_price" && data.value?.yes === "true"
+        );
+
+      const itemQuantity = item.quantity || 1; // Default to 1 if quantity is missing
+
+      if (isWholesaleEnabled && itemQuantity > 10) {
+        const wholesalePrice: any =
+          item.data?.meta_data?.find(
+            (meta: any) => meta.key === "wholesale_sale_price_amount"
+          )?.value || 0;
+        const regularWholesalePrice: any =
+          item.data?.meta_data?.find(
+            (meta: any) => meta.key === "wholesale_regular_price_amount"
+          )?.value || 0;
+
+        return wholesalePrice
+          ? wholesalePrice * itemQuantity
+          : regularWholesalePrice * itemQuantity;
+      }
+
+      return (item.data?.price || 0) * itemQuantity;
+    };
+
     const total = cart?.cartItems
-      ?.reduce((acc: number, item: CartItemType) => acc + item.line_total, 0)
+      ?.reduce((acc: number, item: CartItemType) => {
+        const itemPrice = calculateItemPrice(item);
+        return acc + itemPrice;
+      }, 0)
       ?.toFixed(2);
+
     TotalFinalPrice(total || "0.00");
-  }, [cart, TotalFinalPrice]);
+  }, [cart, TotalFinalPrice, showPrice]);
 
   if (!cart?.cartItems?.length) return <p>Your cart is empty.</p>;
 

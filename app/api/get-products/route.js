@@ -18,6 +18,7 @@ export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const page = searchParams.get("page") || 1; // Default to page 1
   const perPage = searchParams.get("perPage") || 100; // Default to 100 products per page
+  const id = searchParams.get("id"); // ID for individual product
   const slug = searchParams.get("slug"); // Slug for individual product
   const categorySlug = searchParams.get("categorySlug"); // Category slug for filtering by category
   const includeVariations = searchParams.get("includeVariations") === "true"; // Fetch variations or not
@@ -26,12 +27,14 @@ export async function GET(req) {
   try {
     let data;
 
-    // If slug is provided, fetch the product by slug
-    if (slug) {
+    // If ID is provided, fetch the product by ID
+    if (id) {
+      const productResponse = await api.get(`products/${id}`);
+      data = [productResponse.data]; // Wrap in an array for consistency
+    } else if (slug) {
+      // If slug is provided, fetch the product by slug
       const productResponse = await api.get("products", { slug });
       data = productResponse.data;
-      // console.log(productResponse, "productResponse");
-      // console.log();
 
       // Ensure a product with the slug is found
       if (data.length === 0) {
@@ -91,3 +94,4 @@ export async function GET(req) {
     return NextResponse.json(responseData, { status: 500 });
   }
 }
+

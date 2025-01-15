@@ -19,7 +19,8 @@ const CartItem: React.FC<CartItemProps> = ({
   setRemovingProduct,
   setUpdatingProduct,
 }) => {
-  console.log(item, "item danish ");
+  // console.log(item, "item danish ");
+  const [product, setProduct] = useState<any>(null);
 
   const [quantity, setQuantity] = useState(item.quantity);
   const [showPrice, setShowPrice] = useState<any>([]);
@@ -48,7 +49,22 @@ const CartItem: React.FC<CartItemProps> = ({
     };
     someFunction();
   }, []);
-
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?id=${item?.product_id}`
+        );
+        const data = await res.json();
+        const fetchedProduct = data.products[0];
+        setProduct(fetchedProduct);
+        // console.log(fetchedProduct, "danish data sjka");
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
+    };
+    fetchProduct();
+  }, []);
   // Update quantity state when item changes
   useEffect(() => {
     setQuantity(item.quantity);
@@ -94,7 +110,7 @@ const CartItem: React.FC<CartItemProps> = ({
 
   const finalPrice =
     showPrice.meta?.["whole_sale_price_feature"]?.showPrice == "true" ||
-    item?.meta_data?.find((data: any) => data.key === "show_wholesale_price")
+    product?.meta_data?.find((data: any) => data.key === "show_wholesale_price")
       ?.value?.yes === "true"
       ? quantity > 10
         ? item.data?.meta_data?.find(

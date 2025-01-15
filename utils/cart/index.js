@@ -22,8 +22,8 @@ export const addToCart = (
   setLoading,
   productDetails
 ) => {
-  console.log(productDetails,"productDetails");
-  
+  console.log(productDetails, "productDetails");
+
   const storedSession = getSession(); // Get the session (if exists)
   const addOrViewCartConfig = getApiCartConfig(); // API configuration
 
@@ -34,7 +34,7 @@ export const addToCart = (
     product_id: productId,
     quantity: qty,
     variation_id: productDetails.variantId, // Pass the specific variant ID
-    meta_data: productDetails.meta_data,
+    meta_data: productDetails.metaData,
     variations: {
       attribute_pa_size: productDetails.variantName, // For example, size attribute
       // Add other attributes if necessary, like color, material, etc.
