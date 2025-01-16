@@ -6,12 +6,24 @@ import { updateCart, deleteCartItem } from "../../utils/cart";
 import Link from "next/link";
 import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
 
+type MetaDataType = {
+  key: string;
+  value: string;
+};
+
 interface CartItemType {
   variation_id: number;
   product_id: number;
   quantity: number;
   line_total: number;
-  data: { name: string; image?: { src: string }; stock_quantity?: number };
+  data: {
+    name: string;
+    image?: { src: string };
+    stock_quantity?: number;
+    price?: number;
+
+    meta_data?: MetaDataType[];
+  };
   variation?: { attribute_pa_colour?: string; attribute_pa_size?: string };
 }
 
@@ -35,6 +47,8 @@ const CartItem: React.FC<CartItemProps> = ({
   currencySymbol,
 }) => {
   const [quantity, setQuantity] = useState(item.quantity);
+  const [product, setProduct] = useState<any>(null);
+  const [showPrice, setShowPrice] = useState<any>([]);
 
   // Update quantity state when item changes
   useEffect(() => {
@@ -69,8 +83,54 @@ const CartItem: React.FC<CartItemProps> = ({
     e.preventDefault();
     deleteCartItem(item.key, setCart, setRemovingProduct);
   };
+  useEffect(() => {
+    const fetchProductColor = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
+        );
+        const data = await response.json();
+        setShowPrice(data?.[0]);
+        // console.log(data?.[0]);
+      } catch (error) {
+        console.error("Failed to fetch products", error);
+      }
+    };
+    fetchProductColor();
+  }, []);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?id=${item?.product_id}`
+        );
+        const data = await res.json();
+        const fetchedProduct = data.products[0];
+        setProduct(fetchedProduct);
+        // console.log(fetchedProduct, "danish data sjka");
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
+    };
+    fetchProduct();
+  }, []);
 
-  const finalPrice = (item.data?.price * quantity).toFixed(2);
+  const finalPrice =
+    showPrice.meta?.["whole_sale_price_feature"]?.showPrice == "true" ||
+    product?.meta_data?.find((data: any) => data.key === "show_wholesale_price")
+      ?.value?.yes === "true"
+      ? quantity > 10
+        ? item.data?.meta_data?.find(
+            (wSale: any) => wSale.key === "wholesale_sale_price_amount"
+          )?.value !== ""
+          ? item.data?.meta_data?.find(
+              (wSale: any) => wSale.key === "wholesale_sale_price_amount"
+            )?.value * quantity
+          : item.data?.meta_data?.find(
+              (wSale: any) => wSale.key === "wholesale_regular_price_amount"
+            )?.value * quantity
+        : item.data?.price * quantity
+      : item.data?.price * quantity;
 
   return (
     <div className={`${!isLast ? "border-b" : ""} py-4`}>
@@ -143,19 +203,21 @@ const CartItem: React.FC<CartItemProps> = ({
                   </p>
                   <p className="text-base lg:text-lg text-black font-bold">
                     {/* Rs. {(item?.data?.price * quantity).toFixed(2)} */}
+
                     {currencySymbol ? currencySymbol : "₹"}
-                    {countryValue && item?.data?.price * quantity
+                    {countryValue && finalPrice
                       ? (
                           parseFloat(countryValue.toString()) *
-                          parseFloat((item?.data?.price * quantity).toString())
+                          parseFloat(finalPrice.toString())
                         ).toFixed(2)
-                      : item?.data?.price * quantity
-                      ? parseFloat(
-                          (item?.data?.price * quantity).toString()
-                        ).toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })
+                      : finalPrice
+                      ? parseFloat(finalPrice.toString()).toLocaleString(
+                          undefined,
+                          {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          }
+                        )
                       : "0.00"}
                   </p>
                 </div>
@@ -255,18 +317,94 @@ const CartPage = () => {
       console.error("Error updating quantity:", error);
     }
   };
+  const [products, setProducts] = useState<any[]>([]);
+  const [showPrice, setShowPrice] = useState<any>([]);
+  const [total, setSubTotalPrice] = useState<any[]>([]);
+  useEffect(() => {
+    const fetchProductColor = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
+        );
+        const data = await response.json();
+        setShowPrice(data?.[0]);
+        // console.log(data?.[0]);
+      } catch (error) {
+        console.error("Failed to fetch products", error);
+      }
+    };
+    fetchProductColor();
+  }, []);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const productIds =
+          cart?.cartItems?.map((item: any) => item.product_id) || [];
+        const fetchPromises = productIds.map((id: any) =>
+          fetch(
+            `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?id=${id}`
+          ).then((res) => res.json())
+        );
+        const responses = await Promise.all(fetchPromises);
+        const fetchedProducts = responses.map((res) => res.products[0]);
+        setProducts(fetchedProducts);
+        console.log(fetchedProducts);
+        console.log(cart);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [cart]);
+  useEffect(() => {
+    const calculateItemPrice = (item: CartItemType): number => {
+      const productMetaData = products.find(
+        (product: any) => product.id === item.product_id
+      )?.meta_data;
+
+      const isWholesaleEnabled =
+        showPrice.meta?.["whole_sale_price_feature"]?.showPrice === "true" ||
+        productMetaData?.some(
+          (data: any) =>
+            data.key === "show_wholesale_price" && data.value?.yes === "true"
+        );
+
+      const itemQuantity = item.quantity || 1; // Default to 1 if quantity is missing
+
+      if (isWholesaleEnabled && itemQuantity > 10) {
+        const wholesalePrice: any =
+          item.data?.meta_data?.find(
+            (meta: any) => meta.key === "wholesale_sale_price_amount"
+          )?.value || 0;
+        const regularWholesalePrice: any =
+          item.data?.meta_data?.find(
+            (meta: any) => meta.key === "wholesale_regular_price_amount"
+          )?.value || 0;
+
+        return wholesalePrice
+          ? wholesalePrice * itemQuantity
+          : regularWholesalePrice * itemQuantity;
+      }
+
+      return (item.data?.price || 0) * itemQuantity;
+    };
+
+    const total = cart?.cartItems
+      ?.reduce((acc: number, item: CartItemType) => {
+        const itemPrice = calculateItemPrice(item);
+        return acc + itemPrice;
+      }, 0)
+      ?.toFixed(2);
+
+    setSubTotalPrice(total || "0.00");
+  }, [cart, showPrice, products]);
 
   if (!cart?.cartItems?.length) return <p>Your cart is empty.</p>;
-  const subtotal =
-    cart?.cartItems?.reduce(
-      (total: number, item: any) =>
-        total + (item?.data?.price || 0) * (item.quantity || 0),
-      0
-    ) || 0; // Default to 0 if undefined
-
-  const onCheckoutClick = () => {
-    console.log("Proceeding to checkout...");
-  };
+  // const onCheckoutClick = () => {
+  //   console.log("Proceeding to checkout...");
+  // };
 
   return (
     <main className="bg-gray-50 py-8 px-4 lg:px-16">
@@ -313,13 +451,13 @@ const CartPage = () => {
             <span className="font-bold">
               {/* Rs. {subtotal.toFixed(2)} */}
               {currencySymbol ? currencySymbol : "₹"}
-              {countryValue && subtotal
+              {countryValue && total
                 ? (
                     parseFloat(countryValue.toString()) *
-                    parseFloat(subtotal.toString())
+                    parseFloat(total.toString())
                   ).toFixed(2)
-                : subtotal
-                ? parseFloat(subtotal.toString()).toLocaleString(undefined, {
+                : total
+                ? parseFloat(total.toString()).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })

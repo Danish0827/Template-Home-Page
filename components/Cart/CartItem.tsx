@@ -21,9 +21,9 @@ const CartItem: React.FC<CartItemProps> = ({
 }) => {
   // console.log(item, "item danish ");
   const [product, setProduct] = useState<any>(null);
+  const [showPrice, setShowPrice] = useState<any>([]);
 
   const [quantity, setQuantity] = useState(item.quantity);
-  const [showPrice, setShowPrice] = useState<any>([]);
   // const [currencyCode, setCurrencyCode] = useState<any>();
   // const [convergenceData, setConvergenceData] = useState();
   const [currencySymbol, setCurrencySymbol] = useState();
@@ -49,22 +49,7 @@ const CartItem: React.FC<CartItemProps> = ({
     };
     someFunction();
   }, []);
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?id=${item?.product_id}`
-        );
-        const data = await res.json();
-        const fetchedProduct = data.products[0];
-        setProduct(fetchedProduct);
-        // console.log(fetchedProduct, "danish data sjka");
-      } catch (error) {
-        console.error("Error fetching product:", error);
-      }
-    };
-    fetchProduct();
-  }, []);
+
   // Update quantity state when item changes
   useEffect(() => {
     setQuantity(item.quantity);
@@ -91,21 +76,36 @@ const CartItem: React.FC<CartItemProps> = ({
   };
   // console.log(quantity,"sadj");
 
-  const fetchProductColor = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
-      );
-      const data = await response.json();
-      setShowPrice(data?.[0]);
-      // console.log(data?.[0]);
-    } catch (error) {
-      console.error("Failed to fetch products", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchProductColor = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
+        );
+        const data = await response.json();
+        setShowPrice(data?.[0]);
+        // console.log(data?.[0]);
+      } catch (error) {
+        console.error("Failed to fetch products", error);
+      }
+    };
     fetchProductColor();
+  }, []);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?id=${item?.product_id}`
+        );
+        const data = await res.json();
+        const fetchedProduct = data.products[0];
+        setProduct(fetchedProduct);
+        // console.log(fetchedProduct, "danish data sjka");
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
+    };
+    fetchProduct();
   }, []);
 
   const finalPrice =

@@ -2,6 +2,8 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 // Skeleton Loader Component
 interface Product {
@@ -52,6 +54,113 @@ const Product: React.FC = () => {
   // const [convergenceData, setConvergenceData] = useState();
   const [currencySymbol, setCurrencySymbol] = useState();
   const [countryValue, setCountryValue] = useState<number | undefined>(); // For storing your country's value
+  const [wishlist, setWishlist] = useState<number[]>([]); // Ensure this is an array
+  const router = useRouter();
+  const [email, setEmail] = useState<string | null>(null);
+
+  // Load user email from cookies
+  useEffect(() => {
+    const cookies = document.cookie;
+    const cookieValue = cookies
+      .split("; ")
+      .find((row) => row.startsWith("user_g="))
+      ?.split("=")[1];
+
+    if (!cookieValue) {
+      console.error("Cookie 'user_g' not found");
+      return;
+    }
+
+    const segments = cookieValue.split("-");
+    if (segments.length < 3) {
+      console.error("Invalid cookie format");
+      return;
+    }
+
+    const secondSegment = segments[1];
+    const userEmail = secondSegment.includes("@")
+      ? secondSegment
+      : `${secondSegment}@gmail.com`;
+
+    setEmail(userEmail);
+  }, []);
+
+  // Load wishlist from localStorage on mount
+  useEffect(() => {
+    const storedWishlist = localStorage.getItem("wishlist");
+    if (storedWishlist) {
+      try {
+        const parsedData = JSON.parse(storedWishlist);
+        if (Array.isArray(parsedData?.products)) {
+          setWishlist(parsedData.products.map((product: any) => product.id)); // Extract IDs for state
+        } else {
+          console.error("Invalid wishlist data format in localStorage");
+        }
+      } catch (error) {
+        console.error("Error parsing wishlist from localStorage:", error);
+      }
+    }
+  }, []);
+
+  const handleHeartClick = (productData: {
+    id: number;
+    [key: string]: any;
+  }) => {
+    const authCookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("auth="));
+
+    if (!authCookie) {
+      router.push("/login");
+      return; // User is not authenticated, redirect to login
+    }
+
+    // Update wishlist in state
+    setWishlist((prevWishlist) => {
+      let updatedWishlist;
+      if (prevWishlist.includes(productData.id)) {
+        // Remove product from wishlist
+        updatedWishlist = prevWishlist.filter((id) => id !== productData.id);
+      } else {
+        // Add product to wishlist
+        updatedWishlist = [...prevWishlist, productData.id];
+      }
+
+      // Save full product data for wishlist in localStorage
+      const wishlistData = JSON.parse(localStorage.getItem("wishlist") || "[]");
+      const updatedWishlistData = wishlistData?.products || [];
+
+      // Update wishlist data and save to localStorage
+      if (!prevWishlist.includes(productData.id)) {
+        updatedWishlistData.push(productData);
+      } else {
+        const indexToRemove = updatedWishlistData.findIndex(
+          (item: any) => item.id === productData.id
+        );
+        if (indexToRemove > -1) {
+          updatedWishlistData.splice(indexToRemove, 1); // Remove product if already in the wishlist
+        }
+      }
+
+      localStorage.setItem(
+        "wishlist",
+        JSON.stringify({
+          email,
+          products: updatedWishlistData,
+          length: updatedWishlistData.length,
+        })
+      );
+      return updatedWishlist;
+    });
+  };
+
+  // Load wishlist from localStorage when the component mounts
+  useEffect(() => {
+    const savedWishlist = localStorage.getItem("wishlist");
+    if (savedWishlist) {
+      setWishlist(JSON.parse(savedWishlist)); // Set wishlist state with saved data
+    }
+  }, []);
 
   useEffect(() => {
     const someFunction = async () => {
@@ -194,8 +303,22 @@ const Product: React.FC = () => {
           >
             <div
               key={product.id}
-              className="rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white overflow-hidden"
+              className="relative rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white overflow-hidden"
             >
+              <div
+                className="absolute top-2 right-2 bg-[#fff] text-black text-xs font-semibold px-2 py-1 rounded-lg uppercase z-10 cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent link navigation if wrapped in a link
+                  e.stopPropagation(); // Prevent link navigation
+                  handleHeartClick(product);
+                }}
+              >
+                {wishlist.includes(product.id) ? (
+                  <FaHeart className="text-xl text-red-500" /> // Filled heart icon
+                ) : (
+                  <FaRegHeart className="text-xl" /> // Empty heart icon
+                )}
+              </div>
               <div className="relative group">
                 <img
                   className="w-full h-auto object-cover"

@@ -89,6 +89,15 @@ const Cart: React.FC<CartProps> = ({ TotalFinalPrice }) => {
       console.error("Error updating quantity:", error);
     }
   };
+
+  // products?.forEach((product) => {
+  //   const hasWholesalePrice = product?.meta_data?.some(
+  //     (data: any) =>
+  //       data.key === "show_wholesale_price" && data.value?.yes === "true"
+  //   );
+  //   console.log("Wholesale Price Available:", hasWholesalePrice);
+  // });
+  const [products, setProducts] = useState<any[]>([]);
   const [showPrice, setShowPrice] = useState<any>([]);
   const fetchProductColor = async () => {
     try {
@@ -108,10 +117,37 @@ const Cart: React.FC<CartProps> = ({ TotalFinalPrice }) => {
   }, []);
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const productIds =
+          cart?.cartItems?.map((item: any) => item.product_id) || [];
+        const fetchPromises = productIds.map((id: any) =>
+          fetch(
+            `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?id=${id}`
+          ).then((res) => res.json())
+        );
+        const responses = await Promise.all(fetchPromises);
+        const fetchedProducts = responses.map((res) => res.products[0]);
+        setProducts(fetchedProducts);
+        console.log(fetchedProducts);
+        console.log(cart);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [cart]);
+
+  useEffect(() => {
     const calculateItemPrice = (item: CartItemType): number => {
+      const productMetaData = products.find(
+        (product: any) => product.id === item.product_id
+      )?.meta_data;
+
       const isWholesaleEnabled =
         showPrice.meta?.["whole_sale_price_feature"]?.showPrice === "true" ||
-        cart?.cartItems?.meta_data?.some(
+        productMetaData?.some(
           (data: any) =>
             data.key === "show_wholesale_price" && data.value?.yes === "true"
         );
@@ -144,7 +180,7 @@ const Cart: React.FC<CartProps> = ({ TotalFinalPrice }) => {
       ?.toFixed(2);
 
     TotalFinalPrice(total || "0.00");
-  }, [cart, TotalFinalPrice, showPrice]);
+  }, [cart, TotalFinalPrice, showPrice, products]);
 
   if (!cart?.cartItems?.length) return <p>Your cart is empty.</p>;
 
