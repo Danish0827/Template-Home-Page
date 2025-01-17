@@ -54,53 +54,32 @@ const Product: React.FC = () => {
   // const [convergenceData, setConvergenceData] = useState();
   const [currencySymbol, setCurrencySymbol] = useState();
   const [countryValue, setCountryValue] = useState<number | undefined>(); // For storing your country's value
-  const [wishlist, setWishlist] = useState<number[]>([]); // Ensure this is an array
+  // const [wishlist, setWishlist] = useState<number[]>([]); // Ensure this is an array
   const router = useRouter();
   const [email, setEmail] = useState<string | null>(null);
+  const [wishlist, setWishlist] = useState<any>([]);
 
-  // Load user email from cookies
   useEffect(() => {
-    const cookies = document.cookie;
-    const cookieValue = cookies
-      .split("; ")
-      .find((row) => row.startsWith("user_g="))
-      ?.split("=")[1];
-
-    if (!cookieValue) {
-      console.error("Cookie 'user_g' not found");
-      return;
-    }
-
-    const segments = cookieValue.split("-");
-    if (segments.length < 3) {
-      console.error("Invalid cookie format");
-      return;
-    }
-
-    const secondSegment = segments[1];
-    const userEmail = secondSegment.includes("@")
-      ? secondSegment
-      : `${secondSegment}@gmail.com`;
-
-    setEmail(userEmail);
-  }, []);
-
-  // Load wishlist from localStorage on mount
-  useEffect(() => {
+    // Get the wishlist from localStorage
     const storedWishlist = localStorage.getItem("wishlist");
     if (storedWishlist) {
       try {
-        const parsedData = JSON.parse(storedWishlist);
-        if (Array.isArray(parsedData?.products)) {
-          setWishlist(parsedData.products.map((product: any) => product.id)); // Extract IDs for state
-        } else {
-          console.error("Invalid wishlist data format in localStorage");
-        }
+        setWishlist(JSON.parse(storedWishlist)); // Parse JSON string into an array
       } catch (error) {
         console.error("Error parsing wishlist from localStorage:", error);
+        setWishlist([]); // Fallback to an empty array if parsing fails
       }
     }
   }, []);
+
+  const handleWishlistToggle = (productId: number) => {
+    const updatedWishlist = wishlist.includes(productId)
+      ? wishlist.filter((id: any) => id !== productId) // Remove product from wishlist
+      : [...wishlist, productId]; // Add product to wishlist
+
+    setWishlist(updatedWishlist);
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist)); // Update localStorage
+  };
 
   const handleHeartClick = (productData: {
     id: number;
@@ -116,11 +95,13 @@ const Product: React.FC = () => {
     }
 
     // Update wishlist in state
-    setWishlist((prevWishlist) => {
+    setWishlist((prevWishlist: any) => {
       let updatedWishlist;
       if (prevWishlist.includes(productData.id)) {
         // Remove product from wishlist
-        updatedWishlist = prevWishlist.filter((id) => id !== productData.id);
+        updatedWishlist = prevWishlist.filter(
+          (id: any) => id !== productData.id
+        );
       } else {
         // Add product to wishlist
         updatedWishlist = [...prevWishlist, productData.id];
@@ -165,7 +146,7 @@ const Product: React.FC = () => {
   useEffect(() => {
     const someFunction = async () => {
       const currencyData = await fetchCountryCurrencyData();
-      console.log(currencyData, "jshdkjhaskd hkjsd danish");
+      // console.log(currencyData, "jshdkjhaskd hkjsd danish");
 
       if (currencyData) {
         // setCurrencyCode(currencyData.currencyCode);
@@ -286,6 +267,7 @@ const Product: React.FC = () => {
       </div>
     );
   }
+  console.log(wishlist, "wishlist");
 
   return (
     <div className="page-width page-width--flush-small py-16">
@@ -310,11 +292,11 @@ const Product: React.FC = () => {
                 onClick={(e) => {
                   e.preventDefault(); // Prevent link navigation if wrapped in a link
                   e.stopPropagation(); // Prevent link navigation
-                  handleHeartClick(product);
+                  handleWishlistToggle(product.id);
                 }}
               >
-                {wishlist.includes(product.id) ? (
-                  <FaHeart className="text-xl text-red-500" /> // Filled heart icon
+                {wishlist?.includes(product.id) ? (
+                  <FaHeart className="cursor-pointer text-red-500 text-xl" />
                 ) : (
                   <FaRegHeart className="text-xl" /> // Empty heart icon
                 )}
