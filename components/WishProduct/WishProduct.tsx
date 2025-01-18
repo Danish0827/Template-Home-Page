@@ -38,8 +38,9 @@ const SkeletonLoader: React.FC = () => {
   );
 };
 
-const Product: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+const WishProduct: React.FC = () => {
+  const [wishlist, setWishlist] = useState<Product[]>([]);
+  //   const [products, setProducts] = useState<Product[]>([]);
   const [attribute, setAttribute] = useState<any>([]);
   const [showColor, setShowColor] = useState<any>([]);
   const [loading, setLoading] = useState(true);
@@ -56,13 +57,14 @@ const Product: React.FC = () => {
   const [countryValue, setCountryValue] = useState<number | undefined>(); // For storing your country's value
   // const [wishlist, setWishlist] = useState<number[]>([]); // Ensure this is an array
   const router = useRouter();
-  const [email, setEmail] = useState<string | null>(null);
-  const [wishlist, setWishlist] = useState<Product[]>([]);
+  //   const [email, setEmail] = useState<string | null>(null);
+
   useEffect(() => {
     const storedWishlist = localStorage.getItem("wishlist");
     if (storedWishlist) {
       try {
         setWishlist(JSON.parse(storedWishlist)); // Parse JSON string into an array of products
+        setLoading(false);
       } catch (error) {
         console.error("Error parsing wishlist from localStorage:", error);
         setWishlist([]); // Fallback to an empty array if parsing fails
@@ -110,24 +112,6 @@ const Product: React.FC = () => {
     someFunction();
   }, []);
 
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch(
-        "/api/get-products?featured=true&includeVariations=true"
-      );
-      const data = await response.json();
-      if (data.success) {
-        setProducts(data.products);
-      } else {
-        setError("Failed to fetch products");
-      }
-    } catch (error) {
-      console.error("Failed to fetch products", error);
-      setError("Something went wrong while fetching products.");
-    } finally {
-      setLoading(false);
-    }
-  };
   const fetchProductAttribute = async () => {
     try {
       const response = await fetch("/api/get-attributeTerm");
@@ -155,13 +139,12 @@ const Product: React.FC = () => {
     }
   };
   useEffect(() => {
-    fetchProducts();
     fetchProductAttribute();
     fetchProductColor();
   }, []);
 
   const handleSizeChange = (productId: number, size: string) => {
-    const product = products.find((p) => p.id === productId);
+    const product = wishlist.find((p) => p.id === productId);
     if (!product) return;
 
     const variant = product.variations.find((v) =>
@@ -184,7 +167,7 @@ const Product: React.FC = () => {
       <div className="page-width page-width--flush-small py-16">
         <div>
           <h3 className="text-templatePrimaryHeading text-2xl md:text-3xl lg:text-4xl text-center pb-5 font-bold">
-            Best Sellers
+            Wishlist
           </h3>
         </div>
         <div className="px-4 md:px-8 lg:px-12 xl:px-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-5 gap-6">
@@ -198,18 +181,32 @@ const Product: React.FC = () => {
 
   if (error) {
     return (
-      <div className="text-center py-16">
-        <h3 className="text-red-500 text-xl font-bold">{error}</h3>
+      <div className="page-width page-width--flush-small py-16">
+        <div>
+          <h3 className="text-templatePrimaryHeading text-2xl md:text-3xl lg:text-4xl text-center pb-5 font-bold">
+            Wishlist
+          </h3>
+        </div>
+        <div className="px-4 md:px-8 lg:px-12 xl:px-16 grid grid-cols-1 gap-6">
+          <h3 className="text-red-500 text-xl font-bold">{error}</h3>
+        </div>
       </div>
     );
   }
 
-  if (products.length === 0) {
+  if (wishlist.length === 0) {
     return (
-      <div className="text-center py-16">
-        <h3 className="text-gray-700 text-xl font-semibold">
-          No products found
-        </h3>
+      <div className="page-width page-width--flush-small py-16">
+        <div>
+          <h3 className="text-templatePrimaryHeading text-2xl md:text-3xl lg:text-4xl text-center pb-5 font-bold">
+            Wishlist
+          </h3>
+        </div>
+        <div className="px-4 md:px-8 lg:px-12 xl:px-16 grid grid-cols-1 gap-6">
+          <h3 className="text-gray-700 text-xl font-semibold text-center">
+            No products in Wishlish
+          </h3>
+        </div>
       </div>
     );
   }
@@ -219,11 +216,11 @@ const Product: React.FC = () => {
     <div className="page-width page-width--flush-small py-16">
       <div>
         <h3 className="text-templatePrimaryHeading text-2xl md:text-3xl lg:text-4xl text-center pb-5 font-bold">
-          Best Sellers
+          Wishlist
         </h3>
       </div>
       <div className="px-4 md:px-8 lg:px-12 xl:px-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-5 gap-6">
-        {products.slice(0, 8).map((product) => (
+        {wishlist.map((product) => (
           <Link
             href={`/shop/best-sellers/product/${product.slug}?size=${selectedSize}`}
             key={product.id}
@@ -457,16 +454,16 @@ const Product: React.FC = () => {
       </div>
 
       {/* View All Button */}
-      <div className="text-center mt-16">
+      {/* <div className="text-center mt-16">
         <Link
           href="/shop/best-sellers"
           className="inline-block text-white py-3 px-8 bg-templatePrimary hover:bg-templatePrimaryLight rounded-lg shadow-md hover:shadow-lg transition"
         >
           View All
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-export default Product;
+export default WishProduct;

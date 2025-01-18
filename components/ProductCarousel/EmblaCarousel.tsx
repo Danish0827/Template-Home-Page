@@ -5,6 +5,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import "./EmblaStyle.css";
 import Link from "next/link";
 import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 type PropType = {
   slides: number[];
@@ -39,6 +40,37 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   // const [convergenceData, setConvergenceData] = useState();
   const [currencySymbol, setCurrencySymbol] = useState();
   const [countryValue, setCountryValue] = useState<number | undefined>(); // For storing your country's value
+  const [wishlist, setWishlist] = useState<Product[]>([]);
+  useEffect(() => {
+    const storedWishlist = localStorage.getItem("wishlist");
+    if (storedWishlist) {
+      try {
+        setWishlist(JSON.parse(storedWishlist)); // Parse JSON string into an array of products
+      } catch (error) {
+        console.error("Error parsing wishlist from localStorage:", error);
+        setWishlist([]); // Fallback to an empty array if parsing fails
+      }
+    }
+  }, []);
+
+  const handleWishlistToggle = (product: any) => {
+    const productExists = wishlist.find((item: any) => item.id === product.id);
+
+    const updatedWishlist = productExists
+      ? wishlist.filter((item: any) => item.id !== product.id) // Remove product if it exists
+      : [...wishlist, product]; // Add the whole product to wishlist
+
+    setWishlist(updatedWishlist);
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist)); // Update localStorage with the updated wishlist
+  };
+
+  // Load wishlist from localStorage when the component mounts
+  useEffect(() => {
+    const savedWishlist = localStorage.getItem("wishlist");
+    if (savedWishlist) {
+      setWishlist(JSON.parse(savedWishlist)); // Set wishlist state with saved data
+    }
+  }, []);
 
   useEffect(() => {
     const someFunction = async () => {
@@ -133,6 +165,22 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                       className="rounded-lg border shadow-md block"
                     >
                       <div className="rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white overflow-hidden">
+                        <div
+                          className="absolute top-2 right-2 bg-[#fff] text-black text-xs font-semibold px-2 py-1 rounded-lg uppercase z-10 cursor-pointer"
+                          onClick={(e) => {
+                            e.preventDefault(); // Prevent link navigation if wrapped in a link
+                            e.stopPropagation(); // Prevent link navigation
+                            handleWishlistToggle(product); // Pass the whole product object
+                          }}
+                        >
+                          {wishlist.some(
+                            (item: any) => item.id === product.id
+                          ) ? (
+                            <FaHeart className="cursor-pointer text-red-500 text-xl" />
+                          ) : (
+                            <FaRegHeart className="text-xl" /> // Empty heart icon
+                          )}
+                        </div>
                         <div className="relative group">
                           <img
                             className="w-full h-auto object-cover"

@@ -11,6 +11,7 @@ import { GrClose } from "react-icons/gr";
 import TopHeader from "./TopHeader";
 import { useScroll } from "framer-motion";
 import Link from "next/link";
+import { IoIosHeartEmpty } from "react-icons/io";
 const HeaderV1 = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -71,6 +72,11 @@ const HeaderV1 = () => {
             </div>
             {/* Account and Cart Icons */}
             <div className="w-full flex items-center justify-end gap-2 xl:gap-5">
+              <div>
+                <Link href="/wishlist">
+                  <IoIosHeartEmpty className="w-[23px] h-[23px]"/>
+                </Link>
+              </div>
               <div>
                 <Link href="/account/orders">
                   <Image
