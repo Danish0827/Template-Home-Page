@@ -271,7 +271,7 @@ const CheckoutForm = ({ countriesData }) => {
             <div>
               {/*Shipping Details*/}
               <div className="billing-details">
-                <h2 className="text-xl font-bold text-gray-800 pb-2">
+                <h2 className="text-xl font-bold text-gray-800 py-2">
                   Shipping Details
                 </h2>
                 <Address

@@ -2,6 +2,7 @@
 import { Fragment, useEffect, useState } from "react";
 import CheckoutCartItem from "./CheckoutCartItem";
 import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
+import DiscountCodeForm from "./DiscountCodeForm";
 
 const YourOrder = ({ cart }) => {
   if (!cart) return null; // Return early if cart is not present to avoid unnecessary renders
@@ -15,7 +16,7 @@ const YourOrder = ({ cart }) => {
       );
       const data = await response.json();
       setShowPrice(data?.[0]);
-      console.log(data?.[0]);
+      // console.log(data?.[0]);
     } catch (error) {
       console.error("Failed to fetch products", error);
     }
@@ -38,8 +39,8 @@ const YourOrder = ({ cart }) => {
         const responses = await Promise.all(fetchPromises);
         const fetchedProducts = responses.map((res) => res.products[0]);
         setProducts(fetchedProducts);
-        console.log(fetchedProducts);
-        console.log(cart);
+        // console.log(fetchedProducts);
+        // console.log(cart);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -101,11 +102,8 @@ const YourOrder = ({ cart }) => {
       // console.log(currencyData, "currencyData yourOrderPage");
 
       if (currencyData) {
-        // setCurrencyCode(currencyData.currencyCode);
         setCurrencySymbol(currencyData.currencySymbol);
-        // setConvergenceData(currencyData.ConvergenceData);
 
-        // Extracting your country's value
         const countryValue =
           currencyData.ConvergenceData[currencyData.currencyCode];
         setCountryValue(countryValue);
@@ -115,11 +113,24 @@ const YourOrder = ({ cart }) => {
     };
     someFunction();
   }, []);
+  const totalFinalPrice =
+    countryValue && total
+      ? (
+          parseFloat(countryValue.toString()) * parseFloat(total.toString())
+        ).toFixed(2)
+      : total
+      ? parseFloat(total.toString()).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+      : "0.00";
 
   return (
     <Fragment>
       <div className="bg-white shadow-md rounded-md">
-        <h2 className="text-xl font-bold text-gray-800 pb-6">Your Order</h2>
+        <h2 className="text-xl font-bold text-gray-800 py-3 pl-3">
+          Your Order
+        </h2>
         <div className="overflow-x-auto">
           <table className="checkout-cart w-full border-collapse">
             <thead>
@@ -155,20 +166,11 @@ const YourOrder = ({ cart }) => {
           <td className="py-4 px-2 text-lg font-bold text-gray-900">
             {/* Rs. {cart?.totalPrice?.toFixed(2)} */}
             {currencySymbol ? currencySymbol : "₹"}
-            {countryValue && total
-              ? (
-                  parseFloat(countryValue.toString()) *
-                  parseFloat(total.toString())
-                ).toFixed(2)
-              : total
-              ? parseFloat(total.toString()).toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })
-              : "0.00"}
+            {totalFinalPrice}
           </td>
         </div>
       </div>
+      <DiscountCodeForm cart={cart} totalFinalPrice={totalFinalPrice} />
     </Fragment>
   );
 };
