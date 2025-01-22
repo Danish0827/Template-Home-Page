@@ -12,15 +12,35 @@ const api = new WooCommerceRestApi({
 export async function GET(req) {
   const responseData = {
     success: false,
-    coupons: [],
+    coupon: null,
     error: null,
   };
 
   try {
+    // Get the `code` parameter from the query string
+    const { searchParams } = new URL(req.url);
+    const code = searchParams.get("code");
+
+    if (!code) {
+      responseData.error = "Coupon code is required.";
+      return NextResponse.json(responseData);
+    }
+
     // Fetch all coupons
     const response = await api.get("coupons");
-    responseData.success = true;
-    responseData.coupons = response.data; // Assign fetched coupon data
+    const coupons = response.data;
+
+    // Find the coupon by code (case-insensitive)
+    const matchingCoupon = coupons.find(
+      (coupon) => coupon.code.toLowerCase() === code.toLowerCase()
+    );
+
+    if (matchingCoupon) {
+      responseData.success = true;
+      responseData.coupon = matchingCoupon;
+    } else {
+      responseData.error = `No coupon found for code: ${code}`;
+    }
   } catch (error) {
     // Handle errors
     responseData.error = error.message || "Failed to fetch coupons.";
