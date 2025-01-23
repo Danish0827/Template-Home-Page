@@ -9,6 +9,8 @@ const YourOrder = ({ cart }) => {
   const [products, setProducts] = useState();
   const [showPrice, setShowPrice] = useState();
   const [total, setSubTotalPrice] = useState();
+  const [discountPrice, setDiscountPrice] = useState();
+
   const fetchProductColor = async () => {
     try {
       const response = await fetch(
@@ -166,11 +168,15 @@ const YourOrder = ({ cart }) => {
           <td className="py-4 px-2 text-lg font-bold text-gray-900">
             {/* Rs. {cart?.totalPrice?.toFixed(2)} */}
             {currencySymbol ? currencySymbol : "₹"}
-            {totalFinalPrice}
+            {discountPrice ? discountPrice : totalFinalPrice}
           </td>
         </div>
       </div>
-      <DiscountCodeForm cart={cart} totalFinalPrice={totalFinalPrice} />
+      <DiscountCodeForm
+        cart={cart}
+        totalFinalPrice={totalFinalPrice}
+        DiscountPrice={setDiscountPrice}
+      />
     </Fragment>
   );
 };
