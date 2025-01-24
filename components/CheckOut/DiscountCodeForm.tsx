@@ -211,7 +211,8 @@ const DiscountCodeForm: React.FC<DiscountCodeFormProps> = ({
 
             // const couponAmount = parseFloat(coupon?.amount || "0");
             console.log(totalFinalPrice, "totalFinalPrice");
-            console.log(couponAmount, "cartTotal * couponAmount");
+            console.log(couponAmount, "couponAmount");
+            console.log(coupon.discount_type, "open");
 
             let discountedAmount = 0;
 

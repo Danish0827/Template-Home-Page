@@ -142,7 +142,7 @@ const Cart: React.FC<CartProps> = ({ TotalFinalPrice }) => {
   useEffect(() => {
     const calculateItemPrice = (item: CartItemType): number => {
       const productMetaData = products.find(
-        (product: any) => product.id === item.product_id
+        (product: any) => product?.id === item?.product_id
       )?.meta_data;
 
       const isWholesaleEnabled =
