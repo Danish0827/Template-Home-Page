@@ -165,7 +165,6 @@ const DiscountCodeForm: React.FC<DiscountCodeFormProps> = ({
 
     return null; // Valid coupon
   };
-
   const handleApply = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement>, discountCode: string) => {
       e.preventDefault();
