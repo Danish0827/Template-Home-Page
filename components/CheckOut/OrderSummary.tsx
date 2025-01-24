@@ -8,7 +8,7 @@ interface OrderSummaryProps {
   Method: string;
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ Method }:any) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({ Method }: any) => {
   const [cart] = useContext(AppContext) as any;
 
   return (
