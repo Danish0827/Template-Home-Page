@@ -323,7 +323,7 @@ const CheckoutForm = ({ countriesData }) => {
             {/* Order & Payments*/}
             <div className="your-orders">
               {/*	Order*/}
-              {/* <h2 className="text-xl font-medium mb-4">Your Order</h2> */}
+
               <YourOrder cart={cart} />
 
               {/*Payment*/}
