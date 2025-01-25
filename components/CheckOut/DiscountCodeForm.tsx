@@ -46,6 +46,9 @@ const DiscountCodeForm: React.FC<DiscountCodeFormProps> = ({
 
     setEmail(userEmail);
   }, []);
+  useEffect(() => {
+    // validateCoupon(coupons);
+  }, [cart]);
   const validateCoupon = (coupon: any) => {
     const {
       date_expires,
