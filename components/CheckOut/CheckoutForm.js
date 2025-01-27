@@ -60,11 +60,12 @@ const CheckoutForm = ({ countriesData }) => {
     createAccount: false,
     orderNotes: "",
     billingDifferentThanShipping: false,
-    paymentMethod: "cod",
+    paymentMethod: "cashOnDelivery",
   };
 
   const [cart, setCart] = useContext(AppContext);
   const [input, setInput] = useState(initialState);
+  const [method, setMethod] = useState("cashOnDelivery");
   const [requestError, setRequestError] = useState(null);
   const [theShippingStates, setTheShippingStates] = useState([]);
   const [isFetchingShippingStates, setIsFetchingShippingStates] =
@@ -259,6 +260,7 @@ const CheckoutForm = ({ countriesData }) => {
       setIsFetchingBillingStates
     );
   };
+  // console.log(input, "inputinput");
 
   return (
     <>
@@ -324,10 +326,14 @@ const CheckoutForm = ({ countriesData }) => {
             <div className="your-orders">
               {/*	Order*/}
 
-              <YourOrder cart={cart} />
+              <YourOrder cart={cart} Method={method} />
 
               {/*Payment*/}
-              <PaymentModes input={input} handleOnChange={handleOnChange} />
+              <PaymentModes
+                input={input}
+                handleOnChange={handleOnChange}
+                Method={setMethod}
+              />
 
               <div className="woo-next-place-order-btn-wrap mt-5">
                 <button

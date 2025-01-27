@@ -55,7 +55,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ Method }: any) => {
           </div>
           {/* Discount Form and Cost Summary */}
           {/* <DiscountCodeForm /> */}
-          <CostSummary Method={Method} />
+          {/* <CostSummary Method={Method} /> */}
         </div>
       </section>
     </div>

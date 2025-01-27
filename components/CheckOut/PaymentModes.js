@@ -1,9 +1,10 @@
 import Error from "./Error";
 
-const PaymentModes = ({ input, handleOnChange }) => {
+const PaymentModes = ({ input, handleOnChange, Method }) => {
   const { errors, paymentMethod } = input || {};
 
   const handleDivClick = (value) => {
+    Method(value);
     handleOnChange({ target: { name: "paymentMethod", value } });
   };
 
@@ -16,17 +17,17 @@ const PaymentModes = ({ input, handleOnChange }) => {
       <div className="space-y-4">
         {/* Cash on Delivery */}
         <div
-          onClick={() => handleDivClick("cod")}
+          onClick={() => handleDivClick("cashOnDelivery")}
           className={`flex items-center space-x-3 p-4 border rounded-md hover:shadow-lg transition-shadow cursor-pointer ${
-            paymentMethod === "cod" ? "border-indigo-500 shadow-md" : ""
+            paymentMethod === "cashOnDelivery" ? "border-indigo-500 shadow-md" : ""
           }`}
         >
           <input
-            value="cod"
+            value="cashOnDelivery"
             className="w-5 h-5 text-indigo-600 focus:ring-indigo-500 border-gray-300"
             name="paymentMethod"
             type="radio"
-            checked={"cod" === paymentMethod}
+            checked={"cashOnDelivery" === paymentMethod}
             readOnly
           />
           <label className="text-base font-semibold text-gray-700 cursor-pointer">

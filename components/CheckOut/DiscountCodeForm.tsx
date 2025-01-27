@@ -1,18 +1,23 @@
 "use client";
 
 import React, { useState, useCallback, useEffect } from "react";
+import CostSummary from "./CostSummary";
 
 interface DiscountCodeFormProps {
   cart: any;
-  totalFinalPrice: number;
+  totalFinalPrice: any;
   DiscountPrice: any;
+  Method: any;
 }
 
 const DiscountCodeForm: React.FC<DiscountCodeFormProps> = ({
   cart,
   totalFinalPrice,
-  DiscountPrice,
+  Method,
 }) => {
+  const [discountPrice, setDiscountPrice] = useState<any>();
+  const [afterDiscountPrice, setAfterDiscountPrice] = useState<any>();
+
   const [discountCode, setDiscountCode] = useState("");
   const [coupons, setCoupons] = useState<any>(null);
   const [email, setEmail] = useState<string | null>(null);
@@ -185,62 +190,68 @@ const DiscountCodeForm: React.FC<DiscountCodeFormProps> = ({
             setValidationSuccess("");
           } else {
             setValidationError(null);
-            // console.log("Coupon applied successfully!");
             const coupon = data.coupon;
 
-            // Validate the coupon
-            // const now = new Date();
-            // const expiryDate = new Date(coupon.date_expires);
+            const rawAmount = coupon?.amount;
 
-            // if (expiryDate < now) {
-            //   console.error("Coupon is expired");
-            //   return;
-            // }
+            const couponAmount: string | number = parseFloat(rawAmount || "0");
 
-            // if (!coupon.email_restrictions.includes(email)) {
-            //   console.error("Email is not eligible for this coupon");
-            //   return;
-            // }
-
-            // Parse total price and coupon amount as numbers
-            // const cartTotal = parseFloat(cart.totalFinalPrice || "0");
-            // Debugging parseFloat issue
-            const rawAmount = coupon?.amount; // Get the raw value
-            // console.log(rawAmount, "rawAmount from coupon"); // Log the raw value from coupon
-
-            const couponAmount = parseFloat(rawAmount || "0"); // Parse it safely
-            console.log(couponAmount, "parsed couponAmount"); // Log the parsed value
-
-            // const couponAmount = parseFloat(coupon?.amount || "0");
-            console.log(totalFinalPrice, "totalFinalPrice");
-            console.log(couponAmount, "couponAmount");
-            console.log(coupon.discount_type, "open");
+            // console.log(couponAmount, "parsed couponAmount");
+            // console.log(totalFinalPrice, "totalFinalPrice");
+            // console.log(couponAmount, "couponAmount");
+            // console.log(coupon.discount_type, "discount_type");
 
             let discountedAmount = 0;
 
             // Apply discount based on the discount type
             if (coupon.discount_type === "percent") {
-              // Percentage discount
-              discountedAmount = (totalFinalPrice * couponAmount) / 100;
-              console.log(totalFinalPrice, "totalFinalPrice");
-              console.log(coupon.discount_type);
+              // console.log(totalFinalPrice, "totalFinalPrice");
+              // console.log(couponAmount, "couponAmount");
 
-              console.log(discountedAmount);
+              discountedAmount = (totalFinalPrice * couponAmount) / 100;
+              setDiscountPrice(discountedAmount);
             } else if (coupon.discount_type === "fixed_cart") {
               // Fixed discount for the entire cart
               discountedAmount = couponAmount;
+              setDiscountPrice(discountedAmount);
             } else if (coupon.discount_type === "fixed_product") {
               discountedAmount = couponAmount;
+              setDiscountPrice(discountedAmount);
             }
-            console.log(discountedAmount);
-
+            console.log(
+              coupon.discount_type,
+              discountedAmount,
+              "discountedAmount final confirm"
+            );
             // Calculate the final price after applying the discount
-            const finalPrice = Math.max(totalFinalPrice - discountedAmount, 0); // Ensure the price is not negative
-            DiscountPrice(finalPrice);
-            if (finalPrice) {
-              setValidationSuccess("Coupon applied successfully!");
+            console.log(totalFinalPrice, "totalFinalPrice");
+            console.log(couponAmount, "couponAmount");
+
+            // Ensure totalFinalPrice and couponAmount are numbers
+            const total =
+              typeof totalFinalPrice === "string"
+                ? Number(totalFinalPrice.replace(/,/g, ""))
+                : totalFinalPrice;
+
+            const discount = Number(couponAmount);
+
+            if (isNaN(total) || isNaN(discount)) {
+              console.error("Invalid totalFinalPrice or couponAmount");
+              console.log(
+                "Final price after applying coupon:",
+                total,
+                discount
+              );
+            } else {
+              // const discountedAmount = Math.min(total, discount); // Avoid discounting beyond total
+              const finalPrice = total - discountPrice;
+              console.log("Final price after applying coupon:", finalPrice);
+
+              setAfterDiscountPrice(finalPrice);
+              if (finalPrice) {
+                setValidationSuccess("Coupon applied successfully!");
+              }
             }
-            console.log("Final price after applying coupon:", finalPrice);
           }
         } else {
           setValidationError("Invalid discount code.");
@@ -257,14 +268,14 @@ const DiscountCodeForm: React.FC<DiscountCodeFormProps> = ({
   return (
     <div className="mt-5 bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="p-4 lg:p-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-3 lg:mb-6">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-2 lg:mb-4">
           Apply Discount Code
         </h2>
 
         <div>
-          <h5 className="block text-sm font-medium text-gray-700 mb-2">
+          {/* <h5 className="block text-sm font-medium text-gray-700 mb-2">
             Enter your discount code
-          </h5>
+          </h5> */}
           <div className="flex items-center space-x-2 lg:space-x-3 mb-2">
             <input
               id="discountCode"
@@ -296,6 +307,11 @@ const DiscountCodeForm: React.FC<DiscountCodeFormProps> = ({
           )}
         </div>
       </div>
+      <CostSummary
+        Method={Method}
+        discountPrice={discountPrice}
+        afterDiscountPrice={afterDiscountPrice}
+      />
     </div>
   );
 };

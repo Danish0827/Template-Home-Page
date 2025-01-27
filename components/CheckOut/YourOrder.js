@@ -4,12 +4,11 @@ import CheckoutCartItem from "./CheckoutCartItem";
 import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
 import DiscountCodeForm from "./DiscountCodeForm";
 
-const YourOrder = ({ cart }) => {
+const YourOrder = ({ cart, Method }) => {
   if (!cart) return null; // Return early if cart is not present to avoid unnecessary renders
   const [products, setProducts] = useState();
   const [showPrice, setShowPrice] = useState();
   const [total, setSubTotalPrice] = useState();
-  const [discountPrice, setDiscountPrice] = useState();
 
   const fetchProductColor = async () => {
     try {
@@ -168,14 +167,14 @@ const YourOrder = ({ cart }) => {
           <td className="py-4 px-2 text-lg font-bold text-gray-900">
             {/* Rs. {cart?.totalPrice?.toFixed(2)} */}
             {currencySymbol ? currencySymbol : "₹"}
-            {discountPrice ? discountPrice : totalFinalPrice}
+            {totalFinalPrice}
           </td>
         </div>
       </div>
       <DiscountCodeForm
         cart={cart}
         totalFinalPrice={totalFinalPrice}
-        DiscountPrice={setDiscountPrice}
+        Method={Method}
       />
     </Fragment>
   );
