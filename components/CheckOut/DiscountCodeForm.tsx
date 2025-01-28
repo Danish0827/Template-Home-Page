@@ -228,29 +228,15 @@ const DiscountCodeForm: React.FC<DiscountCodeFormProps> = ({
             console.log(couponAmount, "couponAmount");
 
             // Ensure totalFinalPrice and couponAmount are numbers
-            const total =
-              typeof totalFinalPrice === "string"
-                ? Number(totalFinalPrice.replace(/,/g, ""))
-                : totalFinalPrice;
+            const finalPrice = Math.max(totalFinalPrice - discountedAmount);
+            // const discountedAmount = Math.min(total, discount); // Avoid discounting beyond total
 
-            const discount = Number(couponAmount);
+            console.log("Final price after applying coupon:", finalPrice);
 
-            if (isNaN(total) || isNaN(discount)) {
-              console.error("Invalid totalFinalPrice or couponAmount");
-              console.log(
-                "Final price after applying coupon:",
-                total,
-                discount
-              );
-            } else {
-              // const discountedAmount = Math.min(total, discount); // Avoid discounting beyond total
-              const finalPrice = total - discountPrice;
-              console.log("Final price after applying coupon:", finalPrice);
-
+            if (finalPrice) {
               setAfterDiscountPrice(finalPrice);
-              if (finalPrice) {
-                setValidationSuccess("Coupon applied successfully!");
-              }
+              setValidationSuccess("Coupon applied successfully!");
+              console.log("Final price after applying friday:", finalPrice);
             }
           }
         } else {
