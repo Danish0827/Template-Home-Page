@@ -9,7 +9,7 @@ const CheckoutCartItem = ({ item, currencySymbol, countryValue }) => {
     const fetchProductColor = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
+          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_quantity,meta.whole_sale_price_feature`
         );
         const data = await response.json();
         setShowPrice(data?.[0]);
@@ -39,11 +39,45 @@ const CheckoutCartItem = ({ item, currencySymbol, countryValue }) => {
 
   const quantity = item.quantity;
 
+  // const finalPrice =
+  //   showPrice?.meta?.["whole_sale_price_feature"]?.showPrice == "true" ||
+  //   product?.meta_data?.find((data) => data.key === "show_wholesale_price")
+  //     ?.value?.yes === "true"
+  //     ? quantity >
+  //         product?.meta_data?.find(
+  //           (data) => data.key === "show_wholesale_price"
+  //         )?.value?.yes ===
+  //       "true"
+  //       ? product?.meta_data?.find((data) => data.key === "whole_sale_quantity")
+  //           .value
+  //       : showPrice.meta?.["whole_sale_price_quantity"]
+  //       ? item.data?.meta_data?.find(
+  //           (wSale) => wSale.key === "wholesale_sale_price_amount"
+  //         )?.value !== ""
+  //         ? item.data?.meta_data?.find(
+  //             (wSale) => wSale.key === "wholesale_sale_price_amount"
+  //           )?.value * quantity
+  //         : item.data?.meta_data?.find(
+  //             (wSale) => wSale.key === "wholesale_regular_price_amount"
+  //           )?.value * quantity
+  //         ? item.data?.meta_data?.find(
+  //             (wSale) => wSale.key === "wholesale_regular_price_amount"
+  //           )?.value * quantity
+  //         : item.data?.price * quantity
+  //       : item.data?.price * quantity
+  //     : item.data?.price * quantity;
+
   const finalPrice =
     showPrice?.meta?.["whole_sale_price_feature"]?.showPrice == "true" ||
     product?.meta_data?.find((data) => data.key === "show_wholesale_price")
       ?.value?.yes === "true"
-      ? quantity > 10
+      ? quantity >
+        (product?.meta_data?.find((data) => data.key === "show_wholesale_price")
+          ?.value?.yes === "true"
+          ? product?.meta_data?.find(
+              (data) => data.key === "whole_sale_quantity"
+            ).value
+          : showPrice.meta?.["whole_sale_price_quantity"])
         ? item.data?.meta_data?.find(
             (wSale) => wSale.key === "wholesale_sale_price_amount"
           )?.value !== ""
@@ -53,6 +87,10 @@ const CheckoutCartItem = ({ item, currencySymbol, countryValue }) => {
           : item.data?.meta_data?.find(
               (wSale) => wSale.key === "wholesale_regular_price_amount"
             )?.value * quantity
+          ? item.data?.meta_data?.find(
+              (wSale) => wSale.key === "wholesale_regular_price_amount"
+            )?.value * quantity
+          : item.data?.price * quantity
         : item.data?.price * quantity
       : item.data?.price * quantity;
 

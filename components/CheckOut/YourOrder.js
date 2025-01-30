@@ -13,7 +13,7 @@ const YourOrder = ({ cart, Method }) => {
   const fetchProductColor = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
+        `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_quantity,meta.whole_sale_price_feature`
       );
       const data = await response.json();
       setShowPrice(data?.[0]);
@@ -56,6 +56,19 @@ const YourOrder = ({ cart, Method }) => {
         (product) => product.id === item.product_id
       )?.meta_data;
 
+      // Get wholesale quantity limit for this specific product
+      const productWholesaleLimit =
+        productMetaData?.find((data) => data.key === "whole_sale_quantity")
+          ?.value || 0;
+
+      // Get global wholesale quantity limit if product-specific one is not available
+      const globalWholesaleLimit =
+        showPrice?.meta?.["whole_sale_price_quantity"] || 0;
+
+      // Final limit (prioritizing product-specific limit)
+      const limit = productWholesaleLimit || globalWholesaleLimit;
+
+      // Check if wholesale pricing is enabled for this product
       const isWholesaleEnabled =
         showPrice?.meta?.["whole_sale_price_feature"]?.showPrice === "true" ||
         productMetaData?.some(
@@ -65,11 +78,12 @@ const YourOrder = ({ cart, Method }) => {
 
       const itemQuantity = item.quantity || 1; // Default to 1 if quantity is missing
 
-      if (isWholesaleEnabled && itemQuantity > 10) {
+      if (isWholesaleEnabled && itemQuantity > limit) {
         const wholesalePrice =
           item.data?.meta_data?.find(
             (meta) => meta.key === "wholesale_sale_price_amount"
           )?.value || 0;
+
         const regularWholesalePrice =
           item.data?.meta_data?.find(
             (meta) => meta.key === "wholesale_regular_price_amount"
@@ -77,21 +91,21 @@ const YourOrder = ({ cart, Method }) => {
 
         return wholesalePrice
           ? wholesalePrice * itemQuantity
-          : regularWholesalePrice * itemQuantity;
+          : regularWholesalePrice
+          ? regularWholesalePrice * itemQuantity
+          : (item.data?.price || 0) * itemQuantity;
       }
 
       return (item.data?.price || 0) * itemQuantity;
     };
 
     const total = cart?.cartItems
-      ?.reduce((acc, item) => {
-        const itemPrice = calculateItemPrice(item);
-        return acc + itemPrice;
-      }, 0)
+      ?.reduce((acc, item) => acc + calculateItemPrice(item), 0)
       ?.toFixed(2);
 
     setSubTotalPrice(total || "0.00");
   }, [cart, showPrice, products]);
+
   // const [currencyCode, setCurrencyCode] = useState<any>();
   // const [convergenceData, setConvergenceData] = useState();
   const [currencySymbol, setCurrencySymbol] = useState();

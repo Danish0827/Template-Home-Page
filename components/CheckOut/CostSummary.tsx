@@ -53,7 +53,7 @@ const CostSummary: React.FC<CostSummaryProps> = ({
     const fetchProductColor = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
+          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_quantity,meta.whole_sale_price_feature`
         );
         const data = await response.json();
         setShowPrice(data?.[0]);
@@ -102,7 +102,18 @@ const CostSummary: React.FC<CostSummaryProps> = ({
 
       const itemQuantity = item.quantity || 1; // Default to 1 if quantity is missing
 
-      if (isWholesaleEnabled && itemQuantity > 10) {
+      if (
+        isWholesaleEnabled &&
+        itemQuantity >
+          productMetaData?.some(
+            (data: any) =>
+              data.key === "show_wholesale_price" && data.value?.yes === "true"
+          )
+          ? productMetaData?.some(
+              (data: any) => data.key === "whole_sale_quantity"
+            ).value
+          : showPrice.meta?.["whole_sale_price_quantity"]
+      ) {
         const wholesalePrice: any =
           item.data?.meta_data?.find(
             (meta: any) => meta.key === "wholesale_sale_price_amount"

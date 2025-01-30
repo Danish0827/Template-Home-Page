@@ -44,11 +44,11 @@ const AddToCart = ({
       if (wholesaleSalePriceData?.value === "") {
         const wSalePrice = wholesaleRegularPriceData?.value;
         wPrice(wSalePrice);
-        console.log(
-          wSalePrice,
-          "console.log(wSalePrice);",
-          "wholesaleRegularPriceData"
-        );
+        // console.log(
+        //   wSalePrice,
+        //   console.log(wSalePrice),
+        //   "wholesaleRegularPriceData"
+        // );
       } else {
         const wSalePrice = wholesaleSalePriceData?.value;
         wPrice(wSalePrice);

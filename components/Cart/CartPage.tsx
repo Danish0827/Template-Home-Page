@@ -87,7 +87,7 @@ const CartItem: React.FC<CartItemProps> = ({
     const fetchProductColor = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
+          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_quantity,meta.whole_sale_price_feature`
         );
         const data = await response.json();
         setShowPrice(data?.[0]);
@@ -119,7 +119,14 @@ const CartItem: React.FC<CartItemProps> = ({
     showPrice.meta?.["whole_sale_price_feature"]?.showPrice == "true" ||
     product?.meta_data?.find((data: any) => data.key === "show_wholesale_price")
       ?.value?.yes === "true"
-      ? quantity > 10
+      ? quantity >
+        (product?.meta_data?.find(
+          (data: any) => data.key === "show_wholesale_price"
+        )?.value?.yes === "true"
+          ? product?.meta_data?.find(
+              (data: any) => data.key === "whole_sale_quantity"
+            ).value
+          : showPrice.meta?.["whole_sale_price_quantity"])
         ? item.data?.meta_data?.find(
             (wSale: any) => wSale.key === "wholesale_sale_price_amount"
           )?.value !== ""
@@ -129,6 +136,10 @@ const CartItem: React.FC<CartItemProps> = ({
           : item.data?.meta_data?.find(
               (wSale: any) => wSale.key === "wholesale_regular_price_amount"
             )?.value * quantity
+          ? item.data?.meta_data?.find(
+              (wSale: any) => wSale.key === "wholesale_regular_price_amount"
+            )?.value * quantity
+          : item.data?.price * quantity
         : item.data?.price * quantity
       : item.data?.price * quantity;
 
@@ -324,7 +335,7 @@ const CartPage = () => {
     const fetchProductColor = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
+          `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_quantity,meta.whole_sale_price_feature`
         );
         const data = await response.json();
         setShowPrice(data?.[0]);
@@ -349,8 +360,8 @@ const CartPage = () => {
         const responses = await Promise.all(fetchPromises);
         const fetchedProducts = responses.map((res) => res.products[0]);
         setProducts(fetchedProducts);
-        console.log(fetchedProducts);
-        console.log(cart);
+        // console.log(fetchedProducts);
+        // console.log(cart);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -372,8 +383,20 @@ const CartPage = () => {
         );
 
       const itemQuantity = item.quantity || 1; // Default to 1 if quantity is missing
+      console.log(itemQuantity, "itemQuantity");
 
-      if (isWholesaleEnabled && itemQuantity > 10) {
+      if (
+        isWholesaleEnabled &&
+        itemQuantity >
+          productMetaData?.some(
+            (data: any) =>
+              data.key === "show_wholesale_price" && data.value?.yes === "true"
+          )
+          ? productMetaData?.some(
+              (data: any) => data.key === "whole_sale_quantity"
+            ).value
+          : showPrice.meta?.["whole_sale_price_quantity"]
+      ) {
         const wholesalePrice: any =
           item.data?.meta_data?.find(
             (meta: any) => meta.key === "wholesale_sale_price_amount"
@@ -385,7 +408,9 @@ const CartPage = () => {
 
         return wholesalePrice
           ? wholesalePrice * itemQuantity
-          : regularWholesalePrice * itemQuantity;
+          : regularWholesalePrice * itemQuantity
+          ? regularWholesalePrice * itemQuantity
+          : (item.data?.price || 0) * itemQuantity;
       }
 
       return (item.data?.price || 0) * itemQuantity;
@@ -399,6 +424,7 @@ const CartPage = () => {
       ?.toFixed(2);
 
     setSubTotalPrice(total || "0.00");
+    console.log(total, "total");
   }, [cart, showPrice, products]);
 
   if (!cart?.cartItems?.length) return <p>Your cart is empty.</p>;

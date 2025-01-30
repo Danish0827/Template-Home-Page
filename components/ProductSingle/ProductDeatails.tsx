@@ -13,6 +13,7 @@ interface Product {
   description: string;
   price: string;
   regular_price: string;
+  sale_price: string;
   images: Array<{ src: string }>;
   attributes: Array<{ name: string; options: string[] }>;
   meta_data: any;
@@ -69,7 +70,7 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
   const fetchProductColor = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_feature`
+        `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/whole-sale-price?_fields=id,title,meta.whole_sale_price_quantity,meta.whole_sale_price_feature`
       );
       const data = await response.json();
       setShowPrice(data?.[0]);
@@ -226,7 +227,9 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })
-                    : "Price Not Available"}
+                    : product?.sale_price
+                    ? product?.sale_price
+                    : product?.regular_price}
                 </div>
               ) : (
                 <div className="text-xl font-semibold">
@@ -254,34 +257,17 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
               product?.meta_data?.find(
                 (data: any) => data.key === "show_wholesale_price"
               )?.value?.yes === "true" ? (
-                <div className="flex gap-2 mt-2">
-                  <strong>WholeSale Rate:</strong>
-                  {wPrice ==
-                  selectedVariant?.meta_data?.find(
-                    (data: any) => data.key === "wholesale_regular_price_amount"
-                  ).value ? (
-                    <div className="text-xl font-semibold">
-                      {" "}
-                      {/* product */}
-                      {currencySymbol ? currencySymbol : "₹"}
-                      {countryValue && wholesaleRegular
-                        ? (
-                            parseFloat(countryValue.toString()) *
-                            parseFloat(wholesaleRegular.toString())
-                          ).toFixed(2)
-                        : wholesaleRegular
-                        ? parseFloat(
-                            wholesaleRegular.toString()
-                          ).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })
-                        : "Price Not Available"}{" "}
-                    </div>
-                  ) : (
-                    <div className="text-xl font-semibold">
-                      <del className="text-xl font-semibold">
-                        {/* ₹{regularPrice} */}
+                <>
+                  <div className="flex gap-2 mt-2">
+                    <strong>WholeSale Rate:</strong>
+                    {wPrice ==
+                    selectedVariant?.meta_data?.find(
+                      (data: any) =>
+                        data.key === "wholesale_regular_price_amount"
+                    )?.value ? (
+                      <div className="text-xl font-semibold">
+                        {" "}
+                        {/* product */}
                         {currencySymbol ? currencySymbol : "₹"}
                         {countryValue && wholesaleRegular
                           ? (
@@ -296,33 +282,59 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
                               maximumFractionDigits: 2,
                             })
                           : "Price Not Available"}{" "}
-                      </del>{" "}
-                      {/* ₹{price} */}
-                      {currencySymbol ? currencySymbol : "₹"}
-                      {countryValue && wholesalePrice
-                        ? (
-                            parseFloat(countryValue.toString()) *
-                            parseFloat(wholesalePrice.toString())
-                          ).toFixed(2)
-                        : wholesalePrice
-                        ? parseFloat(wholesalePrice.toString()).toLocaleString(
-                            undefined,
-                            {
+                      </div>
+                    ) : (
+                      <div className="text-xl font-semibold">
+                        <del className="text-xl font-semibold">
+                          {/* ₹{regularPrice} */}
+                          {currencySymbol ? currencySymbol : "₹"}
+                          {countryValue && wholesaleRegular
+                            ? (
+                                parseFloat(countryValue.toString()) *
+                                parseFloat(wholesaleRegular.toString())
+                              ).toFixed(2)
+                            : wholesaleRegular
+                            ? parseFloat(
+                                wholesaleRegular.toString()
+                              ).toLocaleString(undefined, {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })
+                            : "Price Not Available"}{" "}
+                        </del>{" "}
+                        {/* ₹{price} */}
+                        {currencySymbol ? currencySymbol : "₹"}
+                        {countryValue && wholesalePrice
+                          ? (
+                              parseFloat(countryValue.toString()) *
+                              parseFloat(wholesalePrice.toString())
+                            ).toFixed(2)
+                          : wholesalePrice
+                          ? parseFloat(
+                              wholesalePrice.toString()
+                            ).toLocaleString(undefined, {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
-                            }
-                          )
-                        : "Price Not Available"}
-                    </div>
-                  )}
-                </div>
+                            })
+                          : "Price Not Available"}
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-md font-medium text-black/[0.8]">
+                    If the quantity is more than{" "}
+                    {product?.meta_data?.find(
+                      (data: any) => data.key === "show_wholesale_price"
+                    )?.value?.yes === "true"
+                      ? product?.meta_data?.find(
+                          (data: any) => data.key === "whole_sale_quantity"
+                        )?.value
+                      : showPrice.meta?.["whole_sale_price_quantity"]}
+                    , you will get the wholesale rate.
+                  </div>
+                </>
               ) : (
                 ""
               )}
-              {/* <div className="text-md font-medium text-black/[0.5]">
-                incl. of taxes
-              </div> */}
-              {/* {wPrice} */}
             </div>
 
             {/* Size selection */}
