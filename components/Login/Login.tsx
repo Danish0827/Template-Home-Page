@@ -13,6 +13,7 @@ const Login = () => {
   const [timer, setTimer] = useState(0); // Timer state
   const router = useRouter();
 
+  
   // Redirect if auth cookie exists
   useEffect(() => {
     // Check for auth cookie

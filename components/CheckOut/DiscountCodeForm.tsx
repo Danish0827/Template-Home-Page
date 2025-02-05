@@ -17,7 +17,7 @@ const DiscountCodeForm: React.FC<DiscountCodeFormProps> = ({
 }) => {
   const [discountPrice, setDiscountPrice] = useState<any>();
   const [afterDiscountPrice, setAfterDiscountPrice] = useState<any>();
-
+  const [products, setProducts] = useState<any[]>([]);
   const [discountCode, setDiscountCode] = useState("");
   const [coupons, setCoupons] = useState<any>(null);
   const [email, setEmail] = useState<string | null>(null);
@@ -25,6 +25,29 @@ const DiscountCodeForm: React.FC<DiscountCodeFormProps> = ({
     null
   );
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const productIds =
+          cart?.cartItems?.map((item: any) => item.product_id) || [];
+        const fetchPromises = productIds.map((id: any) =>
+          fetch(
+            `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?id=${id}`
+          ).then((res) => res.json())
+        );
+        const responses = await Promise.all(fetchPromises);
+        const fetchedProducts = responses.map((res) => res.products[0]);
+        setProducts(fetchedProducts);
+        console.log(fetchedProducts);
+        console.log(cart);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [cart]);
 
   useEffect(() => {
     const cookies = document.cookie;

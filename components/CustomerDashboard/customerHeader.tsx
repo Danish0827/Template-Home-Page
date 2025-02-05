@@ -14,6 +14,33 @@ import { notification } from "antd";
 
 const CustomerHeader = () => {
   const router = useRouter();
+  const [email, setEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const cookies = document.cookie;
+    const cookieValue = cookies
+      .split("; ")
+      .find((row) => row.startsWith("user_g="))
+      ?.split("=")[1];
+
+    if (!cookieValue) {
+      console.error("Cookie 'user_g' not found");
+      return;
+    }
+
+    const segments = cookieValue.split("-");
+    if (segments.length < 3) {
+      console.error("Invalid cookie format");
+      return;
+    }
+
+    const secondSegment = segments[1];
+    const userEmail = secondSegment.includes("@")
+      ? secondSegment
+      : `${secondSegment}@gmail.com`;
+
+    setEmail(userEmail);
+  }, []);
 
   // Redirect if auth cookie exists
   useEffect(() => {
@@ -26,8 +53,7 @@ const CustomerHeader = () => {
   }, [router]);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const logo =
-    `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-content/uploads/2024/12/logo.jpg`;
+  const logo = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-content/uploads/2024/12/logo.jpg`;
   const header = [
     {
       label: "Orders",
@@ -61,7 +87,7 @@ const CustomerHeader = () => {
           <Avatar className="font-thin uppercase w-8 h-8 text-base rounded-md">
             <FaRegUserCircle />
           </Avatar>
-          <p>s.danish@gamil.com</p>
+          <p>{email}</p>
         </div>
         <ul className="py-2">
           <li>
@@ -135,7 +161,7 @@ const CustomerHeader = () => {
             >
               <div className="flex gap-2 items-center">
                 <Avatar className="font-thin uppercase w-8 h-8 text-base rounded-md">
-                  ds
+                  <FaRegUserCircle />
                 </Avatar>
                 <MdKeyboardArrowDown />
               </div>
@@ -187,7 +213,7 @@ const CustomerHeader = () => {
                 <Avatar className="font-thin uppercase w-8 h-8 text-base rounded-md">
                   <FaRegUserCircle />
                 </Avatar>
-                <p>s.danish@gamil.com</p>
+                <p>{email}</p>
               </div>
               <button
                 onClick={handleLogout}
