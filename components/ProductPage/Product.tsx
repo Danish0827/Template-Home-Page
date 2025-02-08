@@ -229,7 +229,7 @@ const ProductPart = ({ params }: any) => {
             <>
               {Array.isArray(products) && products.length > 0 && (
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-5 gap-2 md:gap-4">
-                  {products.slice(0, 8).map((product) => (
+                  {products.map((product) => (
                     <Link
                       href={`/shop/best-sellers/product/${product.slug}?size=${selectedSize}`}
                       key={product.id}

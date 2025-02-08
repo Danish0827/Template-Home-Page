@@ -1,7 +1,11 @@
 "use client";
 import React, { useState } from "react";
 
-const ShippingMethodComponent = ({ setMethod }: { setMethod: (method: string) => void }) => {
+const ShippingMethodComponent = ({
+  setMethod,
+}: {
+  setMethod: (method: string) => void;
+}) => {
   const [selectedMethod, setSelectedMethod] = useState("freeDelivery");
 
   const handleMethodChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +30,10 @@ const ShippingMethodComponent = ({ setMethod }: { setMethod: (method: string) =>
             onChange={handleMethodChange}
             className="h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500"
           />
-          <label htmlFor="freeDelivery" className="ml-3 flex-grow cursor-pointer">
+          <label
+            htmlFor="freeDelivery"
+            className="ml-3 flex-grow cursor-pointer"
+          >
             <div className="text-lg font-medium">Free Delivery (Prepaid)</div>
             <div className="text-gray-500">Free</div>
           </label>
@@ -42,7 +49,10 @@ const ShippingMethodComponent = ({ setMethod }: { setMethod: (method: string) =>
             onChange={handleMethodChange}
             className="h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500"
           />
-          <label htmlFor="cashOnDelivery" className="ml-3 flex-grow cursor-pointer">
+          <label
+            htmlFor="cashOnDelivery"
+            className="ml-3 flex-grow cursor-pointer"
+          >
             <div className="text-lg font-medium">Cash On Delivery Charges</div>
             <div className="text-gray-500">Non-Refundable</div>
             <div className="text-blue-600">₹99.00</div>

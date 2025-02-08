@@ -194,6 +194,14 @@ const DiscountCodeForm: React.FC<DiscountCodeFormProps> = ({
       return "You have reached the usage limit for this coupon.";
     }
 
+    // 14. wholesale Usage
+    const isWholeSaleCart = cart?.cartItems?.some((item: any) =>
+      item?.data?.meta_data?.find((item: any) => item.key === "")
+    );
+    if (isWholeSaleCart && coupon.wholesale_only) {
+      return "This coupon is only available for whole-sale customers.";
+    }
+
     return null; // Valid coupon
   };
   const handleApply = useCallback(
@@ -206,6 +214,8 @@ const DiscountCodeForm: React.FC<DiscountCodeFormProps> = ({
         const response = await fetch(`/api/get-coupons?code=${discountCode}`);
         const data = await response.json();
         setCoupons(data.coupon || []);
+        console.log(data.coupon || []);
+
         if (data.success && data.coupon) {
           const validationMessage = validateCoupon(data.coupon);
           if (validationMessage) {
