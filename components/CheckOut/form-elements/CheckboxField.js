@@ -4,10 +4,7 @@ import PropTypes from "prop-types";
 const CheckboxField = ({ handleOnChange, checked, containerClassNames }) => {
   const handleDivClick = (value) => {
     // Only trigger change if the value is different
-    if (
-      (value === "same" && !checked) || 
-      (value === "different" && checked)
-    ) {
+    if ((value === "same" && !checked) || (value === "different" && checked)) {
       return;
     }
     handleOnChange({ target: { name: "billingDifferentThanShipping", value } });
