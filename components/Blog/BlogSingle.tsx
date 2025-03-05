@@ -44,9 +44,7 @@ const BlogSingle = ({ params }: any) => {
   };
 
   useEffect(() => {
-    fetch(
-      `${process.env.BACKEND}/disease/${params}`
-    )
+    fetch(`${process.env.BACKEND}/disease/${params}`)
       .then((response) => response.json())
       .then((data) => {
         setBlog(data);

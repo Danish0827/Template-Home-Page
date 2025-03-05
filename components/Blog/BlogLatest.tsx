@@ -45,9 +45,7 @@ const BlogLatest = ({ params }: any) => {
 
   return (
     <aside className="widget bg-white p-4 rounded-md shadow-md">
-      <h3 className="text-2xl font-semibold mb-4">
-        Patients Education
-      </h3>
+      <h3 className="text-2xl font-semibold mb-4">Patients Education</h3>
       <div className="tab-content">
         <div className="latest-content space-y-5">
           {diseases.map((disease) => (
@@ -70,9 +68,7 @@ const BlogLatest = ({ params }: any) => {
                     params === disease.slug ? "text-[#232c77]" : "text-black"
                   }`}
                 >
-                  <a href={`/blogs/${disease.slug}`}>
-                    {disease.title}
-                  </a>
+                  <a href={`/blogs/${disease.slug}`}>{disease.title}</a>
                 </h5>
                 {/* <span className="text-sm text-gray-500 mt-1 block">
                   <i className="pi pi-calendar mr-1"></i>{new Date().toLocaleDateString()}
