@@ -128,11 +128,11 @@ const CartItem: React.FC<CartItemProps> = ({
             )?.value * quantity
           : item.data?.meta_data?.find(
               (wSale: any) => wSale.key === "wholesale_regular_price_amount"
-            )?.value * quantity ?
-            item.data?.meta_data?.find(
+            )?.value * quantity
+          ? item.data?.meta_data?.find(
               (wSale: any) => wSale.key === "wholesale_regular_price_amount"
-            )?.value * quantity :
-            item.data?.price * quantity
+            )?.value * quantity
+          : item.data?.price * quantity
         : item.data?.price * quantity
       : item.data?.price * quantity;
 
