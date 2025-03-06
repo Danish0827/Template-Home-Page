@@ -19,7 +19,9 @@ const PaymentModes = ({ input, handleOnChange, Method }) => {
         <div
           onClick={() => handleDivClick("cashOnDelivery")}
           className={`flex items-center space-x-3 p-4 border rounded-md hover:shadow-lg transition-shadow cursor-pointer ${
-            paymentMethod === "cashOnDelivery" ? "border-indigo-500 shadow-md" : ""
+            paymentMethod === "cashOnDelivery"
+              ? "border-indigo-500 shadow-md"
+              : ""
           }`}
         >
           <input

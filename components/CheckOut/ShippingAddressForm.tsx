@@ -6,7 +6,7 @@ import { AppContext } from "../context";
 const ShippingAddressForm = ({ method }: any) => {
   const [shippingMethod, setShippingMethod] = useState("freeDelivery");
 
-  const handleShippingMethod = (selectedMethod:string) => {
+  const handleShippingMethod = (selectedMethod: string) => {
     setShippingMethod(selectedMethod);
     method(selectedMethod); // Call the method from the parent component
   };
