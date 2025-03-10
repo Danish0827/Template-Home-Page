@@ -74,7 +74,7 @@ const HeaderV1 = () => {
             <div className="w-full flex items-center justify-end gap-2 xl:gap-5">
               <div>
                 <Link href="/wishlist">
-                  <IoIosHeartEmpty className="w-[23px] h-[23px]"/>
+                  <IoIosHeartEmpty className="w-[23px] h-[23px]" />
                 </Link>
               </div>
               <div>
