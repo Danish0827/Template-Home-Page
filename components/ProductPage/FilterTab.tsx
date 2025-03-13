@@ -6,7 +6,7 @@ import { IoIosArrowDown, IoIosArrowUp, IoIosClose } from "react-icons/io";
 import { filters } from "@/lib/headerData";
 import { gsap } from "gsap";
 
-const FilterTab = ({count}:any) => {
+const FilterTab = ({ count }: any) => {
   const [open, setOpen] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<
