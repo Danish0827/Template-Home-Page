@@ -72,7 +72,9 @@ const ReviewsCarousel = ({ reviews }: any) => {
           <>
             {reviews.length === 0 ? (
               <div className="shadow-md m-auto max-w-screen-md bg-white rounded-lg">
-                <p className="px-3 py-10 text-center text-xl font-bold">No Reviews</p>
+                <p className="px-3 py-10 text-center text-xl font-bold">
+                  No Reviews
+                </p>
               </div>
             ) : (
               <Swiper
