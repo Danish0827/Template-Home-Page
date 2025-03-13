@@ -1,9 +1,13 @@
-'use client';
+"use client";
 import React from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 
-const ProductDetailsCarousel = ({ images }: { images: Array<{ src: string }> }) => {
+const ProductDetailsCarousel = ({
+  images,
+}: {
+  images: Array<{ src: string }>;
+}) => {
   return (
     <div className="text-white text-[20px] w-4/5 max-w-[1360px] mx-auto sticky top-[50px]">
       <Carousel
