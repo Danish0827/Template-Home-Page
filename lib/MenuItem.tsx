@@ -1,4 +1,4 @@
-export const menuItem :any= [
+export const menuItem: any = [
   {
     name: "Home",
     url: "/",
