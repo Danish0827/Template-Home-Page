@@ -194,6 +194,7 @@ const WishProduct: React.FC = () => {
     );
   }
 
+  
   if (wishlist.length === 0) {
     return (
       <div className="page-width page-width--flush-small py-16">
