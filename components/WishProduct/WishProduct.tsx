@@ -194,7 +194,6 @@ const WishProduct: React.FC = () => {
     );
   }
 
-  
   if (wishlist.length === 0) {
     return (
       <div className="page-width page-width--flush-small py-16">
@@ -267,7 +266,6 @@ const WishProduct: React.FC = () => {
                   />
                 )}
               </div>
-              
 
               <div className="p-3">
                 <h4 className="mt-0 text-xs lg:text-lg font-semibold text-center line-clamp-1 text-templateSecondaryHeading hover:text-templatePrimary">
