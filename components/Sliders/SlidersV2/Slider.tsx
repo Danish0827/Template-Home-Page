@@ -7,10 +7,9 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 
-// import required modules
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { siyafySlider } from "@/lib/headerData";
-import { Swiper as SwiperType } from "swiper"; // Import the Swiper type
+import { Swiper as SwiperType } from "swiper"; 
 
 export default function App() {
   const { IsSlider, Slider } = siyafySlider;
