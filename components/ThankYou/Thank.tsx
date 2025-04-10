@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import "./thanks.css";
-
 const Thank = () => {
   const [orderId, setOrderId] = useState<any>();
 
