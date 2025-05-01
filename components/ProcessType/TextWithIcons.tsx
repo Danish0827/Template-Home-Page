@@ -54,30 +54,34 @@ const TextWithIcons = () => {
   }
 
   return (
-    <div className="px-6 md:px-10 lg:px-14 xl:px-20 py-12">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-8">
+    <div className="px-5 md:px-10 lg:px-14 xl:px-20 py-12">
+      <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
         {iconData
           .slice()
           .reverse()
           .map((item: any, index) => (
             <div
-              className="group relative flex flex-col items-center justify-center p-2 pb-6 bg-white rounded-xl shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+              className="group relative flex flex-col items-center justify-cente px-2 pb-6 bg-white rounded-xl shadow-x transition-all duration-300 hover:scale-105 hover:shadow-2xl"
               key={index}
+              style={{
+                boxShadow:
+                  "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px",
+              }}
             >
-              <div className="text-with-icons__block-icon mb-4">
+              <div className=" my-8">
                 <img
                   src={item.imageUrl}
                   alt={item.title}
-                  className="w-12 md:w-16 lg:w-20 xl:w-28 group-hover:scale-110 transition-all duration-300"
+                  className="w-14 md:w-16 lg:w-16 text-center group-hover:scale-110 transition-all duration-300"
                 />
               </div>
-              <div className="text-center uppercase text-templatePrimary text-lg md:text-xl lg:text-2xl font-bold pb-2">
+              <div className="text-center uppercase text-templatePrimary text-sm md:text-lg lg:text-xl font-thin pb-2">
                 <h3>{item.title}</h3>
               </div>
-              <div className="text-center text-templatePrimaryText text-sm md:text-base lg:text-lg leading-relaxed">
+              {/* <div className="text-center text-templatePrimaryText text-sm md:text-base lg:text-lg leading-relaxed">
                 <p>{item.text}</p>
-              </div>
-              <div className="absolute rounded-xl inset-0 bg-gradient-to-b from-transparent to-templatePrimary opacity-20 group-hover:opacity-40 transition-all duration-300"></div>
+              </div> */}
+              <div className="absolute rounded-xl inset-0 bg-gradient-to-b from-transparent to-templatePrimar opacity-20 group-hover:opacity-40 transition-all duration-300"></div>
             </div>
           ))}
       </div>

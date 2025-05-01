@@ -47,19 +47,19 @@ const FooterV1 = () => {
   return (
     <footer className="bg-white text-gray-800 border-t pt-5">
       <div className="px-4 pt-10 pb-5 mx-auto sm:px-6 lg:px-12 space-y-8">
-        <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 xl:grid-cols-3">
           {/* About Section */}
           <div>
             <img
-              className={`${headers.content ? "" : "m-auto xl:m-0 w-48"}`}
+              className={`${headers.content ? "w-52" : "m-auto xl:m-0 w-48"}`}
               src={headers.logo}
               alt=""
             />
-            {/* {headers.content && (
-              <p className="text-templatePrimaryText mt-5 text-base font-medium text-justify">
+            {headers.content && (
+              <p className="text-templatePrimaryText text-base font-medium text-left">
                 {headers.content}
               </p>
-            )} */}
+            )}
           </div>
 
           {/* Speciality Section */}

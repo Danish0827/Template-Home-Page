@@ -12,7 +12,13 @@ const BackgroundMediaText = ({ data }: any) => {
     >
       <div className="background-media-text__container relative md:flex items-center">
         <img
-          src={`https://bck.headless-woo-temp.demo-web.live/wp-content/uploads/2025/01/Untitled-design-4.png`}
+          style={{
+            boxShadow:
+              "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px",
+            transform: " scaleX(-1)",
+          }}
+          // style={{  }}
+          src={`https://bck.headless-woo-temp.demo-web.live/wp-content/uploads/2025/04/teenager-girl-summer-vacation-surprised-pointing-finger-copy-space-isolated-white-bac-scaled.jpg`}
           alt=""
           width="2400"
           height="889"
@@ -29,10 +35,16 @@ const BackgroundMediaText = ({ data }: any) => {
         />
 
         <div className="md:absolute lg:px-10 -bottom-28 lg:bottom-auto">
-          <div className="bg-white p-4 lg:p-5 w-full lg:w-1/2 rounded-lg shadow-md">
-            <div className="animation-contents border border-black rounded-lg overflow-hidden">
+          <div
+            style={{
+              boxShadow:
+                "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px",
+            }}
+            className="bg-white p-4 lg:p-5 w-full lg:w-1/2 rounde-lg shadowmd"
+          >
+            <div className="animation-contents border border-black rounde-lg overflow-hidden">
               <div className="background-media-text__text background-media-text__text--framed p-5">
-                <p className="text-lg font-bold text-templatePrimary pb-1 text-center lg:text-left leading-snug uppercase">
+                <p className="text-base font-bold text-templatePrimary pb-3 text-center lg:text-left leading-snug uppercase">
                   {data.heading}
                 </p>
 

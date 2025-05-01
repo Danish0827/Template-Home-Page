@@ -37,7 +37,7 @@ const LanguageSwitcher = () => {
       ?.title || "Select Language";
 
   return (
-    <div className="flex justify-center items-center py-4">
+    <div className="flex justify-center items-center py-4 lg:py-1">
       <Dropdown overlay={menu} trigger={["click"]}>
         <Button className="flex items-center space-x-2 bg-gray-100 border border-templatePrimary text-templatePrimary py-2 px-4 rounded-lg shadow-sm hover:bg-blue-50 hover:border-templatePrimary hover:text-templatePrimary">
           <span style={{ marginTop: "-3px" }}>{currentLanguageTitle}</span>

@@ -12,6 +12,7 @@ interface Product {
   slug: string;
   permalink: string;
   price: string;
+  regular_price: string;
   images: { src: string; name: string }[];
   attributes: { name: string; options: string[] }[];
   variations: Array<{
@@ -227,11 +228,11 @@ const Product: React.FC = () => {
           <Link
             href={`/shop/best-sellers/product/${product.slug}?size=${selectedSize}`}
             key={product.id}
-            className="rounded-lg border shadow-md block"
+            className="rounded-lg border shadow-m block"
           >
             <div
               key={product.id}
-              className="relative rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white overflow-hidden"
+              className="hoveritem relative rounded-lg shado-lg hovr:hadow-xl transition-shadow duration-300 bg-white overflow-hidden"
             >
               <div
                 className="absolute top-2 right-2 bg-[#fff] text-black text-xs font-semibold px-2 py-1 rounded-lg uppercase z-10 cursor-pointer"
@@ -247,10 +248,13 @@ const Product: React.FC = () => {
                   <FaRegHeart className="text-xl" /> // Empty heart icon
                 )}
               </div>
+              <div className="absolute top-2 left-2 text-[#fff] bg-black text-xs font-semibold px-3 py-1 rounded-xl uppercase z-10 cursor-pointer">
+                Sale
+              </div>
 
               <div className="relative group">
                 <img
-                  className="w-full h-auto object-cover"
+                  className="w-full h-80 object-cover"
                   src={
                     hoveredProductColor[product.id]
                       ? getImageForColor(
@@ -274,7 +278,18 @@ const Product: React.FC = () => {
                 <h4 className="mt-0 text-xs lg:text-lg font-semibold text-center line-clamp-1 text-templateSecondaryHeading hover:text-templatePrimary">
                   {product.name}
                 </h4>
-                <div className="text-center text-sm mt-2 font-bold text-black">
+                <div className="text-center flex justify-center gap-2 text-sm mt-2 font-bold text-black">
+                  {(countryValue && product.regular_price) ||
+                  product.regular_price > product.price ? (
+                    <div>
+                      <del>
+                        {currencySymbol ? currencySymbol : "₹"}
+                        {countryValue && product.regular_price.toString()}
+                      </del>
+                    </div>
+                  ) : (
+                    ""
+                  )}
                   {currencySymbol ? currencySymbol : "₹"}
                   {countryValue && product.price
                     ? (
@@ -350,50 +365,51 @@ const Product: React.FC = () => {
                 )}
 
                 {/* Size Variants Color */}
-                {showColor.meta?.["show-product-color"]?.showColor ==
-                  "true" && (
-                  <div className="flex justify-center flex-wrap mt-3 space-x-2">
-                    {product.attributes
-                      .find((attr) => attr.name === "Colour")
-                      ?.options.map((colour) => {
-                        const variant = product.variations.find((v) =>
-                          v.attributes.some((attr) => attr.option === colour)
-                        );
-                        const isOutOfStock =
-                          variant?.stock_status === "outofstock";
-
-                        return (
-                          <>
-                            <div
-                              key={`${product.id}-${colour}`}
-                              onMouseEnter={() =>
-                                setHoveredProductColor((prevState) => ({
-                                  ...prevState,
-                                  [product.id]: colour,
-                                }))
-                              } // Set hovered color on hover for specific product
-                              onMouseLeave={() =>
-                                setHoveredProductColor((prevState) => ({
-                                  ...prevState,
-                                  [product.id]: null,
-                                }))
-                              } // Reset on mouse leave for specific product
-                              style={{
-                                backgroundColor: attribute.find(
-                                  (attr: any) => attr.name === colour
-                                )?.woo_variation_swatches.primary_color, // Setting the background color to the colour value
-                              }}
-                              className={`border-black border mt-2 rounded-full w-8 h-8 flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
-                                selectedSize === colour
-                                  ? "border-black"
-                                  : "border-gray-400"
-                              } `}
-                            ></div>
-                          </>
-                        );
-                      })}
-                  </div>
-                )}
+                {
+                  // showColor.meta?.["show-product-color"]?.showColor ==
+                  //   "true" && (
+                  //   <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                  //     {product.attributes
+                  //       .find((attr) => attr.name === "Colour")
+                  //       ?.options.map((colour) => {
+                  //         const variant = product.variations.find((v) =>
+                  //           v.attributes.some((attr) => attr.option === colour)
+                  //         );
+                  //         const isOutOfStock =
+                  //           variant?.stock_status === "outofstock";
+                  //         return (
+                  //           <>
+                  //             <div
+                  //               key={`${product.id}-${colour}`}
+                  //               onMouseEnter={() =>
+                  //                 setHoveredProductColor((prevState) => ({
+                  //                   ...prevState,
+                  //                   [product.id]: colour,
+                  //                 }))
+                  //               } // Set hovered color on hover for specific product
+                  //               onMouseLeave={() =>
+                  //                 setHoveredProductColor((prevState) => ({
+                  //                   ...prevState,
+                  //                   [product.id]: null,
+                  //                 }))
+                  //               } // Reset on mouse leave for specific product
+                  //               style={{
+                  //                 backgroundColor: attribute.find(
+                  //                   (attr: any) => attr.name === colour
+                  //                 )?.woo_variation_swatches.primary_color, // Setting the background color to the colour value
+                  //               }}
+                  //               className={`border-black border mt-2 rounded-full w-8 h-8 flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
+                  //                 selectedSize === colour
+                  //                   ? "border-black"
+                  //                   : "border-gray-400"
+                  //               } `}
+                  //             ></div>
+                  //           </>
+                  //         );
+                  //       })}
+                  //   </div>
+                  // )
+                }
                 {/* Size Variants size*/}
 
                 <div className="flex justify-center flex-wrap mt-3 space-x-2">

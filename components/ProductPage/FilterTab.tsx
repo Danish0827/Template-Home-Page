@@ -5,8 +5,12 @@ import { SlEqualizer } from "react-icons/sl";
 import { IoIosArrowDown, IoIosArrowUp, IoIosClose } from "react-icons/io";
 import { filters } from "@/lib/headerData";
 import { gsap } from "gsap";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const FilterTab = ({ count }: any) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [open, setOpen] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<
@@ -17,34 +21,79 @@ const FilterTab = ({ count }: any) => {
     color: [],
   });
 
-  const animationRef = useRef(null);
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    const initialSelections: Record<string, string[]> = {
+      availability: [],
+      size: [],
+      color: [],
+    };
+
+    Object.keys(initialSelections).forEach((key) => {
+      const values = params.getAll(key);
+      if (values.length) {
+        initialSelections[key] = values;
+      }
+    });
+
+    setSelectedOptions(initialSelections);
+  }, []);
 
   const showDrawer = () => setOpen(true);
   const onClose = () => setOpen(false);
+  const animationRef = useRef(null);
 
   const toggleSection = (section: string) =>
     setOpenSection(openSection === section ? null : section);
 
-  const handleCheckboxChange = (section: string, label: string) => {
+  const updateURLParams = (
+    section: string,
+    value: string,
+    isAdding: boolean
+  ) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const existing = params.getAll(section);
+
+    if (isAdding) {
+      if (!existing.includes(value)) {
+        params.append(section, value);
+      }
+    } else {
+      const updated = existing.filter((item) => item !== value);
+      params.delete(section);
+      updated.forEach((item) => params.append(section, item));
+    }
+
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const handleCheckboxChange = (section: string, value: string) => {
     setSelectedOptions((prev) => {
-      const isSelected = prev[section].includes(label);
+      const isSelected = prev[section].includes(value);
+      const updatedSection = isSelected
+        ? prev[section].filter((item) => item !== value)
+        : [...prev[section], value];
+
+      updateURLParams(section, value, !isSelected);
+
       return {
         ...prev,
-        [section]: isSelected
-          ? prev[section].filter((item) => item !== label)
-          : [...prev[section], label],
+        [section]: updatedSection,
       };
     });
   };
 
-  const removeSelectedOption = (section: string, label: string) => {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [section]: prev[section].filter((item) => item !== label),
-    }));
+  const removeSelectedOption = (section: string, value: string) => {
+    setSelectedOptions((prev) => {
+      updateURLParams(section, value, false);
+      return {
+        ...prev,
+        [section]: prev[section].filter((item) => item !== value),
+      };
+    });
   };
 
-  // GSAP Animation when the Drawer opens
+  // Animate on drawer open
   useEffect(() => {
     if (open) {
       gsap.to(".appear-animation", {
@@ -64,6 +113,11 @@ const FilterTab = ({ count }: any) => {
     }
   }, [open]);
 
+  const selectedOptions1 = selectedOptions.availability.length;
+  const selectedOptions2 = selectedOptions.color.length;
+  const selectedOptions3 = selectedOptions.size.length;
+  const contsv = selectedOptions1 + selectedOptions2 + selectedOptions3;
+
   return (
     <>
       <div
@@ -71,7 +125,7 @@ const FilterTab = ({ count }: any) => {
         className="flex gap-2 items-center border border-solid py-3 px-6 cursor-pointer bg-white rounded-md transition-shadow"
       >
         <SlEqualizer className="rotate-90" />
-        <p>Filter ({count})</p>
+        <p>Filter {contsv > 0 ? (contsv) : " "}</p>
       </div>
 
       <Drawer
@@ -80,24 +134,32 @@ const FilterTab = ({ count }: any) => {
         onClose={onClose}
         open={open}
       >
-        <div className="w-full bg-white ">
-          {/* Selected Options Display */}
+        <div className="w-full bg-white">
+          {/* Selected Filters Display */}
           <div className="mb-4">
             {Object.entries(selectedOptions).flatMap(([key, values]) =>
-              values.map((value) => (
-                <div
-                  key={`${key}-${value}`}
-                  className="flex items-center justify-between bg-black p-2 rounded-md mb-2"
-                >
-                  <span className="text-gray-100 font-bold text-sm">
-                    {value}
-                  </span>
-                  <IoIosClose
-                    className="text-gray-100 text-lg cursor-pointer"
-                    onClick={() => removeSelectedOption(key, value)}
-                  />
-                </div>
-              ))
+              values.map((value) => {
+                const label =
+                  filters
+                    .find((f) => f.key === key)
+                    ?.options.find((opt: any) => opt.value === value)?.label ||
+                  value;
+
+                return (
+                  <div
+                    key={`${key}-${value}`}
+                    className="flex items-center justify-between bg-black p-2 rounded-md mb-2"
+                  >
+                    <span className="text-gray-100 font-bold text-sm">
+                      {label}
+                    </span>
+                    <IoIosClose
+                      className="text-gray-100 text-lg cursor-pointer"
+                      onClick={() => removeSelectedOption(key, value)}
+                    />
+                  </div>
+                );
+              })
             )}
           </div>
 
@@ -126,10 +188,10 @@ const FilterTab = ({ count }: any) => {
                             <input
                               type="checkbox"
                               checked={selectedOptions[filter.key].includes(
-                                option.label
+                                option.value
                               )}
                               onChange={() =>
-                                handleCheckboxChange(filter.key, option.label)
+                                handleCheckboxChange(filter.key, option.value)
                               }
                               className="form-checkbox h-5 w-5 text-blue-600"
                             />

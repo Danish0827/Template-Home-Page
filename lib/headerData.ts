@@ -94,7 +94,7 @@ const headerIcons = {
 
 const headers = {
   brandName: "SagarTech",
-  logo: `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-content/uploads/2024/12/shoes-logo-design-template-e21760dc27d8a44fe578b7acf2e2bad2_screen-e1733218316459.jpg`,
+  logo: `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-content/uploads/2025/04/DRESSINO-LOGO2-02-1.png`,
   content:
     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
   // navbar: [
@@ -576,8 +576,8 @@ const filters = [
     label: "Availability",
     key: "availability",
     options: [
-      { label: "In stock (58)", type: "checkbox" },
-      { label: "Out of stock (44)", type: "checkbox" },
+      { label: "In stock (58)", value: "instock", type: "checkbox" },
+      { label: "Out of stock (44)", value: "outofstock", type: "checkbox" },
     ],
   },
   {
@@ -595,8 +595,20 @@ const filters = [
   {
     label: "Size",
     key: "size",
-    options: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"].map((size) => ({
+    options: [
+      "37/6",
+      "38/7",
+      "39/8",
+      "40/9",
+      "41/10",
+      "6/40",
+      "7/41",
+      "8/42",
+      "9/43",
+      "10/44",
+    ].map((size) => ({
       label: size,
+      value: size,
       type: "checkbox",
     })),
   },
@@ -604,8 +616,24 @@ const filters = [
     label: "Color",
     key: "color",
     options: [
-      { label: "Beige", color: "rgb(241, 194, 125)", type: "checkbox" },
-      { label: "Yellow", color: "rgb(242, 229, 2)", type: "checkbox" },
+      {
+        label: "Beige",
+        value: "Beige",
+        color: "rgb(241, 194, 125)",
+        type: "checkbox",
+      },
+      {
+        label: "Yellow",
+        value: "Yellow",
+        color: "rgb(242, 229, 2)",
+        type: "checkbox",
+      },
+      {
+        label: "Black",
+        value: "Black",
+        color: "#000000",
+        type: "checkbox",
+      },
     ],
   },
 ];

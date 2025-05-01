@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Filter from "./Filter";
 import Link from "next/link";
 import { fetchCountryCurrencyData } from "../Currency/CurrencyChanger";
+import { useSearchParams } from "next/navigation";
 
 interface Product {
   id: number;
@@ -61,15 +62,57 @@ const ProductPart = ({ params }: any) => {
     };
     someFunction();
   }, []);
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, string[]>
+  >({
+    availability: [],
+    size: [],
+    color: [],
+  });
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    const initialSelections: Record<string, string[]> = {
+      availability: [],
+      size: [],
+      color: [],
+    };
 
+    Object.keys(initialSelections).forEach((key) => {
+      const values = params.getAll(key);
+      if (values.length) {
+        initialSelections[key] = values;
+      }
+    });
+
+    setSelectedOptions(initialSelections);
+  }, [searchParams]); // ✅ FIXED HERE
+
+  console.log(selectedOptions);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // Build the API URL conditionally
-        const apiUrl =
-          `${process.env.NEXT_PUBLIC_SITE_URL}/api/get-products?` +
-          (params === "best-sellers" ? "" : `categorySlug=${params}&`) +
-          "includeVariations=true";
+        const query = new URLSearchParams();
+
+        if (params !== "best-sellers") {
+          query.append("categorySlug", params);
+        }
+
+        query.append("includeVariations", "true");
+
+        Object.entries(selectedOptions).forEach(([key, values]) => {
+          if (Array.isArray(values)) {
+            values.forEach((value) => {
+              if (value) query.append(key, value);
+            });
+          }
+        });
+
+        const apiUrl = `${
+          process.env.NEXT_PUBLIC_SITE_URL
+        }/api/get-products?${query.toString()}`;
+
+        console.log(apiUrl, "apiUrl");
 
         const response = await fetch(apiUrl);
         const data = await response.json();
@@ -85,7 +128,7 @@ const ProductPart = ({ params }: any) => {
     };
 
     fetchProducts();
-  }, [params]);
+  }, [params, selectedOptions]); // ✅ ADD selectedOptions here
 
   const [categories, setCategories] = useState<any>([]);
   const [error, setError] = useState<string | null>(null);
@@ -163,6 +206,7 @@ const ProductPart = ({ params }: any) => {
   };
 
   const star = params.replace("-", " ");
+
   return (
     <>
       <div className="page-width page-width--flush-small py-16 px-3 md:px-6 lg:px-10">
