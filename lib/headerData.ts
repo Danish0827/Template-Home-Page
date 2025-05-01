@@ -606,6 +606,7 @@ const filters = [
       "8/42",
       "9/43",
       "10/44",
+      "11/45",
     ].map((size) => ({
       label: size,
       value: size,
