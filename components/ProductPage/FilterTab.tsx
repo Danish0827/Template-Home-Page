@@ -125,7 +125,7 @@ const FilterTab = ({ count }: any) => {
         className="flex gap-2 items-center border border-solid py-3 px-6 cursor-pointer bg-white rounded-md transition-shadow"
       >
         <SlEqualizer className="rotate-90" />
-        <p>Filter {contsv > 0 ? (contsv) : " "}</p>
+        <p>Filter {contsv > 0 ? contsv : " "}</p>
       </div>
 
       <Drawer
