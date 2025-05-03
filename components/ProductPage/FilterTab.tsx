@@ -141,7 +141,7 @@ const FilterTab = ({ count }: any) => {
               values.map((value) => {
                 const label =
                   filters
-                    .find((f) => f.key === key)
+                    .find((f: any) => f.key === key)
                     ?.options.find((opt: any) => opt.value === value)?.label ||
                   value;
 
@@ -164,7 +164,7 @@ const FilterTab = ({ count }: any) => {
           </div>
 
           <form className="space-y-6 appear-animation">
-            {filters.map((filter) => (
+            {filters.map((filter: any) => (
               <div key={filter.key} className="border-b pb-4">
                 <button
                   type="button"
@@ -181,7 +181,7 @@ const FilterTab = ({ count }: any) => {
 
                 {openSection === filter.key && (
                   <div className="pt-2 space-y-3">
-                    {filter.options.map((option: any, index) => (
+                    {filter.options.map((option: any, index: any) => (
                       <div key={index}>
                         {option.type === "checkbox" ? (
                           <label className="flex items-center">

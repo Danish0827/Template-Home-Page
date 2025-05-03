@@ -571,7 +571,7 @@ const iconData = [
   },
 ];
 
-const filters = [
+const filters: any = [
   {
     label: "Availability",
     key: "availability",
