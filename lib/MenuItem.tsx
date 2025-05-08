@@ -8,33 +8,10 @@ export const menuItem: any = [
     url: "/about",
   },
   {
-    name: "Men",
+    name: "Shop By",
     url: "/shop/men",
   },
-  {
-    name: "Flats",
-    url: "/shop/womens-flats",
-  },
-  {
-    name: "Heel",
-    url: "/shop/heel",
-  },
-  {
-    name: "Sandals",
-    url: "/shop/womens-sandals",
-  },
-  {
-    name: "Sneaker",
-    url: "/shop/mens-sneaker",
-  },
-  {
-    name: "Women",
-    url: "/shop/women",
-  },
-  {
-    name: "Shoe",
-    url: "/shop/mens-shoe",
-  },
+ 
   {
     name: "Contact",
     url: "/contact",

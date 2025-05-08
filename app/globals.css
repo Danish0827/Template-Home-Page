@@ -193,4 +193,6 @@ h6 {
 .hoveritem:hover {
   box-shadow: rgba(60, 64, 200, -12.5) 0px 1px 2px 0px,
     rgba(37, 64, 200, 0.2) 0px 2px 6px 2px;
+  transform: translate(var(0), var(0)) rotate(var(0)) skewX(var(0))
+    skewY(var(0)) scaleX(var(0)) scaleY(var(0));
 }

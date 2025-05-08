@@ -232,10 +232,10 @@ const Product: React.FC = () => {
           >
             <div
               key={product.id}
-              className="hoveritem relative rounded-lg shado-lg hovr:hadow-xl transition-shadow duration-300 bg-white overflow-hidden"
+              className="hoveritem relative rounded-lg shado-lg hovr:hadow-xl transition-shadow group bg-white overflow-hidden duration-800 delay-150 hover:scale-105 "
             >
               <div
-                className="absolute top-2 right-2 bg-[#fff] text-black text-xs font-semibold px-2 py-1 rounded-lg uppercase z-10 cursor-pointer"
+                className="absolute hidden group-hover:block top-2 right-2 bg-[#fff] text-black text-xs font-semibold px-2 py-1 rounded-lg uppercase z-10 cursor-pointer"
                 onClick={(e) => {
                   e.preventDefault(); // Prevent link navigation if wrapped in a link
                   e.stopPropagation(); // Prevent link navigation
@@ -365,51 +365,49 @@ const Product: React.FC = () => {
                 )}
 
                 {/* Size Variants Color */}
-                {
-                  // showColor.meta?.["show-product-color"]?.showColor ==
-                  //   "true" && (
-                  //   <div className="flex justify-center flex-wrap mt-3 space-x-2">
-                  //     {product.attributes
-                  //       .find((attr) => attr.name === "Colour")
-                  //       ?.options.map((colour) => {
-                  //         const variant = product.variations.find((v) =>
-                  //           v.attributes.some((attr) => attr.option === colour)
-                  //         );
-                  //         const isOutOfStock =
-                  //           variant?.stock_status === "outofstock";
-                  //         return (
-                  //           <>
-                  //             <div
-                  //               key={`${product.id}-${colour}`}
-                  //               onMouseEnter={() =>
-                  //                 setHoveredProductColor((prevState) => ({
-                  //                   ...prevState,
-                  //                   [product.id]: colour,
-                  //                 }))
-                  //               } // Set hovered color on hover for specific product
-                  //               onMouseLeave={() =>
-                  //                 setHoveredProductColor((prevState) => ({
-                  //                   ...prevState,
-                  //                   [product.id]: null,
-                  //                 }))
-                  //               } // Reset on mouse leave for specific product
-                  //               style={{
-                  //                 backgroundColor: attribute.find(
-                  //                   (attr: any) => attr.name === colour
-                  //                 )?.woo_variation_swatches.primary_color, // Setting the background color to the colour value
-                  //               }}
-                  //               className={`border-black border mt-2 rounded-full w-8 h-8 flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
-                  //                 selectedSize === colour
-                  //                   ? "border-black"
-                  //                   : "border-gray-400"
-                  //               } `}
-                  //             ></div>
-                  //           </>
-                  //         );
-                  //       })}
-                  //   </div>
-                  // )
-                }
+                {showColor.meta?.["show-product-color"]?.showColor ==
+                  "true" && (
+                  <div className="flex justify-center flex-wrap mt-3 space-x-2">
+                    {product.attributes
+                      .find((attr) => attr.name === "Colour")
+                      ?.options.map((colour) => {
+                        const variant = product.variations.find((v) =>
+                          v.attributes.some((attr) => attr.option === colour)
+                        );
+                        const isOutOfStock =
+                          variant?.stock_status === "outofstock";
+                        return (
+                          <>
+                            <div
+                              key={`${product.id}-${colour}`}
+                              onMouseEnter={() =>
+                                setHoveredProductColor((prevState) => ({
+                                  ...prevState,
+                                  [product.id]: colour,
+                                }))
+                              } // Set hovered color on hover for specific product
+                              onMouseLeave={() =>
+                                setHoveredProductColor((prevState) => ({
+                                  ...prevState,
+                                  [product.id]: null,
+                                }))
+                              } // Reset on mouse leave for specific product
+                              style={{
+                                backgroundColor: attribute.find(
+                                  (attr: any) => attr.name === colour
+                                )?.woo_variation_swatches.primary_color, // Setting the background color to the colour value
+                              }}
+                              className={`border-black border mt-2 rounded-full w-8 h-8 flex items-center justify-center text-xs font-bold text-templateDark cursor-pointer ${
+                                selectedSize === colour
+                                  ? "border-black"
+                                  : "border-gray-400"
+                              } `}
+                            ></div>
+                          </>
+                        );
+                      })}
+                  </div>
+                )}
                 {/* Size Variants size*/}
 
                 <div className="flex justify-center flex-wrap mt-3 space-x-2">

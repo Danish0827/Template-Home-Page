@@ -393,7 +393,7 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
             </div>
 
             {/* Color selection */}
-            {/* <div className="mb-5">
+            <div className="mb-5">
               <div className="flex justify-between mb-2">
                 <span className="text-md font-semibold">Select Color</span>
                 <span className="text-md font-medium text-black/[0.5] cursor-pointer">
@@ -444,12 +444,12 @@ const ProductDetails = ({ params, productData, reviewsData, render }: any) => {
                         }`}
                         style={{ backgroundColor: color }}
                       >
-                        {color}
+                        {/* {color} */}
                       </div>
                     );
                   })}
               </div>
-            </div> */}
+            </div>
             {/* Add to Cart and Buy Now buttons */}
             <AddToCart
               product={product}
