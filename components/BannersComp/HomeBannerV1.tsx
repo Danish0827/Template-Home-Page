@@ -98,5 +98,4 @@ const HomeBannerV1: React.FC = () => {
     </div>
   );
 };
-
 export default HomeBannerV1;
