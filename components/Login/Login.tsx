@@ -10,7 +10,7 @@ const Login = () => {
   const [generatedOtp, setGeneratedOtp] = useState(null);
   const [step, setStep] = useState(1); // 1: Email input, 2: OTP confirmation
   const [isSending, setIsSending] = useState(false); // Disable button while sending OTP
-  const [timer, setTimer] = useState(0); // Timer state
+  const [timer, setTimer] = useState(0);
   const router = useRouter();
 
   // Redirect if auth cookie exists
