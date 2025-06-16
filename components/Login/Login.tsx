@@ -15,7 +15,6 @@ const Login = () => {
 
   // Redirect if auth cookie exists
   useEffect(() => {
-    // Check for auth cookie
     const authCookie = document.cookie
       .split("; ")
       .find((row) => row.startsWith("auth="));
