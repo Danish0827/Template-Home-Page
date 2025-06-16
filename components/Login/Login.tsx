@@ -25,7 +25,7 @@ const Login = () => {
       // Restore step from localStorage
       const savedStep = localStorage.getItem("loginStep");
       if (savedStep) {
-        setStep(parseInt(savedStep, 10)); // Restore step from localStorage
+        setStep(parseInt(savedStep, 10)); 
       }
     }
   }, [router]);
