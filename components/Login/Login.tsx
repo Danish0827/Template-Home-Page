@@ -149,7 +149,6 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp }),
       });
-
       if (response.ok) {
         notification.success({
           message: "OTP sent",
@@ -328,3 +327,5 @@ const Login = () => {
 
 export default Login;
 // danishshaikh.st@gmail.com
+
+// s.danish0827@gmail.com
