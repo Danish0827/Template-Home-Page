@@ -106,3 +106,4 @@ const CartFooter = ({ totalFinalPrice }: any) => {
 };
 
 export default CartFooter;
+
