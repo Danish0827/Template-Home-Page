@@ -2,6 +2,7 @@
 import React from "react";
 
 const About = () => {
+  
   return (
     <section
       className="bg-white py-12"
