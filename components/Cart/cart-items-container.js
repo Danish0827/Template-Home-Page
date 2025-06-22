@@ -96,3 +96,4 @@ const CartItemsContainer = () => {
 };
 
 export default CartItemsContainer;
+
