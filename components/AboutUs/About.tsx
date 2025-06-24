@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 
-const About = () => {
-  
+const About = () => {  
   return (
     <section
       className="bg-white py-12"
