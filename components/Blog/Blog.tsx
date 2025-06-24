@@ -117,8 +117,7 @@ const Blog = ({ title }: { title: string }) => {
   const data = title === "home" ? blogPosts.slice(0, 3) : blogPosts;
 
   return (
-    <div
-    
+    <div    
       className={title === "home" ? "bg-white" : ""}
     >
       <div
