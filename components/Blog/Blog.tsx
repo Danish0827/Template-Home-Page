@@ -118,11 +118,7 @@ const Blog = ({ title }: { title: string }) => {
 
   return (
     <div
-      // style={{
-      //   backgroundImage: `url('${bg}')`,
-      //   backgroundSize: "cover",
-      //   backgroundPosition: "center",
-      // }}
+    
       className={title === "home" ? "bg-white" : ""}
     >
       <div
