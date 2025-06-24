@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-// import "animate.css"; // Import animate.css for animations
 
 interface BlogPost {
   ID: number;
