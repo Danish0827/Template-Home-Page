@@ -48,7 +48,6 @@ const HomeBannerV1: React.FC = () => {
         const response = await fetch(apiUrl);
         const data = await response.json();
 
-        // Map the images from the API response
         const images = data.map((item: any) => ({
           image: item.meta.image,
         }));
