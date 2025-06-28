@@ -40,7 +40,7 @@ const HomeBannerV1: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true); // Set loading to true before fetching
+        setLoading(true); 
         const apiUrl = isMobile
           ? `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/mobile-image-sliders?_fields=meta.image`
           : `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/desktop-image-slider?_fields=meta.image`;
