@@ -37,7 +37,6 @@ const HomeBannerV1: React.FC = () => {
     };
   }, []);
 
-  // Fetch data from the appropriate API
   useEffect(() => {
     const fetchData = async () => {
       try {
