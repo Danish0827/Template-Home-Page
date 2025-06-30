@@ -31,7 +31,7 @@ const BlogSingle = ({ params }: any) => {
   const [blog, setBlog] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [videoSrc, setVideoSrc] = useState(""); // Initialize with an empty string for videoSrc
+  const [videoSrc, setVideoSrc] = useState("");
 
   const openModal = () => {
     setIsModalOpen(true);
