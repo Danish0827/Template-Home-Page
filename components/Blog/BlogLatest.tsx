@@ -6,7 +6,6 @@ interface Disease {
   title: string;
   image: string;
   slug: string;
-  // Add any other fields you need
 }
 
 const BlogLatestSkeleton = () => (
