@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 
-// Sample data object
 import { backgroundData } from "@/lib/headerData";
 
 const BackgroundMediaText = ({ data }: any) => {
