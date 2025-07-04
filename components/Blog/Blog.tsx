@@ -9,6 +9,7 @@ interface BlogPost {
   description: string;
 }
 
+
 const BlogPostComponent = ({
   post,
   inView,
