@@ -1,6 +1,7 @@
 // components/ShippingPolicy.js
 import React from "react";
 
+
 const ShippingPolicy = () => {
   return (
     <main className="main-content px-4 py-8" id="MainContent">
