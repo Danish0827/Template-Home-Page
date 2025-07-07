@@ -1,5 +1,6 @@
 export const fetchCountryCurrencyData = async () => {
   try {
+    
     // Step 1: Fetch user's country code using IP lookup
     const countryResponse = await fetch(
       `https://extreme-ip-lookup.com/json/?key=HWNcygh87eXFmqOzrPnX`
