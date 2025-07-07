@@ -151,7 +151,7 @@ const ShopByCategory: React.FC = () => {
                       src={
                         category.image
                           ? category.image.src
-                          : "https://via.placeholder.com/300" // Placeholder image
+                          : "https://via.placeholder.com/300" 
                       }
                       alt={category.image ? category.image.alt : category.name}
                       className="w-full h-60 sm:h-80 object-cover"
