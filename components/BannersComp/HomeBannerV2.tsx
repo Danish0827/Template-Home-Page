@@ -73,6 +73,7 @@ const BackgroundMediaText = ({ data }: any) => {
   );
 };
 
+
 // Usage of component with data from object
 const HomeBannerV2 = () => {
   return <BackgroundMediaText data={backgroundData} />;
