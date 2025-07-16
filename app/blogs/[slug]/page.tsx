@@ -15,4 +15,5 @@ const blogSingle = ({ params }: any) => {
   );
 };
 
+
 export default blogSingle;
