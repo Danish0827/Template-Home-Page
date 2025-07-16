@@ -16,7 +16,7 @@ const BackgroundMediaText = ({ data }: any) => {
               "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px",
             transform: " scaleX(-1)",
           }}
-          // style={{  }}
+         
           src={`https://bck.headless-woo-temp.demo-web.live/wp-content/uploads/2025/04/teenager-girl-summer-vacation-surprised-pointing-finger-copy-space-isolated-white-bac-scaled.jpg`}
           alt=""
           width="2400"
