@@ -3,9 +3,6 @@
  */
 import axios from 'axios';
 
-/**
- * Internal Dependencies.
- */
 import {
 	COMMENTS_ENDPOINT,
 	GET_PAGES_ENDPOINT,
