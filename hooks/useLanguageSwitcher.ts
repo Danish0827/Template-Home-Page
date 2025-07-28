@@ -32,7 +32,7 @@ const useLanguageSwitcher = () => {
     const cfg = getLanguageConfig();
     let languageValue = "";
 
-    // Read the `googtrans` cookie
+    
     const match = document.cookie.match(
       new RegExp(`(^| )${COOKIE_NAME}=([^;]+)`)
     );
