@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 
 export const COOKIE_NAME = "googtrans";
@@ -41,7 +40,6 @@ const useLanguageSwitcher = () => {
         languageValue = parts[2];
       }
     }
-
     if (cfg && !languageValue) {
       languageValue = cfg.defaultLanguage;
     }
