@@ -42,7 +42,6 @@ const useLanguageSwitcher = () => {
       }
     }
 
-    // Default to the default language if no cookie is set
     if (cfg && !languageValue) {
       languageValue = cfg.defaultLanguage;
     }
