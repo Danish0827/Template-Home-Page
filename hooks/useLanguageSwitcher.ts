@@ -32,7 +32,6 @@ const useLanguageSwitcher = () => {
     const cfg = getLanguageConfig();
     let languageValue = "";
 
-    
     const match = document.cookie.match(
       new RegExp(`(^| )${COOKIE_NAME}=([^;]+)`)
     );
