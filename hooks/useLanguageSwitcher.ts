@@ -50,7 +50,6 @@ const useLanguageSwitcher = () => {
   }, []);
 
   const switchLanguage = (lang: string) => () => {
-    // Set the `googtrans` cookie
     document.cookie = `${COOKIE_NAME}=/auto/${lang}; path=/`;
     window.location.reload();
   };
