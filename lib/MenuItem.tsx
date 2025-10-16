@@ -16,7 +16,6 @@ export const menuItem: any = [
     name: "Contact",
     url: "/contact",
   },
-
   // {
   //   name: "Men",
   //   url: "/product",
